@@ -6,6 +6,7 @@ from typing import TypeVar
 from typing_extensions import Self, override
 from yandex.cloud.searchapi.v2.gen_search_service_pb2 import GenSearchRequest, GenSearchResponse
 from yandex.cloud.searchapi.v2.gen_search_service_pb2_grpc import GenSearchServiceStub
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._tools.generative_search import GenerativeSearchTool
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
@@ -24,7 +25,7 @@ logger = get_logger(__name__)
 
 class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSearchResult]):
     """Generative search class which provides concrete methods for working with Search API
-    and incapsulates search setting.
+    and encapsulates search setting.
     """
 
     _config_type = GenerativeSearchConfig
@@ -50,7 +51,6 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
         `generative search documentation <https://yandex.cloud/docs/search-api/concepts/generative-response#body>`_
 
         NB: All of the ``site``, ``host``, ``url`` parameters are mutually exclusive
-        and using one of them is mandatory.
 
         :param site: parameter for limiting search to specific location or list of sites.
         :param host: parameter for limiting search to specific location or list of hosts.

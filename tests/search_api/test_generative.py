@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._models.completions.result import Alternative, GPTModelResult
 from yandex_ai_studio_sdk._search_api.generative.message import GenSearchMessage, messages_to_proto
@@ -34,8 +35,6 @@ async def test_generative_settings(async_sdk: AsyncAIStudio) -> None:
     assert search.config.site is None
     assert search.config.host is None
     assert search.config.url is None
-    with pytest.raises(AIStudioConfigurationError):
-        await search.run('foo')
 
     with pytest.raises(TypeError):
         search = search.configure(site=123)  # type: ignore[arg-type]
