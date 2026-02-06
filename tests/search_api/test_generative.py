@@ -34,8 +34,6 @@ async def test_generative_settings(async_sdk: AsyncAIStudio) -> None:
     assert search.config.site is None
     assert search.config.host is None
     assert search.config.url is None
-    with pytest.raises(AIStudioConfigurationError):
-        await search.run('foo')
 
     with pytest.raises(TypeError):
         search = search.configure(site=123)  # type: ignore[arg-type]
@@ -189,3 +187,16 @@ async def test_search_simple_run(async_sdk: AsyncAIStudio) -> None:
 
     assert len(result.search_queries) == 1
     assert result.search_queries[0].text == 'yandex datalens'
+
+
+@pytest.mark.asyncio
+@pytest.mark.allow_grpc
+async def test_search_without_filters(async_sdk: AsyncAIStudio) -> None:
+    search = async_sdk.search_api.generative()
+
+    result = await search.run('Python programming language')
+
+    assert result.text
+    assert len(result.text) > 0
+    assert result.role == 'assistant'
+    assert len(result.sources) > 0

@@ -8,9 +8,12 @@ from typing_extensions import Self, TypeAlias, override
 # pylint: disable=no-name-in-module
 from yandex.cloud.searchapi.v2.gen_search_service_pb2 import GenSearchRequest
 from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError
+from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 from yandex_ai_studio_sdk._types.string import SmartStringSequence, coerce_string_sequence
 from yandex_ai_studio_sdk._utils.coerce import coerce_tuple
+
+logger = get_logger(__name__)
 
 
 class DateFilterType(TypedDict):
@@ -105,7 +108,7 @@ class GenerativeSearchConfig(BaseModelConfig):
     @override
     def _validate_run(self) -> None:
         if not self._url_score:
-            raise AIStudioConfigurationError('GenerativeSearch must have one of the site, host or url fields set')
+            logger.debug("site, host or url not provided, will search across the entire Yandex index")
 
     @override
     def _replace(self, **kwargs: dict) -> Self:

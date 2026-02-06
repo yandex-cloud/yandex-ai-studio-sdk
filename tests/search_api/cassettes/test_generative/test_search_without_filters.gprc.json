@@ -1,0 +1,539 @@
+{
+    "interactions": [
+        {
+            "request": {
+                "cls": "ListApiEndpointsRequest",
+                "module": "yandex.cloud.endpoint.api_endpoint_service_pb2",
+                "message": {}
+            },
+            "response": {
+                "cls": "ListApiEndpointsResponse",
+                "module": "yandex.cloud.endpoint.api_endpoint_service_pb2",
+                "message": {
+                    "endpoints": [
+                        {
+                            "id": "ai-assistants",
+                            "address": "assistant.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-files",
+                            "address": "assistant.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-foundation-models",
+                            "address": "llm.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-llm",
+                            "address": "llm.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-speechkit",
+                            "address": "transcribe.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-stt",
+                            "address": "transcribe.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-stt-v3",
+                            "address": "stt.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-translate",
+                            "address": "translate.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-vision",
+                            "address": "vision.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ai-vision-ocr",
+                            "address": "ocr.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "alb",
+                            "address": "alb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "apigateway-connections",
+                            "address": "apigateway-connections.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "application-load-balancer",
+                            "address": "alb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "apploadbalancer",
+                            "address": "alb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "audittrails",
+                            "address": "audittrails.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "baas",
+                            "address": "backup.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "backup",
+                            "address": "backup.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "baremetal",
+                            "address": "baremetal.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "billing",
+                            "address": "billing.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "broker-data",
+                            "address": "iot-data.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cdn",
+                            "address": "cdn.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "certificate-manager",
+                            "address": "certificate-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "certificate-manager-data",
+                            "address": "data.certificate-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "certificate-manager-private-ca",
+                            "address": "private-ca.certificate-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "certificate-manager-private-ca-data",
+                            "address": "data.private-ca.certificate-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cic",
+                            "address": "cic.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cloud-registry",
+                            "address": "registry.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cloudapps",
+                            "address": "cloudapps.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cloudbackup",
+                            "address": "backup.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "clouddesktops",
+                            "address": "clouddesktops.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cloudrouter",
+                            "address": "cloudrouter.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "cloudvideo",
+                            "address": "video.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "compute",
+                            "address": "compute.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "connection-manager",
+                            "address": "connectionmanager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "container-registry",
+                            "address": "container-registry.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "dataproc",
+                            "address": "dataproc.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "dataproc-manager",
+                            "address": "dataproc-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "datasphere",
+                            "address": "datasphere.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "datatransfer",
+                            "address": "datatransfer.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "dns",
+                            "address": "dns.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "endpoint",
+                            "address": "api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "fomo-dataset",
+                            "address": "fomo-dataset.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "fomo-tuning",
+                            "address": "fomo-tuning.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "gitlab",
+                            "address": "gitlab.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "iam",
+                            "address": "iam.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "iot-broker",
+                            "address": "iot-broker.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "iot-data",
+                            "address": "iot-data.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "iot-devices",
+                            "address": "iot-devices.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "k8s",
+                            "address": "mks.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "kms",
+                            "address": "kms.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "kms-crypto",
+                            "address": "kms.yandex:443"
+                        },
+                        {
+                            "id": "kspm",
+                            "address": "kspm.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "load-balancer",
+                            "address": "load-balancer.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "loadtesting",
+                            "address": "loadtesting.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "locator",
+                            "address": "locator.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "lockbox",
+                            "address": "lockbox.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "lockbox-payload",
+                            "address": "payload.lockbox.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "log-ingestion",
+                            "address": "ingester.logging.yandexcloud.net:443"
+                        },
+                        {
+                            "id": "log-reading",
+                            "address": "reader.logging.yandexcloud.net:443"
+                        },
+                        {
+                            "id": "logging",
+                            "address": "logging.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-airflow",
+                            "address": "airflow.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-clickhouse",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-elasticsearch",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-greenplum",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-kafka",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-kubernetes",
+                            "address": "mks.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-metastore",
+                            "address": "metastore.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-mongodb",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-mysql",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-opensearch",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-postgresql",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-redis",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-spark",
+                            "address": "spark.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-spqr",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-sqlserver",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-trino",
+                            "address": "trino.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "managed-ytsaurus",
+                            "address": "ytsaurus.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "marketplace",
+                            "address": "marketplace.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "marketplace-pim",
+                            "address": "marketplace.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-clickhouse",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-mongodb",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-mysql",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-opensearch",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-postgresql",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-redis",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdb-spqr",
+                            "address": "mdb.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "mdbproxy",
+                            "address": "mdbproxy.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "monitoring",
+                            "address": "monitoring.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "operation",
+                            "address": "operation.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "organization-manager",
+                            "address": "organization-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "organizationmanager",
+                            "address": "organization-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "quota-manager",
+                            "address": "quota-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "quotamanager",
+                            "address": "quota-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "resource-manager",
+                            "address": "resource-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "resourcemanager",
+                            "address": "resource-manager.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "searchapi",
+                            "address": "searchapi.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serialssh",
+                            "address": "serialssh.cloud.yandex.net:9600"
+                        },
+                        {
+                            "id": "serverless-apigateway",
+                            "address": "serverless-apigateway.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-containers",
+                            "address": "serverless-containers.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-eventrouter",
+                            "address": "serverless-eventrouter.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-functions",
+                            "address": "serverless-functions.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-gateway-connections",
+                            "address": "apigateway-connections.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-mcp-gateway",
+                            "address": "serverless-mcp-gateway.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-triggers",
+                            "address": "serverless-triggers.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverless-workflows",
+                            "address": "serverless-workflows.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "serverlesseventrouter-events",
+                            "address": "events.eventrouter.serverless.yandexcloud.net:443"
+                        },
+                        {
+                            "id": "smart-captcha",
+                            "address": "smartcaptcha.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "smart-web-security",
+                            "address": "smartwebsecurity.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "storage",
+                            "address": "storage.yandexcloud.net:443"
+                        },
+                        {
+                            "id": "storage-api",
+                            "address": "storage.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "video",
+                            "address": "video.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "vpc",
+                            "address": "vpc.api.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ycvc",
+                            "address": "yc-tools-version-control.cloud.yandex.net:443"
+                        },
+                        {
+                            "id": "ydb",
+                            "address": "ydb.api.cloud.yandex.net:443"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "request": {
+                "cls": "GenSearchRequest",
+                "module": "yandex.cloud.searchapi.v2.gen_search_service_pb2",
+                "message": {
+                    "messages": [
+                        {
+                            "content": "Python programming language",
+                            "role": "ROLE_USER"
+                        }
+                    ],
+                    "folderId": "b1ge6b3ojkeeciv997a8"
+                }
+            },
+            "response_stream": [
+                {
+                    "cls": "GenSearchResponse",
+                    "module": "yandex.cloud.searchapi.v2.gen_search_service_pb2",
+                    "message": {
+                        "message": {
+                            "content": "**Python** \u2014 **\u0432\u044b\u0441\u043e\u043a\u043e\u0443\u0440\u043e\u0432\u043d\u0435\u0432\u044b\u0439 \u044f\u0437\u044b\u043a \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f**, \u0441\u043e\u0437\u0434\u0430\u043d\u043d\u044b\u0439 \u0413\u0432\u0438\u0434\u043e \u0432\u0430\u043d \u0420\u043e\u0441\u0441\u0443\u043c\u043e\u043c \u0432 1991 \u0433\u043e\u0434\u0443. [3][4] \u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u044f\u0437\u044b\u043a\u0430 \u0441\u0432\u044f\u0437\u0430\u043d\u043e \u0441 \u0431\u0440\u0438\u0442\u0430\u043d\u0441\u043a\u0438\u043c \u0448\u043e\u0443 \u00ab\u041b\u0435\u0442\u0430\u044e\u0449\u0438\u0439 \u0446\u0438\u0440\u043a \u041c\u043e\u043d\u0442\u0438 \u041f\u0430\u0439\u0442\u043e\u043d\u0430\u00bb. [2][3] \n\n**\u041d\u0435\u043a\u043e\u0442\u043e\u0440\u044b\u0435 \u043e\u0441\u043e\u0431\u0435\u043d\u043d\u043e\u0441\u0442\u0438 Python:**\n\n* **\u0427\u0438\u0442\u0430\u0435\u043c\u043e\u0441\u0442\u044c \u043a\u043e\u0434\u0430**. [3] \u0421\u0438\u043d\u0442\u0430\u043a\u0441\u0438\u0441 \u0441 \u043e\u0442\u0441\u0442\u0443\u043f\u0430\u043c\u0438 \u0432\u043c\u0435\u0441\u0442\u043e \u0444\u0438\u0433\u0443\u0440\u043d\u044b\u0445 \u0441\u043a\u043e\u0431\u043e\u043a \u0434\u0435\u043b\u0430\u0435\u0442 \u043a\u043e\u0434 \u0432\u0438\u0437\u0443\u0430\u043b\u044c\u043d\u043e \u043f\u043e\u043d\u044f\u0442\u043d\u044b\u043c. [3]\n* **\u0414\u0438\u043d\u0430\u043c\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0442\u0438\u043f\u0438\u0437\u0430\u0446\u0438\u044f**. [3] \u041d\u0435 \u043d\u0443\u0436\u043d\u043e \u043e\u0431\u044a\u044f\u0432\u043b\u044f\u0442\u044c \u0442\u0438\u043f \u043f\u0435\u0440\u0435\u043c\u0435\u043d\u043d\u043e\u0439 \u2014 \u044f\u0437\u044b\u043a \u043e\u043f\u0440\u0435\u0434\u0435\u043b\u044f\u0435\u0442 \u0435\u0433\u043e \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438. [3]\n* **\u041c\u0443\u043b\u044c\u0442\u0438\u043f\u0430\u0440\u0430\u0434\u0438\u0433\u043c\u0435\u043d\u043d\u043e\u0441\u0442\u044c**. [3] \u041f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442 \u041e\u041e\u041f, \u0444\u0443\u043d\u043a\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0435 \u0438 \u043f\u0440\u043e\u0446\u0435\u0434\u0443\u0440\u043d\u043e\u0435 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435. [3]\n* **\u0418\u043d\u0442\u0435\u0440\u043f\u0440\u0435\u0442\u0438\u0440\u0443\u0435\u043c\u043e\u0441\u0442\u044c**. [1][4] \u041a\u043e\u0434 \u043d\u0430 Python \u0432\u044b\u043f\u043e\u043b\u043d\u044f\u0435\u0442\u0441\u044f \u043f\u043e\u0441\u0442\u0440\u043e\u0447\u043d\u043e, \u0432 \u0440\u0435\u0436\u0438\u043c\u0435 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438. [1]\n* **\u041f\u043e\u0434\u0445\u043e\u0434\u044f\u0442 \u0434\u043b\u044f \u0431\u043e\u043b\u044c\u0448\u0438\u043d\u0441\u0442\u0432\u0430 \u043e\u043f\u0435\u0440\u0430\u0446\u0438\u043e\u043d\u043d\u044b\u0445 \u0441\u0438\u0441\u0442\u0435\u043c**. [1] \u041a\u043e\u0434, \u043d\u0430\u043f\u0438\u0441\u0430\u043d\u043d\u044b\u0439 \u043d\u0430 Python, \u043c\u043e\u0436\u043d\u043e \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u043d\u0430 Windows, macOS, Linux. [1]\n\n**Python \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u0442\u0441\u044f \u0432 \u0440\u0430\u0437\u043d\u044b\u0445 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f\u0445 IT**: [2]\n\n* **\u0412\u0435\u0431-\u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u0430**. [2] \u0411\u044d\u043a\u0435\u043d\u0434 \u0441\u0430\u0439\u0442\u043e\u0432, API \u0438 \u0441\u0435\u0440\u0432\u0438\u0441\u044b. [2]\n* **Data Science \u0438 Machine Learning**. [2] \u0410\u043d\u0430\u043b\u0438\u0437 \u0434\u0430\u043d\u043d\u044b\u0445, \u043c\u043e\u0434\u0435\u043b\u0438 \u0438 \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f\u044b. [2]\n* **\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0437\u0430\u0446\u0438\u044f**. [2] \u0422\u0435\u0441\u0442\u044b, \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0430 \u0434\u0430\u043d\u043d\u044b\u0445, \u0443\u0442\u0438\u043b\u0438\u0442\u044b \u0434\u043b\u044f \u0431\u0438\u0437\u043d\u0435\u0441\u0430. [2]\n* **\u0413\u0435\u0439\u043c\u0434\u0435\u0432**. [2] \u041f\u0440\u043e\u0442\u043e\u0442\u0438\u043f\u044b \u0438 \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u044f\u044f \u043b\u043e\u0433\u0438\u043a\u0430. [2]\n* **IoT \u0438 \u0432\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0435\u043c\u044b\u0435 \u0441\u0438\u0441\u0442\u0435\u043c\u044b**. [2] \u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430\u043c\u0438. [2]\n* **\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435**. [2] \u0421\u043a\u0440\u0438\u043f\u0442\u044b \u0434\u043b\u044f \u0438\u043d\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u044b \u0438 DevOps. [2]\n* **\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f**. [2] \u0421\u0430\u043c\u043e\u0441\u0442\u043e\u044f\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u044b \u0438\u043b\u0438 \u00ab\u043a\u043b\u0435\u0439\u00bb \u043c\u0435\u0436\u0434\u0443 \u043a\u043e\u043c\u043f\u043e\u043d\u0435\u043d\u0442\u0430\u043c\u0438. [2]\n\n\u0421\u0440\u0435\u0434\u0438 \u043f\u043e\u043f\u0443\u043b\u044f\u0440\u043d\u044b\u0445 \u043f\u0440\u043e\u0435\u043a\u0442\u043e\u0432, \u043d\u0430\u043f\u0438\u0441\u0430\u043d\u043d\u044b\u0445 \u043d\u0430 Python: Dropbox, Uber, Sims, Google, GIMP \u0438 \u0434\u0440\u0443\u0433\u0438\u0435. [1]",
+                            "role": "ROLE_ASSISTANT"
+                        },
+                        "sources": [
+                            {
+                                "url": "https://www.nic.ru/help/osnovy-yazyka-programmirovaniya-python_11662.html",
+                                "title": "\u041e\u0441\u043d\u043e\u0432\u044b \u044f\u0437\u044b\u043a\u0430 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f Python",
+                                "used": true
+                            },
+                            {
+                                "url": "https://practicum.yandex.ru/blog/vsyo-o-yazyke-programmirovaniya-python/",
+                                "title": "\u042f\u0437\u044b\u043a \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f Python: \u0434\u043b\u044f \u0447\u0435\u0433\u043e \u043d\u0443\u0436\u0435\u043d, \u043f\u043b\u044e\u0441\u044b \u0438 \u043c\u0438\u043d\u0443\u0441\u044b - \u0447\u0442\u043e \u043c\u043e\u0436\u043d\u043e \u043f\u0438\u0441\u0430\u0442\u044c \u043d\u0430 Python, \u0441\u0444\u0435\u0440\u044b \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u044f, \u043f\u0440\u0438\u043c\u0435\u0440\u044b",
+                                "used": true
+                            },
+                            {
+                                "url": "https://hi-tech.mail.ru/review/129618-python/",
+                                "title": "Python: \u043e\u0441\u043d\u043e\u0432\u044b \u044f\u0437\u044b\u043a\u0430 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f, \u043e\u0441\u043e\u0431\u0435\u043d\u043d\u043e\u0441\u0442\u0438, \u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u0435, \u043f\u0440\u0438\u043c\u0435\u0440\u044b \u043a\u043e\u0434\u0430",
+                                "used": true
+                            },
+                            {
+                                "url": "https://education.yandex.ru/handbook/python/article/chto-takoe-python",
+                                "title": "\u0427\u0442\u043e \u0442\u0430\u043a\u043e\u0435 Python",
+                                "used": true
+                            },
+                            {
+                                "url": "https://ru.wikipedia.org/wiki/Python",
+                                "title": "Python \u2014 \u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f"
+                            }
+                        ],
+                        "searchQueries": [
+                            {
+                                "text": "python programming language",
+                                "reqId": "1770379352546340-16134139471178379974-snfw4bbvnbggzme7-BAL"
+                            }
+                        ],
+                        "hints": [
+                            "\u041a\u0430\u043a\u0438\u0435 \u043e\u0441\u043d\u043e\u0432\u043d\u044b\u0435 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0438 Python \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u044e\u0442\u0441\u044f \u0432 \u0432\u0435\u0431-\u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u0435?",
+                            "\u041a\u0430\u043a\u0438\u0435 \u043f\u0440\u0435\u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430 Python \u0434\u0435\u043b\u0430\u044e\u0442 \u0435\u0433\u043e \u043f\u043e\u043f\u0443\u043b\u044f\u0440\u043d\u044b\u043c?",
+                            "\u041a\u0430\u043a\u0438\u0435 \u043a\u0443\u0440\u0441\u044b \u043f\u043e Python \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u044e\u0442\u0441\u044f \u0434\u043b\u044f \u043d\u0430\u0447\u0438\u043d\u0430\u044e\u0449\u0438\u0445?"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

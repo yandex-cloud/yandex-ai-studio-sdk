@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 
 class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSearchResult]):
     """Generative search class which provides concrete methods for working with Search API
-    and incapsulates search setting.
+    and encapsulates search setting.
     """
 
     _config_type = GenerativeSearchConfig
@@ -50,7 +50,6 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
         `generative search documentation <https://yandex.cloud/docs/search-api/concepts/generative-response#body>`_
 
         NB: All of the ``site``, ``host``, ``url`` parameters are mutually exclusive
-        and using one of them is mandatory.
 
         :param site: parameter for limiting search to specific location or list of sites.
         :param host: parameter for limiting search to specific location or list of hosts.
