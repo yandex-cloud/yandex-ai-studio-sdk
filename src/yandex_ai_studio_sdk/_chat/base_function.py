@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from typing_extensions import override
 from yandex_ai_studio_sdk._chat.utils import ModelFilter, model_match
@@ -8,7 +8,7 @@ from yandex_ai_studio_sdk._types.function import BaseModelFunction, ModelTypeT
 
 
 class BaseChatFunction(BaseModelFunction[ModelTypeT]):
-    _prefix: str
+    _prefix: Literal['emb', 'cls', 'gpt']
 
     @override
     def __call__(
@@ -29,15 +29,9 @@ class BaseChatFunction(BaseModelFunction[ModelTypeT]):
             Defaults to 'latest'.
         """
 
-        if '://' in model_name:
-            uri = model_name
-        else:
-            folder_id = self._sdk._folder_id
-            uri = f'{self._prefix}{folder_id}/{model_name}/{model_version}'
-
         return self._model_type(
             sdk=self._sdk,
-            uri=uri,
+            uri=self._sdk._get_model_uri(self._prefix, model_name, model_version),
         )
     async def _fetch_raw_models(self, timeout: float) -> list[dict[str, Any]]:
         """
@@ -75,7 +69,7 @@ class BaseChatFunction(BaseModelFunction[ModelTypeT]):
         models = (
             self._model_type(sdk=self._sdk, uri=raw_model['id'], owner=raw_model['owned_by'])
             for raw_model in raw_models
-            if raw_model['id'].startswith(self._prefix)
+            if raw_model['id'].startswith(f'{self._prefix}://')
         )
 
         return tuple(

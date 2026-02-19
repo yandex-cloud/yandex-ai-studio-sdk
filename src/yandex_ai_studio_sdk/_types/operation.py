@@ -18,7 +18,7 @@ from yandex_ai_studio_sdk._logging import TRACE, get_logger
 from yandex_ai_studio_sdk._utils.sync import run_sync_impl
 from yandex_ai_studio_sdk.exceptions import RunError, WrongAsyncOperationStatusError
 
-from .proto import ProtoBasedType
+from .proto import ProtoBased
 
 if TYPE_CHECKING:
     from yandex_ai_studio_sdk._sdk import BaseSDK
@@ -249,7 +249,7 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         # because we use _result_type also for a generic typing reasons, sometimes it requires
         # unwrapping for issubclass check
         result_type = get_origin(self._result_type) or self._result_type
-        assert issubclass(result_type, ProtoBasedType), f'{self._result_type} is not ProtoBasedType'
+        assert issubclass(result_type, ProtoBased), f'{self._result_type} is not ProtoBased'
 
         # NB: mypy can't figure out that self._result_type._from_proto is
         # returning instance of self._result_type which is also is a ResultTypeT_co

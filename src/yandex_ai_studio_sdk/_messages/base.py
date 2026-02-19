@@ -3,18 +3,17 @@ from __future__ import annotations
 import dataclasses
 from typing import Any
 
-from yandex_ai_studio_sdk._types.result import BaseProtoResult, ProtoMessageTypeT_contra
+from yandex_ai_studio_sdk._types.result import BaseProtoResult, ProtoMessageTypeT
 
 
 @dataclasses.dataclass(frozen=True)
-class BaseMessage(BaseProtoResult[ProtoMessageTypeT_contra]):
+class BaseMessage(BaseProtoResult[ProtoMessageTypeT]):
     """
     Abstract class for messages in Yandex AI Studio Assistant service.
 
     Provides core functionality for all message types including:
     - Storage and processing of message parts (text, citations, etc.)
     - Basic text content operations
-    - Protocol buffer support via BaseProtoResult[ProtoMessageTypeT_contra]
 
     Extended by:
     - Message: Complete assistant messages
