@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from typing import Literal
 
 from tqdm.asyncio import tqdm
-
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._files.file import AsyncFile
 from yandex_ai_studio_sdk._logging import get_logger
