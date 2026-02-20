@@ -40,7 +40,9 @@ dependencies = [
     "httpx-sse>=0.4.1",
     "typing-extensions>=4",
     "aiofiles>=24.1.0",
-    "packaging>=24"
+    "packaging>=24",
+    "click>=8.0.0",
+    "tqdm>=4.0.0",
 ]
 
 [project.optional-dependencies]
@@ -58,6 +60,18 @@ pydantic = [
 datasets = [
     "pyarrow>=19"
 ]
+cli-s3 = [
+    "boto3>=1.26.0",
+]
+cli-confluence = [
+    "atlassian-python-api>=3.41.0",
+]
+cli-wiki = [
+    "mwclient>=0.10.1",
+]
+
+[project.scripts]
+yandex-ai-studio = "yandex_ai_studio_sdk.cli:main"
 
 [project.urls]
 Documentation = "https://yandex.cloud/ru/docs/foundation-models/"
@@ -311,5 +325,9 @@ module = [
     "scipy.spatial.distance",
     "traitlets.utils.warnings",
     "sounddevice",
+    "boto3",
+    "botocore",
+    "botocore.exceptions",
+    "atlassian",
 ]
 ignore_missing_imports = true
