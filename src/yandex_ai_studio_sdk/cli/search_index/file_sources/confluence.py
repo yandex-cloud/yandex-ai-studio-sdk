@@ -1,20 +1,20 @@
 from __future__ import annotations
 
-import logging
 import re
 from collections.abc import Iterator
 from urllib.parse import parse_qs, urlparse
 
-from atlassian import Confluence  # type: ignore[import-untyped]
-
+from yandex_ai_studio_sdk._logging import get_logger
+from yandex_ai_studio_sdk._utils.packages import requires_package
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ConfluenceFileSource(BaseFileSource):
     """Source for loading page content from Atlassian Confluence."""
 
+    @requires_package('atlassian-python-api', '>=3.41.0', 'ConfluenceFileSource')
     def __init__(
         self,
         page_urls: list[str],
@@ -24,6 +24,8 @@ class ConfluenceFileSource(BaseFileSource):
         *,
         export_format: str = "pdf",
     ):
+        from atlassian import Confluence  # type: ignore[import-untyped]
+
         if not page_urls:
             raise ValueError("At least one page URL must be provided")
 

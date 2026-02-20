@@ -3,14 +3,12 @@ from __future__ import annotations
 import abc
 import asyncio
 import json
-import logging
-import sys
 
 import click
 
 from yandex_ai_studio_sdk import AsyncAIStudio
+from yandex_ai_studio_sdk._logging import TRACE, LogLevel, get_logger, setup_default_logging
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
-from yandex_ai_studio_sdk.cli.search_index.constants import LOG_DATE_FORMAT, LOG_FORMAT
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource
 from yandex_ai_studio_sdk.cli.search_index.legacy_mapper import LegacyYandexMapper
 from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams, OpenAIVectorStoreCreateParams
@@ -19,7 +17,7 @@ from yandex_ai_studio_sdk.search_indexes import (
     HybridSearchIndexType, StaticIndexChunkingStrategy, TextSearchIndexType, VectorSearchIndexType
 )
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class BaseCommand(abc.ABC):
@@ -84,32 +82,26 @@ class BaseCommand(abc.ABC):
 
     def setup_logging(self) -> None:
         """Configure logging based on verbosity level."""
+        level: LogLevel
         if self.verbose == 0:
-            level = logging.WARNING
+            level = "WARNING"
         elif self.verbose == 1:
-            level = logging.INFO
+            level = "INFO"
+        elif self.verbose == 2:
+            level = "DEBUG"
         else:
-            level = logging.DEBUG
+            level = TRACE
 
-        logging.basicConfig(
-            level=level,
-            format=LOG_FORMAT,
-            datefmt=LOG_DATE_FORMAT,
-        )
+        setup_default_logging(log_level=level)
 
     def create_sdk(self) -> AsyncAIStudio:
-        """Create and configure AsyncAIStudio SDK instance."""
-        try:
-            sdk = AsyncAIStudio(
-                folder_id=self.folder_id if self.folder_id else UNDEFINED,
-                auth=self.auth if self.auth else UNDEFINED,
-                endpoint=self.endpoint if self.endpoint else UNDEFINED,
-            )
-            logger.info("SDK initialized successfully")
-            return sdk
-        except Exception as e:
-            self._output_error(f"Error initializing SDK: {e}")
-            sys.exit(1)
+        sdk = AsyncAIStudio(
+            folder_id=self.folder_id if self.folder_id else UNDEFINED,
+            auth=self.auth if self.auth else UNDEFINED,
+            endpoint=self.endpoint if self.endpoint else UNDEFINED,
+        )
+        logger.info("SDK initialized successfully")
+        return sdk
 
     @staticmethod
     def parse_labels(label_tuples: tuple[str, ...]) -> dict[str, str]:
@@ -171,13 +163,7 @@ class BaseCommand(abc.ABC):
         """
 
     def execute(self) -> None:
-        """Execute the command: create file source, upload files, create index."""
-        try:
-            asyncio.run(self._execute_async())
-        except Exception as e:
-            self._output_error(f"Error during upload: {e}")
-            logger.exception("Upload failed")
-            sys.exit(1)
+        asyncio.run(self._execute_async())
 
     async def _execute_async(self) -> None:
         """Async implementation of execute."""

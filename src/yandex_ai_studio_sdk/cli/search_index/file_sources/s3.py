@@ -1,20 +1,20 @@
 from __future__ import annotations
 
 import fnmatch
-import logging
 from collections.abc import Iterator
 from pathlib import Path
 
-import boto3  # type: ignore[import-untyped]
-
+from yandex_ai_studio_sdk._logging import get_logger
+from yandex_ai_studio_sdk._utils.packages import requires_package
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class S3FileSource(BaseFileSource):
     """Source for loading files from S3-compatible storage."""
 
+    @requires_package('boto3', '>=1.26.0', 'S3FileSource')
     def __init__(
         self,
         bucket: str,
@@ -28,19 +28,8 @@ class S3FileSource(BaseFileSource):
         exclude_patterns: list[str] | None = None,
         max_file_size: int | None = None,
     ):
-        """Initialize S3 file source.
+        import boto3  # type: ignore[import-untyped]
 
-        Args:
-            bucket: S3 bucket name
-            prefix: Prefix (folder path) within the bucket
-            endpoint_url: Custom S3 endpoint URL for S3-compatible services
-            aws_access_key_id: AWS access key ID
-            aws_secret_access_key: AWS secret access key
-            region_name: AWS region name
-            include_patterns: Glob patterns to include (e.g., ["*.pdf", "*.txt"])
-            exclude_patterns: Glob patterns to exclude
-            max_file_size: Maximum file size in bytes
-        """
         self.bucket = bucket
         self.prefix = prefix.rstrip("/")
         self.include_patterns = include_patterns or []

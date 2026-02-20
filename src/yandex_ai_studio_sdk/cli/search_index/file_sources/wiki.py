@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-import logging
 from collections.abc import Iterator
 from urllib.parse import urlparse
 
-import mwclient  # type: ignore[import-untyped]
-
+from yandex_ai_studio_sdk._logging import get_logger
+from yandex_ai_studio_sdk._utils.packages import requires_package
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class WikiFileSource(BaseFileSource):
     """Source for loading page content from MediaWiki instances."""
 
+    @requires_package('mwclient', '>=0.10.1', 'WikiFileSource')
     def __init__(
         self,
         page_urls: list[str],
@@ -22,6 +22,8 @@ class WikiFileSource(BaseFileSource):
         password: str | None = None,
         export_format: str = "text",
     ):
+        import mwclient  # type: ignore[import-untyped,import-not-found]
+
         if not page_urls:
             raise ValueError("At least one page URL must be provided")
 

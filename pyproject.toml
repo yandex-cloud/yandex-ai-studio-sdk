@@ -43,19 +43,12 @@ dependencies = [
     "packaging>=24",
     "click>=8.0.0",
     "tqdm>=4.0.0",
-    "python-dotenv>=1.0.0",
-    "boto3>=1.26.0",
-    "atlassian-python-api>=3.41.0",
-    "pyyaml>=6.0",
-    "requests>=2.31.0",
-    "mwclient>=0.10.1",
 ]
 
 [project.optional-dependencies]
 test = [
     "pre-commit",
     "tox",
-    "types-PyYAML",
 ]
 langchain = [
     "langchain-core>=0.3",
@@ -67,9 +60,18 @@ pydantic = [
 datasets = [
     "pyarrow>=19"
 ]
+cli-s3 = [
+    "boto3>=1.26.0",
+]
+cli-confluence = [
+    "atlassian-python-api>=3.41.0",
+]
+cli-wiki = [
+    "mwclient>=0.10.1",
+]
 
 [project.scripts]
-vector_stores = "yandex_ai_studio_sdk.cli.search_index:main"
+yandex-ai-studio = "yandex_ai_studio_sdk.cli:main"
 
 [project.urls]
 Documentation = "https://yandex.cloud/ru/docs/foundation-models/"

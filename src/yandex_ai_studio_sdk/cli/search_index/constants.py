@@ -21,13 +21,6 @@ DEFAULT_FILE_PATTERN = "**/*"
 DEFAULT_RECURSIVE = True
 """Default behavior for recursive directory scanning"""
 
-# Logging
-LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-"""Log message format"""
-
-LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-"""Log date format"""
-
 # Progress bar
 PROGRESS_BAR_FORMAT = "{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]"
 """Format for tqdm progress bar"""

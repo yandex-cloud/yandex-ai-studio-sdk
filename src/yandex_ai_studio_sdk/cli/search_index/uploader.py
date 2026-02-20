@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 from dataclasses import dataclass
 from typing import Literal
 
 from tqdm.asyncio import tqdm
 
 from yandex_ai_studio_sdk import AsyncAIStudio
-from yandex_ai_studio_sdk._files.file import AsyncFile, File
+from yandex_ai_studio_sdk._files.file import AsyncFile
+from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._search_indexes.index_type import BaseSearchIndexType
 from yandex_ai_studio_sdk._search_indexes.search_index import AsyncSearchIndex
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
@@ -16,7 +16,7 @@ from yandex_ai_studio_sdk._types.misc import UNDEFINED
 from .constants import BYTES_PER_MB, DEFAULT_MAX_WORKERS, DEFAULT_SKIP_ON_ERROR
 from .file_sources.base import BaseFileSource, FileMetadata
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass
@@ -94,19 +94,11 @@ class AsyncSearchIndexUploader:
     def __init__(
         self,
         sdk: AsyncAIStudio,
-        config: UploadConfig | None = None,
+        config: UploadConfig,
     ):
-        """
-        Initialize the search index uploader.
-
-        Args:
-            sdk: Initialized AsyncAIStudio SDK instance
-            config: Upload configuration (uses defaults if not provided)
-        """
         self.sdk = sdk
-        self.config = config or UploadConfig()
+        self.config = config
         self.stats = UploadStats()
-        self._uploaded_files: list[File | AsyncFile] = []
 
     async def upload_from_source(
         self,
@@ -133,7 +125,7 @@ class AsyncSearchIndexUploader:
         self._log_stats()
         return search_index
 
-    async def _upload_files(self, source: BaseFileSource) -> list[File | AsyncFile]:
+    async def _upload_files(self, source: BaseFileSource) -> list[AsyncFile]:
         """
         Upload all files from the source with concurrent execution.
 
@@ -164,7 +156,7 @@ class AsyncSearchIndexUploader:
             for file_metadata in files_metadata
         ]
 
-        results_to_process: list[File | AsyncFile | BaseException | None]
+        results_to_process: list[AsyncFile | BaseException | None]
         if self.config.show_progress:
             results_raw = await tqdm.gather(
                 *tasks,
@@ -176,7 +168,7 @@ class AsyncSearchIndexUploader:
         else:
             results_to_process = list(await asyncio.gather(*tasks, return_exceptions=True))
 
-        uploaded_files: list[File | AsyncFile] = []
+        uploaded_files: list[AsyncFile] = []
         for i, result in enumerate(results_to_process):
             file_metadata = files_metadata[i]
 
@@ -184,14 +176,12 @@ class AsyncSearchIndexUploader:
                 logger.error("Upload failed for %s: %s", file_metadata.path, result)
                 self.stats.failed_files += 1
                 if not self.config.skip_on_error:
-                    raise result
+                    raise result from result
             elif result is not None:
-                # result is File or AsyncFile here
-                assert isinstance(result, (File, AsyncFile)), (
-                    f"Expected File or AsyncFile, got {type(result)}: {result}"
+                assert isinstance(result, AsyncFile), (
+                    f"Expected AsyncFile, got {type(result)}: {result}"
                 )
                 uploaded_files.append(result)
-                self._uploaded_files.append(result)
                 self.stats.uploaded_files += 1
                 logger.debug(
                     "Uploaded file %s (%d/%d)",
@@ -210,7 +200,7 @@ class AsyncSearchIndexUploader:
         file_metadata: FileMetadata,
         source: BaseFileSource,
         semaphore: asyncio.Semaphore,
-    ) -> File | AsyncFile | None:
+    ) -> AsyncFile | None:
         """
         Upload a single file by reading its content on-demand.
 
@@ -242,7 +232,7 @@ class AsyncSearchIndexUploader:
             # Upload the file
             return await self._upload_single_file(file_metadata, content)
 
-    async def _upload_single_file(self, file_metadata: FileMetadata, content: bytes) -> File | AsyncFile | None:
+    async def _upload_single_file(self, file_metadata: FileMetadata, content: bytes) -> AsyncFile | None:
         """
         Upload a single file to Yandex Cloud.
 
@@ -277,7 +267,7 @@ class AsyncSearchIndexUploader:
                 raise
             return None
 
-    async def _create_search_index(self, files: list[File | AsyncFile]) -> AsyncSearchIndex:
+    async def _create_search_index(self, files: list[AsyncFile]) -> AsyncSearchIndex:
         """
         Create a search index from uploaded files.
 

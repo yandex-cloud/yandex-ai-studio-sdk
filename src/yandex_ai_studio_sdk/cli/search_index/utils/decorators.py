@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import click
 
 from yandex_ai_studio_sdk.cli.search_index.constants import (
@@ -14,18 +12,12 @@ def common_options(func):
     Decorator to add common options to all subcommands.
 
     Adds:
-    - --config: Path to config file
     - --folder-id: Yandex Cloud folder ID
     - --auth: Authentication token
     - --endpoint: Custom API endpoint
     - -v/--verbose: Verbosity level
     - --format: Output format (text or json)
     """
-    func = click.option(
-        "--config",
-        type=click.Path(exists=True, dir_okay=False, path_type=Path),
-        help="Path to configuration file (.yaml, .yml, or .json)",
-    )(func)
     func = click.option(
         "--folder-id",
         envvar="YC_FOLDER_ID",
