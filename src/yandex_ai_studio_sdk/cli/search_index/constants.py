@@ -28,3 +28,7 @@ PROGRESS_BAR_FORMAT = "{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{e
 # Size limits
 BYTES_PER_MB = 1024 * 1024
 """Bytes per megabyte for display"""
+
+# API limits
+MAX_FILES_PER_INDEX_CREATE = 10_000
+"""Maximum number of files per search index create request"""

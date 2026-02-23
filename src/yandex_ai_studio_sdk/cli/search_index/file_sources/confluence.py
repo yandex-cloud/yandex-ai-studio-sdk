@@ -28,6 +28,7 @@ class ConfluenceFileSource(BaseFileSource):
         api_token: str | None = None,
         *,
         export_format: ConfluenceExportFormat,
+        verify_ssl: bool = True,
     ):
         from atlassian import Confluence  # type: ignore[import-untyped]
 
@@ -51,9 +52,12 @@ class ConfluenceFileSource(BaseFileSource):
 
         # Initialize Confluence client
         if username and api_token:
-            self.confluence = Confluence(url=self.url, username=username, password=api_token, cloud=True)
+            self.confluence = Confluence(
+                url=self.url, username=username, password=api_token,
+                cloud=True, verify_ssl=verify_ssl,
+            )
         else:
-            self.confluence = Confluence(url=self.url, cloud=True)
+            self.confluence = Confluence(url=self.url, cloud=True, verify_ssl=verify_ssl)
 
         logger.info("ConfluenceFileSource initialized for %s", self.url)
 

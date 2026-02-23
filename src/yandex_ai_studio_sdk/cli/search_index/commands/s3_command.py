@@ -57,12 +57,7 @@ class S3Command(BaseCommand):
 
 
 @click.command(name="s3")
-@click.option(
-    "--bucket",
-    "-b",
-    required=True,
-    help="S3 bucket name",
-)
+@click.argument("bucket")
 @click.option(
     "--prefix",
     default="",

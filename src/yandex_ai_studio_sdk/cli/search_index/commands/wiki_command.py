@@ -40,13 +40,7 @@ class WikiCommand(BaseCommand):
 
 
 @click.command(name="wiki")
-@click.option(
-    "--page-url",
-    "page_urls",
-    multiple=True,
-    required=True,
-    help="Page URL(s) to export (e.g., https://en.wikipedia.org/wiki/Python_(programming_language)). Can be specified multiple times.",
-)
+@click.argument("page_urls", nargs=-1, required=True)
 @click.option(
     "--username",
     envvar="WIKI_USERNAME",

@@ -13,7 +13,7 @@ from yandex_ai_studio_sdk._search_indexes.index_type import BaseSearchIndexType
 from yandex_ai_studio_sdk._search_indexes.search_index import AsyncSearchIndex
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
 
-from .constants import BYTES_PER_MB, DEFAULT_MAX_WORKERS, DEFAULT_SKIP_ON_ERROR
+from .constants import BYTES_PER_MB, DEFAULT_MAX_WORKERS, DEFAULT_SKIP_ON_ERROR, MAX_FILES_PER_INDEX_CREATE
 from .file_sources.base import BaseFileSource, FileMetadata
 
 logger = get_logger(__name__)
@@ -266,6 +266,13 @@ class AsyncSearchIndexUploader:
         Args:
             files: List of uploaded File objects
         """
+        if len(files) > MAX_FILES_PER_INDEX_CREATE:
+            logger.warning(
+                "Too many files (%d), only the first %d will be indexed.",
+                len(files), MAX_FILES_PER_INDEX_CREATE,
+            )
+            files = files[:MAX_FILES_PER_INDEX_CREATE]
+
         logger.info("Creating search index with %d files...", len(files))
 
         # Create search index using deferred operation

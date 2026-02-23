@@ -19,6 +19,7 @@ class ConfluenceCommand(BaseCommand):
         username: str | None,
         api_token: str | None,
         export_format: str,
+        no_verify: bool,
         # Common options
         **kwargs,
     ):
@@ -28,6 +29,7 @@ class ConfluenceCommand(BaseCommand):
         self.username = username
         self.api_token = api_token
         self.export_format = export_format
+        self.no_verify = no_verify
 
         # Validate authentication (optional for public instances)
         if self.username or self.api_token:
@@ -49,6 +51,7 @@ class ConfluenceCommand(BaseCommand):
             username=self.username,
             api_token=self.api_token,
             export_format=self.export_format,
+            verify_ssl=not self.no_verify,
         )
 
 
@@ -80,6 +83,12 @@ class ConfluenceCommand(BaseCommand):
     default="pdf",
     show_default=True,
     help="Format for exporting pages",
+)
+@click.option(
+    "--no-verify",
+    is_flag=True,
+    default=False,
+    help="Disable SSL certificate verification (for self-signed certs)",
 )
 @all_common_options
 def confluence_command(**kwargs):

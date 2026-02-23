@@ -5,7 +5,6 @@ from pathlib import Path
 import click
 
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
-from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource
 from yandex_ai_studio_sdk.cli.search_index.file_sources.local import LocalFileSource
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
 from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor
@@ -17,75 +16,51 @@ class LocalCommand(BaseCommand):
     def __init__(
         self,
         # Local-specific options
-        directory: Path,
-        include_patterns: tuple[str, ...],
-        exclude_patterns: tuple[str, ...],
+        paths: tuple[Path, ...],
         max_file_size: int | None,
-        recursive: bool,
         # Common options
         **kwargs,
     ):
         """Initialize local command with local-specific and common parameters."""
-        self.directory = directory
-        self.include_patterns = include_patterns if include_patterns else ("**/*",)  # Default pattern if none specified
-        self.exclude_patterns = exclude_patterns
+        self.paths = paths
         self.max_file_size = max_file_size
-        self.recursive = recursive
 
-        # Set default vector store name to directory name if not provided
-        if not kwargs.get("name"):
-            kwargs["name"] = directory.name
+        # Set default vector store name to the single directory name if applicable
+        if not kwargs.get("name") and len(paths) == 1 and paths[0].is_dir():
+            kwargs["name"] = paths[0].name
 
-        # Initialize base command
         super().__init__(**kwargs)
 
-    def create_file_source(self) -> BaseFileSource:
+    def create_file_source(self) -> LocalFileSource:
         """Create LocalFileSource with configured parameters."""
         return LocalFileSource(
-            directory=self.directory,
-            include_patterns=list(self.include_patterns),
-            recursive=self.recursive,
-            exclude_patterns=list(self.exclude_patterns) if self.exclude_patterns else None,
+            paths=list(self.paths),
             max_file_size=self.max_file_size,
         )
 
 
 @click.command(name="local")
 @click.argument(
-    "directory",
-    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
-)
-@click.option(
-    "--pattern",
-    "include_patterns",
-    multiple=True,
-    help="Glob pattern for matching files (e.g., '**/*.pdf' for all PDFs). Can be specified multiple times.",
-)
-@click.option(
-    "--exclude-pattern",
-    "exclude_patterns",
-    multiple=True,
-    help="Glob patterns to exclude (can be specified multiple times)",
+    "paths",
+    nargs=-1,
+    required=True,
+    type=click.Path(exists=True, path_type=Path),
 )
 @click.option(
     "--max-file-size",
     type=int,
     help="Maximum file size in bytes (larger files will be skipped)",
 )
-@click.option(
-    "--recursive/--no-recursive",
-    default=True,
-    show_default=True,
-    help="Whether to scan subdirectories recursively",
-)
 @all_common_options
 def local_command(**kwargs):
     """
-    Create a search index from local filesystem files.
+    Create a search index from local files or directories.
 
-    DIRECTORY is the path to scan for files.
+    PATHS can be individual files or directories (scanned recursively).
+    Use shell glob expansion to filter by pattern:
 
-    This command scans a local directory for files matching the specified
-    pattern, uploads them to Yandex Cloud, and creates a search index.
+        vector-stores local /docs/\n
+        vector-stores local /docs/*.pdf /notes/*.md\n
+        vector-stores local report.pdf summary.txt
     """
     create_command_executor(LocalCommand, **kwargs)
