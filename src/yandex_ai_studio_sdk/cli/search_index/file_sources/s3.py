@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import fnmatch
 from collections.abc import Iterator
 from pathlib import Path
@@ -107,10 +108,12 @@ class S3FileSource(BaseFileSource):
 
         logger.info("Found %d files matching patterns", file_count)
 
-    def get_file_content(self, file_metadata: FileMetadata) -> bytes:
+    async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Download file content from S3."""
         key = str(file_metadata.path)
-        response = self.s3_client.get_object(Bucket=self.bucket, Key=key)
+        response = await asyncio.to_thread(
+            self.s3_client.get_object, Bucket=self.bucket, Key=key
+        )
         return response["Body"].read()
 
     def get_file_count_estimate(self) -> int | None:

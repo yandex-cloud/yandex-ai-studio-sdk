@@ -42,7 +42,7 @@ class BaseFileSource(abc.ABC):
         """
 
     @abc.abstractmethod
-    def get_file_content(self, file_metadata: FileMetadata) -> bytes:
+    async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """
         Retrieve the content of a specific file.
 

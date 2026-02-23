@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -89,12 +90,11 @@ class LocalFileSource(BaseFileSource):
 
         logger.info("Finished scanning with %d unique files found", len(seen_files))
 
-    def get_file_content(self, file_metadata: FileMetadata) -> bytes:
+    async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Read file content from the local filesystem."""
         file_path = Path(file_metadata.path)
         try:
-            with open(file_path, "rb") as f:
-                return f.read()
+            return await asyncio.to_thread(file_path.read_bytes)
         except OSError as e:
             logger.error("Failed to read file: %s - %s", file_path, e)
             raise

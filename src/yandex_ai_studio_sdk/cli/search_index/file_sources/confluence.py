@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 import re
 from collections.abc import Iterator
+from functools import lru_cache
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
@@ -38,14 +40,14 @@ class ConfluenceFileSource(BaseFileSource):
         # Determine base URL
         if base_url:
             self.url = base_url.rstrip('/')
-            # Validate all URLs start with this base
-            for page_url in page_urls:
-                if not page_url.startswith(self.url):
-                    raise ValueError(f"Page URL {page_url} does not start with base URL {self.url}")
         else:
-            # Extract from first URL
             self.url = self._extract_base_url(page_urls[0])
             logger.info("Extracted base URL: %s", self.url)
+
+        # Validate ALL URLs against the base (regardless of how base was set)
+        for page_url in page_urls:
+            if not page_url.startswith(self.url):
+                raise ValueError(f"Page URL {page_url} does not start with base URL {self.url}")
 
         # Initialize Confluence client
         if username and api_token:
@@ -56,15 +58,11 @@ class ConfluenceFileSource(BaseFileSource):
         logger.info("ConfluenceFileSource initialized for %s", self.url)
 
     def _extract_base_url(self, page_url: str) -> str:
-        """Extract base URL from page URL (scheme://domain/first-path-segment)."""
+        """Extract base URL (scheme://host) from a page URL."""
         parsed = urlparse(page_url)
-        path_parts = [p for p in parsed.path.split('/') if p]
-
-        # Include first path segment if it exists (e.g., /confluence, /wiki)
-        if path_parts:
-            return f"{parsed.scheme}://{parsed.netloc}/{path_parts[0]}"
         return f"{parsed.scheme}://{parsed.netloc}"
 
+    @lru_cache(maxsize=None)
     def _parse_page_id(self, page_url: str) -> str:
         """Extract page ID from Confluence URL."""
         parsed = urlparse(page_url)
@@ -100,23 +98,22 @@ class ConfluenceFileSource(BaseFileSource):
                     mime_type=None,
                     description=f"Confluence page: {title}",
                 )
-            except Exception as e:
+            except (ValueError, KeyError, TypeError) as e:
                 logger.warning("Failed to process page URL %s: %s", page_url, e)
 
-    def get_file_content(self, file_metadata: FileMetadata) -> bytes:
+    async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Export page content from Confluence."""
+        return await asyncio.to_thread(self._get_file_content_sync, file_metadata)
+
+    def _get_file_content_sync(self, file_metadata: FileMetadata) -> bytes:
         page_id = str(file_metadata.path)
         logger.debug("Exporting Confluence page ID %s as %s", page_id, self.export_format)
 
         if self.export_format == "pdf":
             return self.confluence.export_page(page_id)
 
-        # For HTML/markdown, get the page body
-        expand_map = {"html": "body.view", "markdown": "body.storage"}
-        expand = expand_map.get(self.export_format)
-
-        if not expand:
-            raise ValueError(f"Unsupported export format: {self.export_format}")
+        expand_map: dict[str, str] = {"html": "body.view", "markdown": "body.storage"}
+        expand = expand_map[self.export_format]
 
         page = self.confluence.get_page_by_id(page_id, expand=expand)
         body_type = "view" if self.export_format == "html" else "storage"

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Iterator
 from typing import Literal
 from urllib.parse import urlparse
@@ -76,8 +77,11 @@ class WikiFileSource(BaseFileSource):
             except Exception as e:
                 logger.warning("Failed to process page URL %s: %s", page_url, e)
 
-    def get_file_content(self, file_metadata: FileMetadata) -> bytes:
+    async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Get page content using mwclient."""
+        return await asyncio.to_thread(self._get_file_content_sync, file_metadata)
+
+    def _get_file_content_sync(self, file_metadata: FileMetadata) -> bytes:
         page_title = str(file_metadata.path)
         logger.debug("Getting content for page: %s", page_title)
 
@@ -87,11 +91,9 @@ class WikiFileSource(BaseFileSource):
             raise ValueError(f"Page not found: {page_title}")
 
         if self.export_format == "html":
-            # Get HTML rendering of the page
             html_content = page.html()
             return html_content.encode("utf-8")
         else:
-            # Get plain text extract using TextExtracts API
             result = self.site.api(
                 "query",
                 titles=page_title,
@@ -104,8 +106,7 @@ class WikiFileSource(BaseFileSource):
             if "extract" not in page_data:
                 raise ValueError(f"No content available for page: {page_title}")
 
-            text_content = page_data["extract"]
-            return text_content.encode("utf-8")
+            return page_data["extract"].encode("utf-8")
 
     def get_file_count_estimate(self) -> int | None:
         """Get estimate of page count."""

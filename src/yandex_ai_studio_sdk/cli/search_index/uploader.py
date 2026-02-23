@@ -213,15 +213,8 @@ class AsyncSearchIndexUploader:
             Uploaded file object or None if upload failed
         """
         async with semaphore:
-            # Read file content on-demand (inside semaphore to limit concurrent reads)
             try:
-                # Run file reading in executor to avoid blocking async loop
-                loop = asyncio.get_event_loop()
-                content = await loop.run_in_executor(
-                    None,
-                    source.get_file_content,
-                    file_metadata
-                )
+                content = await source.get_file_content(file_metadata)
                 self.stats.total_bytes += len(content)
             except Exception as e:
                 logger.error("Failed to read file %s: %s", file_metadata.path, e)
@@ -229,7 +222,6 @@ class AsyncSearchIndexUploader:
                     raise
                 return None
 
-            # Upload the file
             return await self._upload_single_file(file_metadata, content)
 
     async def _upload_single_file(self, file_metadata: FileMetadata, content: bytes) -> AsyncFile | None:
