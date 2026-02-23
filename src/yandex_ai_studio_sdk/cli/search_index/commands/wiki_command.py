@@ -3,7 +3,6 @@ from __future__ import annotations
 import click
 
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
-from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource
 from yandex_ai_studio_sdk.cli.search_index.file_sources.wiki import WikiFileSource
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
 from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor
@@ -30,7 +29,7 @@ class WikiCommand(BaseCommand):
 
         super().__init__(**kwargs)
 
-    def create_file_source(self) -> BaseFileSource:
+    def create_file_source(self) -> WikiFileSource:
         """Create WikiFileSource with configured parameters."""
         return WikiFileSource(
             page_urls=list(self.page_urls),

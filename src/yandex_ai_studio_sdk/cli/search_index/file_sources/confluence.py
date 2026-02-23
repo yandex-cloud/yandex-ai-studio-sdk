@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterator
+from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._utils.packages import requires_package
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
+
+ConfluenceExportFormat = Literal["pdf", "html", "markdown"]
 
 logger = get_logger(__name__)
 
@@ -22,7 +25,7 @@ class ConfluenceFileSource(BaseFileSource):
         username: str | None = None,
         api_token: str | None = None,
         *,
-        export_format: str = "pdf",
+        export_format: ConfluenceExportFormat,
     ):
         from atlassian import Confluence  # type: ignore[import-untyped]
 

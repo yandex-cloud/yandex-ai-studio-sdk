@@ -3,14 +3,15 @@ from __future__ import annotations
 import abc
 from collections.abc import Iterator
 from dataclasses import dataclass
-from pathlib import Path
+
+from yandex_ai_studio_sdk._types.misc import PathLike
 
 
 @dataclass
 class FileMetadata:
     """Metadata about a file to be uploaded."""
 
-    path: Path | str
+    path: PathLike
     """Path or identifier of the file"""
 
     name: str | None = None

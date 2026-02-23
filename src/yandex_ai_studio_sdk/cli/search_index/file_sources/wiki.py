@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+from typing import Literal
 from urllib.parse import urlparse
 
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._utils.packages import requires_package
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
+
+WikiExportFormat = Literal["text", "html", "markdown"]
 
 logger = get_logger(__name__)
 
@@ -20,7 +23,7 @@ class WikiFileSource(BaseFileSource):
         *,
         username: str | None = None,
         password: str | None = None,
-        export_format: str = "text",
+        export_format: WikiExportFormat = "text",
     ):
         import mwclient  # type: ignore[import-untyped,import-not-found]
 
