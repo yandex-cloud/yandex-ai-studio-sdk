@@ -5,7 +5,7 @@ import dataclasses
 from abc import abstractmethod
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from enum import StrEnum, auto
+from enum import Enum
 from typing import Any, cast
 
 from typing_extensions import Self
@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -203,21 +204,21 @@ class RecognitionTriggerType(ProtoBasedEnum):
 RecognitionTriggerTypeInput = EnumWithUnknownInput[RecognitionTriggerType]
 
 
-class WellKnownRecognitionClassifiers(StrEnum):
+class WellKnownRecognitionClassifiers(str, Enum):
     """Well known names of recognition classifier triggers.
 
     More on the topic in `article <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
     """
 
-    formal_greeting = auto()
-    informal_greeting = auto()
-    formal_farewell = auto()
-    informal_farewell = auto()
-    insult = auto()
-    profanity = auto()
-    gender = auto()
-    negative = auto()
-    answerphone = auto()
+    formal_greeting = 'formal_greeting'
+    informal_greeting = 'informal_greeting'
+    formal_farewell = 'formal_farewell'
+    informal_farewell = 'informal_farewell'
+    insult = 'insult'
+    profanity = 'profanity'
+    gender = 'gender'
+    negative = 'negative'
+    answerphone = 'answerphone'
 
 
 @dataclass(frozen=True)
