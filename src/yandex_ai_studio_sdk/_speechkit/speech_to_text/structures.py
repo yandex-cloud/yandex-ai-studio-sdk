@@ -361,7 +361,6 @@ class SpeechAnalysis(ProtoBasedWithBoolDefault[ProtoSpeechAnalysisOptions]):
         return result
 
 
-
 @dataclass
 class LLMPostProcessingInstruction:
     """Class for encapsulating exactly one post processing settings."""
