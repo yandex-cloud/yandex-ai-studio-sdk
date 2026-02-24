@@ -1,32 +1,29 @@
 # pylint: disable=unused-argument
 from __future__ import annotations
 
-from abc import abstractmethod
 import dataclasses
-from dataclasses import dataclass
+from abc import abstractmethod
 from collections.abc import Iterable, Sequence
-from typing import Any, cast
+from dataclasses import dataclass
 from enum import StrEnum, auto
+from typing import Any, cast
+
 from typing_extensions import Self
-
 # pylint: disable=no-name-in-module
-from yandex.cloud.ai.stt.v3.stt_pb2 import (
-    SummarizationProperty,
-    TextNormalizationOptions as ProtoTextNormalizationOptions,
-    DefaultEouClassifier as ProtoDefaultEouClassifier,
-    RecognitionClassifier as ProtoRecognitionClassifier,
-    SpeechAnalysisOptions as ProtoSpeechAnalysisOptions,
-    SummarizationOptions as ProtoSummarizationOptions,
-)
+from yandex.cloud.ai.stt.v3.stt_pb2 import DefaultEouClassifier as ProtoDefaultEouClassifier
+from yandex.cloud.ai.stt.v3.stt_pb2 import RecognitionClassifier as ProtoRecognitionClassifier
+from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechAnalysisOptions
+from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
+from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
+from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
 
-from yandex_ai_studio_sdk._utils.proto import proto_to_dict
-from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType, ProtoMessageTypeT
-from yandex_ai_studio_sdk._types.misc import UndefinedOr, UNDEFINED, get_defined_value, is_defined
-from yandex_ai_studio_sdk._types.schemas import ResponseType, make_response_format_kwargs
 from yandex_ai_studio_sdk._types.enum import (
-    EnumWithUnknownAlias, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput,
-    EnumWithUnknownInput
+    EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
+from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr, get_defined_value, is_defined
+from yandex_ai_studio_sdk._types.proto import ProtoBased, ProtoMessageTypeT, SDKType
+from yandex_ai_studio_sdk._types.schemas import ResponseType, make_response_format_kwargs
+from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 
 class ProtoBasedWithBoolDefault(ProtoBased[ProtoMessageTypeT]):
@@ -373,7 +370,7 @@ class LLMPostProcessingInstruction:
     #:
     #: * `None` for usual text response (default);
     #: * '`json`' string to tell a model to return JSON object;
-    #: * dictonary with a JsonSchema to enforce a specific JSON
+    #: * dictionary with a JsonSchema to enforce a specific JSON
     #:   structure for the model's response based on a provided schema;
     #: * pydantic model or pydantic dataclass
     #:   (which will be transformed into JsonSchema by SDK);
@@ -440,7 +437,7 @@ class LLMPostProcessing(ProtoBased[ProtoSummarizationOptions]):
 
             * `None` for usual text response (default);
             * '`json`' string to tell a model to return JSON object;
-            * dictonary with a JsonSchema to enforce a specific JSON
+            * dictionary with a JsonSchema to enforce a specific JSON
               structure for the model's response based on a provided schema;
             * pydantic model or pydantic dataclass
               (which will be transformed into JsonSchema by SDK);

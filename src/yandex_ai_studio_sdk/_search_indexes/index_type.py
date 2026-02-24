@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import abc
 from dataclasses import dataclass
-from typing import ClassVar, Union, TypeVar
+from typing import ClassVar, TypeVar, Union
 
 from typing_extensions import Self
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import HybridSearchIndex
@@ -11,10 +11,10 @@ from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import SearchInd
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import TextSearchIndex, VectorSearchIndex
 
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
+
 from .chunking_strategy import BaseIndexChunkingStrategy
 from .combination_strategy import BaseIndexCombinationStrategy
 from .normalization_strategy import IndexNormalizationStrategy
-
 
 ProtoSearchIndexType = Union[TextSearchIndex, VectorSearchIndex, HybridSearchIndex]
 ProtoSearchIndexTypeTypeT = TypeVar('ProtoSearchIndexTypeTypeT', bound=ProtoSearchIndexType)

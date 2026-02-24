@@ -4,12 +4,13 @@ import asyncio
 import inspect
 import os
 import threading
-from typing import Literal
 from collections.abc import Sequence
+from typing import Literal
 
 from get_annotations import get_annotations
 from grpc import aio
 from typing_extensions import Self
+
 from yandex_ai_studio_sdk._utils.doc import doc_from
 
 from ._assistants.domain import Assistants, AsyncAssistants, BaseAssistants

@@ -1,19 +1,15 @@
 from __future__ import annotations
 
 from typing import Any
-import pytest
-from yandex_ai_studio_sdk import AsyncAIStudio
 
+import pytest
+
+from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._speechkit.speech_to_text.structures import (
-    TextNormalization, ProtoTextNormalizationOptions,
-    EndOfUtteranceSensetivity,
-    EndOfUtteranceClassifier, ProtoDefaultEouClassifier,
-    RecognitionTriggerType,
-    RecognitionClassifier, ProtoRecognitionClassifier,
-    WellKnownRecognitionClassifiers,
-    SpeechAnalysis, ProtoSpeechAnalysisOptions,
-    LLMPostProcessing, ProtoSummarizationOptions, SummarizationProperty,
-    LLMPostProcessingInstruction,
+    EndOfUtteranceClassifier, EndOfUtteranceSensetivity, LLMPostProcessing, LLMPostProcessingInstruction,
+    ProtoDefaultEouClassifier, ProtoRecognitionClassifier, ProtoSpeechAnalysisOptions, ProtoSummarizationOptions,
+    ProtoTextNormalizationOptions, RecognitionClassifier, RecognitionTriggerType, SpeechAnalysis, SummarizationProperty,
+    TextNormalization, WellKnownRecognitionClassifiers
 )
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
 
