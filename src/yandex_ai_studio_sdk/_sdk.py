@@ -5,6 +5,7 @@ import inspect
 import os
 import threading
 from collections.abc import Sequence
+from typing import Literal
 
 from get_annotations import get_annotations
 from grpc import aio
@@ -238,6 +239,21 @@ class BaseSDK:
                 kls._loop_thread.start()
 
         return kls._event_loop
+
+    def _get_model_uri(
+        self,
+        prefix: Literal['gpt', 'art', 'emb', 'cls'],
+        model_name: str,
+        model_version: str,
+        well_known_names: dict[str, str] | None = None,
+    ) -> str:
+        if '://' in model_name:
+            return model_name
+
+        well_known_names = well_known_names or {}
+        model_name = well_known_names.get(model_name, model_name)
+
+        return f'{prefix}://{self._folder_id}/{model_name}/{model_version}'
 
 
 @doc_from(BaseSDK)

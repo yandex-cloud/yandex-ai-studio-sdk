@@ -39,16 +39,10 @@ class BaseTextEmbeddings(BaseModelFunction[ModelTypeT]):
         :param model_version: the version of the model to use.
             Defaults to 'latest'.
         """
-        if '://' in model_name:
-            uri = model_name
-        else:
-            model_name = self._well_known_names.get(model_name, model_name)
-            folder_id = self._sdk._folder_id
-            uri = f'emb://{folder_id}/{model_name}/{model_version}'
 
         return self._model_type(
             sdk=self._sdk,
-            uri=uri,
+            uri=self._sdk._get_model_uri('emb', model_name, model_version, self._well_known_names)
         )
 
 

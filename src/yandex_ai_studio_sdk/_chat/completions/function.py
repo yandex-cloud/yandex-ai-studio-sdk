@@ -20,7 +20,7 @@ class BaseChatCompletions(BaseChatFunction[ModelTypeT]):
     methods for listing available models.
     """
 
-    _prefix = 'gpt://'
+    _prefix = 'gpt'
 
 
 @doc_from(BaseChatCompletions)

@@ -10,7 +10,7 @@ from .model import AsyncChatEmbeddingsModel, ChatEmbeddingsModel
 
 
 class BaseChatEmbeddings(BaseChatFunction[ModelTypeT]):
-    _prefix = 'emb://'
+    _prefix = 'emb'
 
 
 class ChatEmbeddings(BaseChatEmbeddings[ChatEmbeddingsModel]):

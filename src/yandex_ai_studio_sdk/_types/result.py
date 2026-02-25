@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from .json import JsonBased
-from .proto import ProtoBased, ProtoBasedWithCtx, ProtoMessage, ProtoMessageTypeT_contra, SDKType
+from .proto import ProtoBased, ProtoBasedWithCtx, ProtoMessage, ProtoMessageTypeT, SDKType
 from .request import RequestDetailsTypeT
 
 # it is left here until further refactoring
@@ -12,13 +12,13 @@ class BaseResult:
     pass
 
 
-class BaseProtoResult(BaseResult, ProtoBased[ProtoMessageTypeT_contra]):
+class BaseProtoResult(BaseResult, ProtoBased[ProtoMessageTypeT]):
     pass
 
 
 class BaseProtoModelResult(
     BaseResult,
-    ProtoBasedWithCtx[ProtoMessageTypeT_contra, RequestDetailsTypeT],
+    ProtoBasedWithCtx[ProtoMessageTypeT, RequestDetailsTypeT],
 ):
     pass
 
