@@ -3,7 +3,7 @@ from __future__ import annotations
 import click
 
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
-from yandex_ai_studio_sdk.cli.search_index.file_sources.wiki import WikiFileSource
+from yandex_ai_studio_sdk.cli.search_index.file_sources.wiki import WikiExportFormat, WikiFileSource
 from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
 from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor
@@ -18,7 +18,7 @@ class WikiCommand(BaseCommand):
         page_urls: tuple[str, ...],
         username: str | None,
         password: str | None,
-        export_format: str,
+        export_format: WikiExportFormat,
         # Common options
         folder_id: str | None,
         auth: str | None,
