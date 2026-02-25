@@ -42,7 +42,6 @@ dependencies = [
     "aiofiles>=24.1.0",
     "packaging>=24",
     "click>=8.0.0",
-    "tqdm>=4.0.0",
 ]
 
 [project.optional-dependencies]
@@ -62,9 +61,6 @@ datasets = [
 ]
 cli-s3 = [
     "boto3>=1.26.0",
-]
-cli-confluence = [
-    "atlassian-python-api>=3.41.0",
 ]
 cli-wiki = [
     "mwclient>=0.10.1",
@@ -328,6 +324,5 @@ module = [
     "boto3",
     "botocore",
     "botocore.exceptions",
-    "atlassian",
 ]
 ignore_missing_imports = true

@@ -5,6 +5,7 @@ import click
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource
 from yandex_ai_studio_sdk.cli.search_index.file_sources.s3 import S3FileSource
+from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
 from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor
 
@@ -25,7 +26,20 @@ class S3Command(BaseCommand):
         exclude_patterns: tuple[str, ...],
         max_file_size: int | None,
         # Common options
-        **kwargs,
+        folder_id: str | None,
+        auth: str | None,
+        endpoint: str | None,
+        verbose: int,
+        name: str | None,
+        metadata: tuple[str, ...],
+        expires_after_days: int | None,
+        expires_after_anchor: str | None,
+        max_chunk_size_tokens: int,
+        chunk_overlap_tokens: int,
+        file_create_params: OpenAIFileCreateParams,
+        max_concurrent_uploads: int,
+        skip_on_error: bool,
+        output_format: str,
     ):
         """Initialize S3 command with S3-specific and common parameters."""
         self.bucket = bucket
@@ -39,9 +53,24 @@ class S3Command(BaseCommand):
         self.max_file_size = max_file_size
 
         # Initialize base command
-        super().__init__(**kwargs)
+        super().__init__(
+            folder_id=folder_id,
+            auth=auth,
+            endpoint=endpoint,
+            verbose=verbose,
+            name=name,
+            metadata=metadata,
+            expires_after_days=expires_after_days,
+            expires_after_anchor=expires_after_anchor,
+            max_chunk_size_tokens=max_chunk_size_tokens,
+            chunk_overlap_tokens=chunk_overlap_tokens,
+            file_create_params=file_create_params,
+            max_concurrent_uploads=max_concurrent_uploads,
+            skip_on_error=skip_on_error,
+            output_format=output_format,
+        )
 
-    def create_file_source(self) -> BaseFileSource:
+    def create_file_source(self) -> S3FileSource:
         """Create S3FileSource with configured parameters."""
         return S3FileSource(
             bucket=self.bucket,

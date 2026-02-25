@@ -4,8 +4,6 @@ import asyncio
 from dataclasses import dataclass
 from typing import Literal
 
-from tqdm.asyncio import tqdm
-
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._files.file import AsyncFile
 from yandex_ai_studio_sdk._logging import get_logger
@@ -64,8 +62,6 @@ class UploadConfig:
     max_concurrent_uploads: int = DEFAULT_MAX_WORKERS
     """Maximum number of concurrent upload tasks"""
 
-    show_progress: bool = True
-    """Whether to show progress bar during upload"""
 
 
 @dataclass
@@ -157,16 +153,7 @@ class AsyncSearchIndexUploader:
         ]
 
         results_to_process: list[AsyncFile | BaseException | None]
-        if self.config.show_progress:
-            results_raw = await tqdm.gather(
-                *tasks,
-                desc="Uploading files",
-                total=len(tasks),
-                unit="file",
-            )
-            results_to_process = list(results_raw)  # type: ignore[assignment]
-        else:
-            results_to_process = list(await asyncio.gather(*tasks, return_exceptions=True))
+        results_to_process = list(await asyncio.gather(*tasks, return_exceptions=True))
 
         uploaded_files: list[AsyncFile] = []
         for i, result in enumerate(results_to_process):

@@ -7,11 +7,14 @@ from functools import lru_cache
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
+import httpx
+
 from yandex_ai_studio_sdk._logging import get_logger
-from yandex_ai_studio_sdk._utils.packages import requires_package
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
 
 ConfluenceExportFormat = Literal["pdf", "html", "markdown"]
+
+_CONFLUENCE_PATH_MARKERS = ("/spaces/", "/pages/", "/display/")
 
 logger = get_logger(__name__)
 
@@ -19,7 +22,6 @@ logger = get_logger(__name__)
 class ConfluenceFileSource(BaseFileSource):
     """Source for loading page content from Atlassian Confluence."""
 
-    @requires_package('atlassian-python-api', '>=3.41.0', 'ConfluenceFileSource')
     def __init__(
         self,
         page_urls: list[str],
@@ -30,8 +32,6 @@ class ConfluenceFileSource(BaseFileSource):
         export_format: ConfluenceExportFormat,
         verify_ssl: bool = True,
     ):
-        from atlassian import Confluence  # type: ignore[import-untyped]
-
         if not page_urls:
             raise ValueError("At least one page URL must be provided")
 
@@ -50,21 +50,42 @@ class ConfluenceFileSource(BaseFileSource):
             if not page_url.startswith(self.url):
                 raise ValueError(f"Page URL {page_url} does not start with base URL {self.url}")
 
-        # Initialize Confluence client
-        if username and api_token:
-            self.confluence = Confluence(
-                url=self.url, username=username, password=api_token,
-                cloud=True, verify_ssl=verify_ssl,
-            )
-        else:
-            self.confluence = Confluence(url=self.url, cloud=True, verify_ssl=verify_ssl)
+        auth = (username, api_token) if username and api_token else None
+        self._client = httpx.Client(auth=auth, verify=verify_ssl)
+        self._api_base = f"{self.url}/rest/api"
+        self._wiki_base = self.url
 
         logger.info("ConfluenceFileSource initialized for %s", self.url)
 
+    def _get_page(self, page_id: str, expand: str = "") -> dict:
+        """Fetch page data from Confluence REST API."""
+        params: dict[str, str] = {}
+        if expand:
+            params["expand"] = expand
+        response = self._client.get(f"{self._api_base}/content/{page_id}", params=params)
+        response.raise_for_status()
+        return response.json()
+
+    def _export_page(self, page_id: str) -> bytes:
+        """Export page via Confluence exportword endpoint."""
+        response = self._client.get(f"{self._wiki_base}/exportword", params={"pageId": page_id})
+        response.raise_for_status()
+        return response.content
+
     def _extract_base_url(self, page_url: str) -> str:
-        """Extract base URL (scheme://host) from a page URL."""
+        """Extract Confluence root URL including context path.
+
+        Finds everything before the first known Confluence path marker
+        (/spaces/, /pages/, /display/), so the result naturally includes
+        any context path (e.g. /wiki for Cloud, /confluence for on-premise).
+        """
         parsed = urlparse(page_url)
-        return f"{parsed.scheme}://{parsed.netloc}"
+        base = f"{parsed.scheme}://{parsed.netloc}"
+        for marker in _CONFLUENCE_PATH_MARKERS:
+            idx = parsed.path.find(marker)
+            if idx != -1:
+                return base + parsed.path[:idx]
+        return base
 
     @lru_cache(maxsize=None)
     def _parse_page_id(self, page_url: str) -> str:
@@ -93,7 +114,7 @@ class ConfluenceFileSource(BaseFileSource):
             try:
                 page_id = self._parse_page_id(page_url)
                 # Get page title for better metadata
-                page_info = self.confluence.get_page_by_id(page_id, expand="")
+                page_info = self._get_page(page_id)
                 title = page_info.get("title", page_id)
 
                 yield FileMetadata(
@@ -102,7 +123,7 @@ class ConfluenceFileSource(BaseFileSource):
                     mime_type=None,
                     description=f"Confluence page: {title}",
                 )
-            except (ValueError, KeyError, TypeError) as e:
+            except (ValueError, KeyError, TypeError, httpx.HTTPError) as e:
                 logger.warning("Failed to process page URL %s: %s", page_url, e)
 
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
@@ -114,12 +135,12 @@ class ConfluenceFileSource(BaseFileSource):
         logger.debug("Exporting Confluence page ID %s as %s", page_id, self.export_format)
 
         if self.export_format == "pdf":
-            return self.confluence.export_page(page_id)
+            return self._export_page(page_id)
 
         expand_map: dict[str, str] = {"html": "body.view", "markdown": "body.storage"}
         expand = expand_map[self.export_format]
 
-        page = self.confluence.get_page_by_id(page_id, expand=expand)
+        page = self._get_page(page_id, expand=expand)
         body_type = "view" if self.export_format == "html" else "storage"
         content = page.get("body", {}).get(body_type, {}).get("value", "")
 

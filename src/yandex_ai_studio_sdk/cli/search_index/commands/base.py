@@ -40,9 +40,7 @@ class BaseCommand(abc.ABC):
         max_chunk_size_tokens: int,
         chunk_overlap_tokens: int,
         # File options (OpenAI-compatible)
-        file_purpose: str,
-        file_expires_after_seconds: int | None,
-        file_expires_after_anchor: str | None,
+        file_create_params: OpenAIFileCreateParams,
         max_concurrent_uploads: int,
         skip_on_error: bool,
         # Output options
@@ -55,16 +53,11 @@ class BaseCommand(abc.ABC):
         self.endpoint = endpoint
         self.verbose = verbose
 
-        self.openai_file_create_params = OpenAIFileCreateParams(
-            name=None,
-            purpose=file_purpose,
-            expires_after_seconds=file_expires_after_seconds,
-            expires_after_anchor=file_expires_after_anchor,  # type: ignore[arg-type]
-        )
+        self.openai_file_create_params = file_create_params
 
         self.openai_vector_store_create_params = OpenAIVectorStoreCreateParams(
             name=name,
-            metadata=self.parse_labels(metadata) if metadata else None,
+            metadata=self.parse_metadata(metadata) if metadata else None,
             expires_after_days=expires_after_days,
             expires_after_anchor=expires_after_anchor,  # type: ignore[arg-type]
             chunking_strategy=self.create_search_index_type(
@@ -104,12 +97,12 @@ class BaseCommand(abc.ABC):
         return sdk
 
     @staticmethod
-    def parse_labels(label_tuples: tuple[str, ...]) -> dict[str, str]:
-        """Parse label strings in format 'KEY=VALUE' into a dictionary."""
+    def parse_metadata(label_tuples: tuple[str, ...]) -> dict[str, str]:
+        """Parse metadata strings in format 'KEY=VALUE' into a dictionary."""
         labels = {}
         for label_str in label_tuples:
             if "=" not in label_str:
-                logger.warning("Invalid label format '%s', expected KEY=VALUE", label_str)
+                logger.warning("Invalid metadata format '%s', expected KEY=VALUE", label_str)
                 continue
             key, value = label_str.split("=", 1)
             labels[key.strip()] = value.strip()
