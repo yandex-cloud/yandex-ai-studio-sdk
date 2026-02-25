@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import dataclasses
 from abc import abstractmethod
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, cast
@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -74,7 +75,7 @@ class TextNormalization(ProtoBasedWithBoolDefault[ProtoTextNormalizationOptions]
             kwargs['profanity_filter'] = proto.profanity_filter
 
         if proto.HasField('phone_formatting_mode'):
-            kwargs['phone_formatting'] = (
+            kwargs['phone_formatting'] = not (
                 proto.phone_formatting_mode == ProtoTextNormalizationOptions.PhoneFormattingMode.PHONE_FORMATTING_MODE_DISABLED
             )
 
@@ -102,7 +103,7 @@ class TextNormalization(ProtoBasedWithBoolDefault[ProtoTextNormalizationOptions]
 
 
 # pylint: disable-next=invalid-enum-extension
-class EndOfUtteranceSensetivity(ProtoBasedEnum):
+class EndOfUtteranceSensitivity(ProtoBasedEnum):
     """Level of EOU sensitivity"""
 
     __proto_enum_type__ = ProtoDefaultEouClassifier.EouSensitivity
@@ -121,21 +122,21 @@ class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifi
     """Class which encapsulates settings
     `end of utterance classifier <https://yandex.cloud/docs/speechkit/stt/eou>`_.
 
-    Usage this class object in text to speech configuration turning on
+    Usage this class object in speech to text configuration turning on
     default end-of-utterance classification.
 
     >>> EndOfUtteranceClassifier()
-    EndOfUtteranceClassifier(sensentivity=Undefined, max_pause_between_words_hint_ms=Undefined)
+    EndOfUtteranceClassifier(sensitivity=Undefined, max_pause_between_words_hint_ms=Undefined)
 
-    >>> EndOfUtteranceClassifier(sensentivity='high')
-    EndOfUtteranceClassifier(sensentivity=<EndOfUtteranceSensetivity.HIGH: 2>, ...)
+    >>> EndOfUtteranceClassifier(sensitivity='high')
+    EndOfUtteranceClassifier(sensitivity=<EndOfUtteranceSensitivity.HIGH: 2>, ...)
 
     >>> EndOfUtteranceClassifier(max_pause_between_words_hint_ms=10)
-    EndOfUtteranceClassifier(sensentivity=Undefined, max_pause_between_words_hint_ms=10)
+    EndOfUtteranceClassifier(sensitivity=Undefined, max_pause_between_words_hint_ms=10)
     """
 
     #: EOU sensitivity
-    sensentivity: UndefinedOrEnumWithUnknownInput[EndOfUtteranceSensetivity] = UNDEFINED
+    sensitivity: UndefinedOrEnumWithUnknownInput[EndOfUtteranceSensitivity] = UNDEFINED
 
     #: Hint for max pause between words.
     #: SpeechKit EOU detector could use this information to adjust the speed of the EOU detection.
@@ -147,21 +148,21 @@ class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifi
 
     def __post_init__(self) -> None:
         # we must do enum coerce here to validate input data at object creation time
-        if is_defined(self.sensentivity):
+        if is_defined(self.sensitivity):
             # I cannot understand why mypy thinks that self.sensitivity is str | int | Undefined
-            # when it must be EndOfUtteranceSensetivity | str | int
+            # when it must be EndOfUtteranceSensitivity | str | int
             # (without Undefined due to is_defined TypeGuard)
             object.__setattr__(
                 self,
-                'sensentivity',
-                EndOfUtteranceSensetivity._coerce(self.sensentivity)  # type: ignore[arg-type]
+                'sensitivity',
+                EndOfUtteranceSensitivity._coerce(self.sensitivity)  # type: ignore[arg-type]
             )
 
     @classmethod
     def _from_proto(cls, proto: ProtoDefaultEouClassifier, sdk: SDKType) -> Self:
         kwargs: dict[str, Any] = {}
         if proto.HasField('type') and proto.type:
-            kwargs['sensentivity'] = EndOfUtteranceSensetivity._coerce(proto.type)
+            kwargs['sensitivity'] = EndOfUtteranceSensitivity._coerce(proto.type)
         if proto.HasField('max_pause_between_words_hint_ms'):
             kwargs['max_pause_between_words_hint_ms'] = proto.max_pause_between_words_hint_ms
 
@@ -169,11 +170,11 @@ class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifi
 
     def _to_proto(self, sdk: SDKType) -> ProtoDefaultEouClassifier:
         result = ProtoDefaultEouClassifier()
-        if is_defined(self.sensentivity):
+        if is_defined(self.sensitivity):
             # it was coerced in __post__init__
-            coerced: EnumWithUnknownAlias[EndOfUtteranceSensetivity] = cast(
-                EnumWithUnknownAlias[EndOfUtteranceSensetivity],
-                self.sensentivity,
+            coerced: EnumWithUnknownAlias[EndOfUtteranceSensitivity] = cast(
+                EnumWithUnknownAlias[EndOfUtteranceSensitivity],
+                self.sensitivity,
             )
             result.type = int(coerced)  # type: ignore[assignment]
 
@@ -222,7 +223,7 @@ class WellKnownRecognitionClassifiers(str, Enum):
 
 @dataclass(frozen=True)
 class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
-    """Classifier to use in speech recognotion.
+    """Classifier to use in speech recognition.
 
     For detailed information refer to `documentation
     <https://yandex.cloud/docs/speechkit/stt/analysis>`_.
@@ -257,7 +258,7 @@ class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
 
     #: Describes the types of responses to which the classification results will come.
     #: Classification responses will follow the responses of the specified types.
-    triggers: Iterable[RecognitionTriggerTypeInput] | RecognitionTriggerTypeInput
+    triggers: Sequence[RecognitionTriggerTypeInput] | RecognitionTriggerTypeInput
 
     #: Well known names of recognition classifier triggers.
     WellKnown = WellKnownRecognitionClassifiers
@@ -265,10 +266,10 @@ class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
     def __post_init__(self) -> None:
         if not self.triggers:
             raise ValueError(
-                'You mast pass at least one trigger into RecognitionClassifier constructor'
+                'You must pass at least one trigger into RecognitionClassifier constructor'
             )
 
-        triggers_iterable: Iterable[RecognitionTriggerTypeInput]
+        triggers_iterable: Sequence[RecognitionTriggerTypeInput]
         if isinstance(self.triggers, (int, str, RecognitionTriggerType)):
             triggers_iterable = (self.triggers, )
         else:
@@ -284,7 +285,7 @@ class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
     def _from_proto(cls, proto: ProtoRecognitionClassifier, sdk: SDKType) -> Self:
         return cls(
             name=proto.classifier,
-            triggers=(RecognitionTriggerType._coerce(t) for t in proto.triggers)
+            triggers=tuple(RecognitionTriggerType._coerce(t) for t in proto.triggers)
         )
 
     def _to_proto(self, sdk: SDKType) -> ProtoRecognitionClassifier:
@@ -334,7 +335,7 @@ class SpeechAnalysis(ProtoBasedWithBoolDefault[ProtoSpeechAnalysisOptions]):
         if proto.HasField('enable_conversation_analysis'):
             kwargs['conversation_analysis'] = proto.enable_conversation_analysis
 
-        if proto.HasField('descriptive_statistics_quantiles'):
+        if proto.descriptive_statistics_quantiles:
             kwargs['descriptive_statistics_quantiles'] = tuple(
                 proto.descriptive_statistics_quantiles
             )

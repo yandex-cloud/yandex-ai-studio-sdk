@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._speechkit.speech_to_text.structures import (
-    EndOfUtteranceClassifier, EndOfUtteranceSensetivity, LLMPostProcessing, LLMPostProcessingInstruction,
+    EndOfUtteranceClassifier, EndOfUtteranceSensitivity, LLMPostProcessing, LLMPostProcessingInstruction,
     ProtoDefaultEouClassifier, ProtoRecognitionClassifier, ProtoSpeechAnalysisOptions, ProtoSummarizationOptions,
     ProtoTextNormalizationOptions, RecognitionClassifier, RecognitionTriggerType, SpeechAnalysis, SummarizationProperty,
     TextNormalization, WellKnownRecognitionClassifiers
@@ -44,7 +45,7 @@ def test_text_normalization(async_sdk: AsyncAIStudio) -> None:
 
 def test_end_of_utterance_classifier(async_sdk: AsyncAIStudio) -> None:
     assert EndOfUtteranceClassifier() == EndOfUtteranceClassifier(
-        sensentivity=UNDEFINED,
+        sensitivity=UNDEFINED,
         max_pause_between_words_hint_ms=UNDEFINED
     )
 
@@ -55,23 +56,23 @@ def test_end_of_utterance_classifier(async_sdk: AsyncAIStudio) -> None:
     )
 
     for value, etalon in (
-        ('default', EndOfUtteranceSensetivity.DEFAULT),
-        ('DEFAULT', EndOfUtteranceSensetivity.DEFAULT),
-        (EndOfUtteranceSensetivity.DEFAULT, EndOfUtteranceSensetivity.DEFAULT),
-        ('high', EndOfUtteranceSensetivity.HIGH),
-        ('HIGH', EndOfUtteranceSensetivity.HIGH),
-        (EndOfUtteranceSensetivity.HIGH, EndOfUtteranceSensetivity.HIGH),
+        ('default', EndOfUtteranceSensitivity.DEFAULT),
+        ('DEFAULT', EndOfUtteranceSensitivity.DEFAULT),
+        (EndOfUtteranceSensitivity.DEFAULT, EndOfUtteranceSensitivity.DEFAULT),
+        ('high', EndOfUtteranceSensitivity.HIGH),
+        ('HIGH', EndOfUtteranceSensitivity.HIGH),
+        (EndOfUtteranceSensitivity.HIGH, EndOfUtteranceSensitivity.HIGH),
     ):
-        obj = EndOfUtteranceClassifier(sensentivity=value)
+        obj = EndOfUtteranceClassifier(sensitivity=value)
 
-        assert obj.sensentivity == etalon
+        assert obj.sensitivity == etalon
         assert obj._to_proto(async_sdk).type == etalon
 
     with pytest.raises(TypeError):
-        EndOfUtteranceClassifier(sensentivity={})  # type: ignore[arg-type]
+        EndOfUtteranceClassifier(sensitivity={})  # type: ignore[arg-type]
 
     with pytest.raises(ValueError):
-        EndOfUtteranceClassifier(sensentivity='foo')
+        EndOfUtteranceClassifier(sensitivity='foo')
 
 
 def test_recognition_classifier(async_sdk: AsyncAIStudio) -> None:
