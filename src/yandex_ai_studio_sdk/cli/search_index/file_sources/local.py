@@ -4,6 +4,7 @@ import asyncio
 import os
 from collections.abc import Iterator
 from pathlib import Path
+from typing import Union
 
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._types.misc import PathLike, coerce_path
@@ -12,7 +13,7 @@ from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSour
 logger = get_logger(__name__)
 
 # Accepts a single path or a list of paths
-PathsInput = PathLike | list[PathLike]
+PathsInput = Union[PathLike, list[PathLike]]
 
 
 class LocalFileSource(BaseFileSource):
