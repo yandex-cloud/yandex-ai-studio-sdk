@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -228,28 +229,31 @@ class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
     <https://yandex.cloud/docs/speechkit/stt/analysis>`_.
 
     You can pass a string as a trigger:
-    >>> RecognitionClassifier('insult', 'on_final')
-    RecognitionClassifier(name='insult', triggers=(<RecognitionTriggerType.ON_FINAL: 2>,))
+
+        >>> RecognitionClassifier('insult', 'on_final')
+        RecognitionClassifier(name='insult', triggers=(<RecognitionTriggerType.ON_FINAL: 2>,))
 
     Or any iterable of strings to declare few triggers:
-    >>> RecognitionClassifier('insult', ['on_final', 'on_partial'])
-    RecognitionClassifier(..., triggers=(...ON_FINAL: 2>, <...ON_PARTIAL: 3>))
+
+        >>> RecognitionClassifier('insult', ['on_final', 'on_partial'])
+        RecognitionClassifier(..., triggers=(...ON_FINAL: 2>, <...ON_PARTIAL: 3>))
 
     You could also use alternative constructors when you have only one trigger:
-    >>> RecognitionClassifier.on_utterance('insult')
-    RecognitionClassifier(name='insult', triggers=(<RecognitionTriggerType.ON_UTTERANCE: 1>,))
+
+        >>> RecognitionClassifier.on_utterance('insult')
+        RecognitionClassifier(name='insult', triggers=(<RecognitionTriggerType.ON_UTTERANCE: 1>,))
 
     There are special `RecognitionClassifier.WellKnown` enum with well-known classifier names:
-    >>> RecognitionClassifier(RecognitionClassifier.WellKnown.gender, 'on_final')
-    RecognitionClassifier(name=<WellKnownRecognitionClassifiers.gender: 'gender'>, ...)
+
+        >>> RecognitionClassifier(RecognitionClassifier.WellKnown.gender, 'on_final')
+        RecognitionClassifier(name=<WellKnownRecognitionClassifiers.gender: 'gender'>, ...)
 
     On unknown trigger names there will be exception raised:
-    >>> RecognitionClassifier('insult', ['on_something'])
-    Traceback (most recent call last):
-        ...
-    ValueError: wrong value "on_something" for use as an alias ...; known values: ('ON_UTTERANCE', ...)
 
-
+        >>> RecognitionClassifier('insult', ['on_something'])
+        Traceback (most recent call last):
+            ...
+        ValueError: wrong value "on_something" for use as an alias ...; known values: ('ON_UTTERANCE', ...)
     """
 
     #: Classifier name.
@@ -383,27 +387,32 @@ class LLMPostProcessing(ProtoBased[ProtoSummarizationOptions]):
     <https://yandex.cloud/docs/speechkit/stt/llm-results>`_
 
     You could pass a full model uri:
-    >>> llm_post_processor = LLMPostProcessing('gpt://<folder_id>/yandexgt/latest')
+
+        >>> llm_post_processor = LLMPostProcessing('gpt://<folder_id>/yandexgt/latest')
 
     You could use model name, in this case model uri will be built using configurated folder_id:
-    >>> llm_post_processor = LLMPostProcessing('yandexgt')
+
+        >>> llm_post_processor = LLMPostProcessing('yandexgt')
 
     You could also pass a model version, which have 'latest' by default:
-    >>> llm_post_processor = LLMPostProcessing('yandexgt', model_version='latest')
+
+        >>> llm_post_processor = LLMPostProcessing('yandexgt', model_version='latest')
 
     After post processor object creation you should add some instructions into it
     by using ``.with_instruction`` method (which is not mutates the object, but creates a copy):
-    >>> llm_post_processor = llm_post_processor.with_instruction("Make a short review")
-    >>> llm_post_processor = llm_post_processor.with_instruction(
-    ...     "What the conversation topic",
-    ...     response_format="json"
-    ... )
+
+        >>> llm_post_processor = llm_post_processor.with_instruction("Make a short review")
+        >>> llm_post_processor = llm_post_processor.with_instruction(
+        ...     "What the conversation topic",
+        ...     response_format="json"
+        ... )
 
     Created object will looks like this:
-    >>> llm_post_processor
-    LLMPostProcessing(model_name='yandexgt', model_version='latest', ...)
-    >>> llm_post_processor
-    LLMPostProcessing(..., instructions=(LLMPostProcessingInstruction(...), LLMPostProcessingInstruction(...)))
+
+        >>> llm_post_processor
+        LLMPostProcessing(model_name='yandexgt', model_version='latest', ...)
+        >>> llm_post_processor
+        LLMPostProcessing(..., instructions=(LLMPostProcessingInstruction(...), LLMPostProcessingInstruction(...)))
 
     You also can use pydantic model or pydantic dataclass as response format.
 

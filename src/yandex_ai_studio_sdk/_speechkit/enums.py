@@ -8,6 +8,7 @@ from typing import Union
 from typing_extensions import Never, TypeAlias
 from yandex.cloud.ai.stt.v3.stt_pb2 import DefaultEouClassifier
 from yandex.cloud.ai.tts.v3.tts_pb2 import AudioFormatOptions, ContainerAudio, LoudnessNormalizationType, RawAudio
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UnknownEnumValue
 )
@@ -193,10 +194,15 @@ class LanguageCode(str, Enum):
 
         if not isinstance(value, str):
             raise TypeError(f'{value=} for language code is not a string nor LanguageCode enum value')
+
+        value = value.lower()
+        if value == 'auto':
+            return value
+
         # pylint: disable-next=no-member
         if match := cls.__language_code_re__.match(value):
             first, second = match.groups()
-            return f'{first.lower()}-{second.upper()}'
+            return f'{first}-{second.upper()}'
 
         raise ValueError(f'failed to parse language code string {value!r}')
 

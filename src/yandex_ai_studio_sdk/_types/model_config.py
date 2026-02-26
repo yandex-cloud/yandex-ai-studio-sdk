@@ -8,6 +8,9 @@ from typing_extensions import Self
 
 @dataclass(frozen=True)
 class BaseModelConfig:
+    def __post_init__(self) -> None:
+        self._validate_configure()
+
     def _validate_configure(self) -> None:
         pass
 
