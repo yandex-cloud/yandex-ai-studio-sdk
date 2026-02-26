@@ -35,6 +35,7 @@ class ConfluenceCommand(BaseCommand):
         file_create_params: OpenAIFileCreateParams,
         max_concurrent_uploads: int,
         skip_on_error: bool,
+        poll_timeout: int,
         output_format: str,
     ):
         """Initialize Confluence command with Confluence-specific and common parameters."""
@@ -69,6 +70,7 @@ class ConfluenceCommand(BaseCommand):
             file_create_params=file_create_params,
             max_concurrent_uploads=max_concurrent_uploads,
             skip_on_error=skip_on_error,
+            poll_timeout=poll_timeout,
             output_format=output_format,
         )
 
