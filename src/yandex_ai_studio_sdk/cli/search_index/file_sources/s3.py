@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import fnmatch
-from collections.abc import Iterator
 from pathlib import Path
 
 from yandex_ai_studio_sdk._logging import get_logger
@@ -89,24 +88,18 @@ class S3FileSource(BaseFileSource):
             if "Contents" in page:
                 yield from page["Contents"]
 
-    def list_files(self) -> Iterator[FileMetadata]:
+    def list_files(self) -> list[FileMetadata]:
         """List files in S3 bucket using pagination."""
         logger.info("Listing files in s3://%s/%s", self.bucket, self.prefix)
 
-        file_count = 0
-        for obj in self._iter_objects():
-            key = obj["Key"]
-            size = obj["Size"]
+        result = [
+            FileMetadata(path=obj["Key"], name=Path(obj["Key"]).name, mime_type=None)
+            for obj in self._iter_objects()
+            if self._should_include(obj["Key"], obj["Size"])
+        ]
 
-            if self._should_include(key, size):
-                yield FileMetadata(
-                    path=key,
-                    name=Path(key).name,
-                    mime_type=None,
-                )
-                file_count += 1
-
-        logger.info("Found %d files matching patterns", file_count)
+        logger.info("Found %d files matching patterns", len(result))
+        return result
 
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Download file content from S3."""
@@ -115,11 +108,3 @@ class S3FileSource(BaseFileSource):
             self.s3_client.get_object, Bucket=self.bucket, Key=key
         )
         return response["Body"].read()
-
-    def get_file_count_estimate(self) -> int | None:
-        """Count files matching patterns by paginating through all objects."""
-        try:
-            return sum(1 for obj in self._iter_objects() if self._should_include(obj["Key"], obj["Size"]))
-        except Exception as e:
-            logger.warning("Failed to count files: %s", e)
-            return None

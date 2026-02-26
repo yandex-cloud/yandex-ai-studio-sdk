@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-from collections.abc import Iterator
 from pathlib import Path
 from typing import Union
 
@@ -41,13 +40,14 @@ class LocalFileSource(BaseFileSource):
 
         self.max_file_size = max_file_size
 
-    def list_files(self) -> Iterator[FileMetadata]:
+    def list_files(self) -> list[FileMetadata]:
         """List all files from provided paths."""
         seen: set[Path] = set()
+        result: list[FileMetadata] = []
 
         for path in self.paths:
             if path.is_file():
-                candidates: Iterator[Path] = iter([path])
+                candidates: list[Path] = [path]
             elif path.is_dir():
                 raise ValueError(
                     f"Directories are not supported: {path}. Please provide individual files."
@@ -56,8 +56,6 @@ class LocalFileSource(BaseFileSource):
                 raise FileNotFoundError(f"Path does not exist or is not accessible: {path}")
 
             for file_path in candidates:
-                if not file_path.is_file():
-                    continue
                 if file_path in seen:
                     continue
                 seen.add(file_path)
@@ -71,9 +69,10 @@ class LocalFileSource(BaseFileSource):
                         )
                         continue
 
-                yield FileMetadata(path=file_path, name=file_path.name)
+                result.append(FileMetadata(path=file_path, name=file_path.name))
 
-        logger.info("Finished scanning: %d unique files found", len(seen))
+        logger.info("Finished scanning: %d unique files found", len(result))
+        return result
 
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Read file content from the local filesystem."""
@@ -83,17 +82,3 @@ class LocalFileSource(BaseFileSource):
         except OSError as e:
             logger.error("Failed to read file: %s - %s", file_path, e)
             raise
-
-    def get_file_count_estimate(self) -> int | None:
-        """Count files across all provided paths."""
-        try:
-            seen: set[Path] = set()
-            for path in self.paths:
-                candidates = iter([path]) if path.is_file() else path.rglob("*")
-                for f in candidates:
-                    if f.is_file() and f not in seen:
-                        seen.add(f)
-            return len(seen)
-        except Exception as e:
-            logger.warning("Failed to count files: %s", e)
-            return None

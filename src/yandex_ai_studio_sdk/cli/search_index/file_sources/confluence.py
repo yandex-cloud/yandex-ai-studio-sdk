@@ -143,7 +143,3 @@ class ConfluenceFileSource(BaseFileSource):
         content = page.get("body", {}).get(body_type, {}).get("value", "")
 
         return content.encode("utf-8")
-
-    def get_file_count_estimate(self) -> int | None:
-        """Get estimate of page count."""
-        return len(self.page_urls)

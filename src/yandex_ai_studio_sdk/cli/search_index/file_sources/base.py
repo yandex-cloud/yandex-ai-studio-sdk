@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Iterator
 from dataclasses import dataclass
 
 from yandex_ai_studio_sdk._types.misc import PathLike
@@ -33,23 +32,9 @@ class BaseFileSource(abc.ABC):
     """
 
     @abc.abstractmethod
-    def list_files(self) -> Iterator[FileMetadata]:
-        """
-        List all files available from this source.
-
-        Yields:
-            FileMetadata objects for each file
-        """
+    def list_files(self) -> list[FileMetadata]:
+        """List all files available from this source."""
 
     @abc.abstractmethod
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
-        """
-        Retrieve the content of a specific file.
-
-        Args:
-            file_metadata: Metadata about the file to retrieve
-        """
-
-    @abc.abstractmethod
-    def get_file_count_estimate(self) -> int | None:
-        """Get an estimate of the number of files (if available)."""
+        """Retrieve the content of a specific file."""

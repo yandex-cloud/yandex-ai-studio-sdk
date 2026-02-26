@@ -105,9 +105,3 @@ class WikiFileSource(BaseFileSource):
                 raise ValueError(f"No content available for page: {page_title}")
 
             return page_data["extract"].encode("utf-8")
-
-    def get_file_count_estimate(self) -> int | None:
-        """Get estimate of page count."""
-        count = len(self.page_urls)
-        logger.info("Estimated %d page(s)", count)
-        return count
