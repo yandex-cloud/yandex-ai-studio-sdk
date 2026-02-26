@@ -12,6 +12,8 @@ from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 
 @dataclass(frozen=True)
 class TextToSpeechConfig(BaseModelConfig):
+    """Object to hold text to speech run configuration"""
+
     #: Specifies type of loudness normalization.
     #: Default: `LUFS`.
     loudness_normalization: EnumWithUnknownAlias[LoudnessNormalization] | None = None
@@ -70,6 +72,14 @@ class TextToSpeechConfig(BaseModelConfig):
                 'it is forbidden to use duration_ms config option '
                 'with duration_max_ms or duration_min_ms'
             )
+
+        if self.audio_format is not None:
+            try:
+                AudioFormat._coerce(self.audio_format)
+            except (ValueError, TypeError) as e:
+                raise AIStudioConfigurationError(
+                    f'get bad value {self.audio_format} as audio_format config option'
+                ) from e
 
         if isinstance(self.audio_format, PCM16) and self.audio_format.channels != 1:
             raise AIStudioConfigurationError(

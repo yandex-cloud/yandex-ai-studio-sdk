@@ -193,10 +193,15 @@ class LanguageCode(str, Enum):
 
         if not isinstance(value, str):
             raise TypeError(f'{value=} for language code is not a string nor LanguageCode enum value')
+
+        value = value.lower()
+        if value == 'auto':
+            return value
+
         # pylint: disable-next=no-member
         if match := cls.__language_code_re__.match(value):
             first, second = match.groups()
-            return f'{first.lower()}-{second.upper()}'
+            return f'{first}-{second.upper()}'
 
         raise ValueError(f'failed to parse language code string {value!r}')
 

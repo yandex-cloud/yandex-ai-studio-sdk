@@ -12,6 +12,14 @@ Text to speech
    :undoc-members:
 
 
+Speech to text
+--------------
+
+.. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.structures
+   :undoc-members:
+   :exclude-members: to_bytes,from_bytes
+
+
 Enum-like settings
 ------------------
 
