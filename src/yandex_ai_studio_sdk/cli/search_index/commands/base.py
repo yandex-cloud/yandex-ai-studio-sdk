@@ -43,6 +43,7 @@ class BaseCommand(abc.ABC):
         file_create_params: OpenAIFileCreateParams,
         max_concurrent_uploads: int,
         skip_on_error: bool,
+        poll_timeout: int,
         # Output options
         output_format: str,
     ):
@@ -68,6 +69,7 @@ class BaseCommand(abc.ABC):
 
         self.max_concurrent_uploads = max_concurrent_uploads
         self.skip_on_error = skip_on_error
+        self.poll_timeout = poll_timeout
         self.output_format = output_format
 
         self.setup_logging()
@@ -145,6 +147,7 @@ class BaseCommand(abc.ABC):
             vector_store_create_params=self.openai_vector_store_create_params,
             skip_on_error=self.skip_on_error,
             max_concurrent_uploads=self.max_concurrent_uploads,
+            poll_timeout=self.poll_timeout,
         )
 
     @abc.abstractmethod

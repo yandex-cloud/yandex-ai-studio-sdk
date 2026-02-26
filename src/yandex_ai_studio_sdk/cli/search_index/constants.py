@@ -26,3 +26,6 @@ BYTES_PER_MB = 1024 * 1024
 
 MAX_FILES_PER_INDEX_CREATE = 10_000
 """Maximum number of files per search index create request"""
+
+DEFAULT_POLL_TIMEOUT = 3600
+"""Default timeout in seconds for waiting on index creation operation"""

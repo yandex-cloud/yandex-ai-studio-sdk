@@ -3,7 +3,8 @@ from __future__ import annotations
 import click
 
 from yandex_ai_studio_sdk.cli.search_index.constants import (
-    DEFAULT_CHUNK_OVERLAP_TOKENS, DEFAULT_MAX_CHUNK_SIZE_TOKENS, DEFAULT_MAX_WORKERS, DEFAULT_SKIP_ON_ERROR
+    DEFAULT_CHUNK_OVERLAP_TOKENS, DEFAULT_MAX_CHUNK_SIZE_TOKENS, DEFAULT_MAX_WORKERS, DEFAULT_POLL_TIMEOUT,
+    DEFAULT_SKIP_ON_ERROR
 )
 
 
@@ -94,6 +95,13 @@ def index_options(func):
         default=DEFAULT_CHUNK_OVERLAP_TOKENS,
         show_default=True,
         help="Chunk overlap in tokens for chunking strategy",
+    )(func)
+    func = click.option(
+        "--poll-timeout",
+        type=int,
+        default=DEFAULT_POLL_TIMEOUT,
+        show_default=True,
+        help="Timeout in seconds for waiting on index creation operation",
     )(func)
     return func
 

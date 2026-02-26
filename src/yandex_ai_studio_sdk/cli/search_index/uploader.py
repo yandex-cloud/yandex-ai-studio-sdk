@@ -11,7 +11,9 @@ from yandex_ai_studio_sdk._search_indexes.index_type import BaseSearchIndexType
 from yandex_ai_studio_sdk._search_indexes.search_index import AsyncSearchIndex
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
 
-from .constants import BYTES_PER_MB, DEFAULT_MAX_WORKERS, DEFAULT_SKIP_ON_ERROR, MAX_FILES_PER_INDEX_CREATE
+from .constants import (
+    BYTES_PER_MB, DEFAULT_MAX_WORKERS, DEFAULT_POLL_TIMEOUT, DEFAULT_SKIP_ON_ERROR, MAX_FILES_PER_INDEX_CREATE
+)
 from .file_sources.base import BaseFileSource, FileMetadata
 
 logger = get_logger(__name__)
@@ -61,6 +63,9 @@ class UploadConfig:
 
     max_concurrent_uploads: int = DEFAULT_MAX_WORKERS
     """Maximum number of concurrent upload tasks"""
+
+    poll_timeout: int = DEFAULT_POLL_TIMEOUT
+    """Timeout in seconds for waiting on index creation operation"""
 
 
 
@@ -259,7 +264,7 @@ class AsyncSearchIndexUploader:
 
         logger.info("Search index creation started, waiting for completion...")
 
-        search_index = await operation.wait()
+        search_index = await operation.wait(poll_timeout=self.config.poll_timeout)
 
         logger.info("Search index created successfully: %s", search_index.id)
         return search_index

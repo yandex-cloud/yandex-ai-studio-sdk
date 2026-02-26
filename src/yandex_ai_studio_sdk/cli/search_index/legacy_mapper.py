@@ -120,6 +120,7 @@ class LegacyYandexMapper:
         vector_store_create_params: OpenAIVectorStoreCreateParams,
         skip_on_error: bool,
         max_concurrent_uploads: int,
+        poll_timeout: int,
     ) -> UploadConfig:
         """
         Create UploadConfig from OpenAI create parameters for legacy Yandex SDK.
@@ -131,6 +132,7 @@ class LegacyYandexMapper:
         :param vector_store_create_params: OpenAI-compatible vector store creation parameters.
         :param skip_on_error: Whether to skip failed files.
         :param max_concurrent_uploads: Maximum concurrent upload tasks.
+        :param poll_timeout: Timeout in seconds for waiting on index creation operation.
         """
         return UploadConfig(
             # File settings (mapped from OpenAI)
@@ -151,4 +153,5 @@ class LegacyYandexMapper:
             # Upload behavior
             skip_on_error=skip_on_error,
             max_concurrent_uploads=max_concurrent_uploads,
+            poll_timeout=poll_timeout,
         )
