@@ -128,17 +128,15 @@ class AsyncSearchIndexUploader:
         Args:
             source: File source to upload from
         """
-        # Get file count estimate for progress tracking
-        file_count = source.get_file_count_estimate()
-        if file_count:
-            logger.info("Estimated files to process: %d", file_count)
-
         # Collect file metadata only (not content)
-        files_metadata: list[FileMetadata] = []
+        files_metadata = source.list_files()
+        self.stats.total_files = len(files_metadata)
 
-        for file_metadata in source.list_files():
-            self.stats.total_files += 1
-            files_metadata.append(file_metadata)
+        if len(files_metadata) > MAX_FILES_PER_INDEX_CREATE:
+            raise ValueError(
+                f"Too many files ({len(files_metadata)}), "
+                f"maximum {MAX_FILES_PER_INDEX_CREATE} files per index creation request."
+            )
 
         if not files_metadata:
             logger.warning("No files to upload")
@@ -253,13 +251,6 @@ class AsyncSearchIndexUploader:
         Args:
             files: List of uploaded File objects
         """
-        if len(files) > MAX_FILES_PER_INDEX_CREATE:
-            logger.warning(
-                "Too many files (%d), only the first %d will be indexed.",
-                len(files), MAX_FILES_PER_INDEX_CREATE,
-            )
-            files = files[:MAX_FILES_PER_INDEX_CREATE]
-
         logger.info("Creating search index with %d files...", len(files))
 
         # Create search index using deferred operation

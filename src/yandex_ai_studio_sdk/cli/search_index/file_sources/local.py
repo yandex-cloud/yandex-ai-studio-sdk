@@ -49,10 +49,11 @@ class LocalFileSource(BaseFileSource):
             if path.is_file():
                 candidates: Iterator[Path] = iter([path])
             elif path.is_dir():
-                candidates = path.rglob("*")
+                raise ValueError(
+                    f"Directories are not supported: {path}. Please provide individual files."
+                )
             else:
-                logger.warning("Path does not exist or is not accessible: %s", path)
-                continue
+                raise FileNotFoundError(f"Path does not exist or is not accessible: {path}")
 
             for file_path in candidates:
                 if not file_path.is_file():
@@ -62,16 +63,12 @@ class LocalFileSource(BaseFileSource):
                 seen.add(file_path)
 
                 if self.max_file_size:
-                    try:
-                        size = file_path.stat().st_size
-                        if size > self.max_file_size:
-                            logger.warning(
-                                "Skipping file (too large): %s (%d bytes > %d max)",
-                                file_path, size, self.max_file_size,
-                            )
-                            continue
-                    except OSError as e:
-                        logger.error("Cannot access file: %s - %s", file_path, e)
+                    size = file_path.stat().st_size
+                    if size > self.max_file_size:
+                        logger.warning(
+                            "Skipping file (too large): %s (%d bytes > %d max)",
+                            file_path, size, self.max_file_size,
+                        )
                         continue
 
                 yield FileMetadata(path=file_path, name=file_path.name)

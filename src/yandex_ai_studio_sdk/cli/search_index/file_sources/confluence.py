@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import re
-from collections.abc import Iterator
 from functools import lru_cache
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
@@ -106,25 +105,24 @@ class ConfluenceFileSource(BaseFileSource):
             "Expected format: /pages/123456 or ?pageId=123456"
         )
 
-    def list_files(self) -> Iterator[FileMetadata]:
+    def list_files(self) -> list[FileMetadata]:
         """List pages from Confluence by URL."""
         logger.info("Listing %d page(s) from Confluence", len(self.page_urls))
 
+        result = []
         for page_url in self.page_urls:
-            try:
-                page_id = self._parse_page_id(page_url)
-                # Get page title for better metadata
-                page_info = self._get_page(page_id)
-                title = page_info.get("title", page_id)
+            page_id = self._parse_page_id(page_url)
+            # Get page title for better metadata
+            page_info = self._get_page(page_id)
+            title = page_info.get("title", page_id)
 
-                yield FileMetadata(
-                    path=page_id,
-                    name=title,
-                    mime_type=None,
-                    description=f"Confluence page: {title}",
-                )
-            except (ValueError, KeyError, TypeError, httpx.HTTPError) as e:
-                logger.warning("Failed to process page URL %s: %s", page_url, e)
+            result.append(FileMetadata(
+                path=page_id,
+                name=title,
+                mime_type=None,
+                description=f"Confluence page: {title}",
+            ))
+        return result
 
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Export page content from Confluence."""

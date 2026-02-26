@@ -4,7 +4,7 @@ from __future__ import annotations
 DEFAULT_MAX_WORKERS = 4
 """Default maximum number of parallel upload workers"""
 
-DEFAULT_SKIP_ON_ERROR = True
+DEFAULT_SKIP_ON_ERROR = False
 """Default behavior for handling upload errors"""
 
 # Chunking strategy defaults (OpenAI-compatible)

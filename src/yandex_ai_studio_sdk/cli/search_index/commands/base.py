@@ -102,8 +102,9 @@ class BaseCommand(abc.ABC):
         labels = {}
         for label_str in label_tuples:
             if "=" not in label_str:
-                logger.warning("Invalid metadata format '%s', expected KEY=VALUE", label_str)
-                continue
+                raise click.BadParameter(
+                    f"Invalid metadata format '{label_str}', expected KEY=VALUE"
+                )
             key, value = label_str.split("=", 1)
             labels[key.strip()] = value.strip()
         return labels

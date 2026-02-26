@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Iterator
 from typing import Literal
 from urllib.parse import urlparse
 
@@ -61,21 +60,20 @@ class WikiFileSource(BaseFileSource):
 
         raise ValueError(f"Unable to parse MediaWiki page URL: {page_url}")
 
-    def list_files(self) -> Iterator[FileMetadata]:
+    def list_files(self) -> list[FileMetadata]:
         """List pages from MediaWiki by URL."""
         logger.info("Listing %d page(s) from wiki", len(self.page_urls))
 
+        result = []
         for page_url in self.page_urls:
-            try:
-                page_title = self._parse_page_url(page_url)
-                yield FileMetadata(
-                    path=page_title,
-                    name=page_title.replace("_", " "),
-                    mime_type=None,
-                    description=f"Wiki page: {page_title.replace('_', ' ')}",
-                )
-            except Exception as e:
-                logger.warning("Failed to process page URL %s: %s", page_url, e)
+            page_title = self._parse_page_url(page_url)
+            result.append(FileMetadata(
+                path=page_title,
+                name=page_title.replace("_", " "),
+                mime_type=None,
+                description=f"Wiki page: {page_title.replace('_', ' ')}",
+            ))
+        return result
 
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Get page content using mwclient."""
