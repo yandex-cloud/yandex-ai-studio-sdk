@@ -23,7 +23,7 @@ def validate_authentication(
     return username, token
 
 
-def create_command_executor(command_class: type[BaseCommand], **kwargs: Any) -> None:
+def run_command(command_class: type[BaseCommand], **kwargs: Any) -> None:
     file_create_params = OpenAIFileCreateParams(
         purpose=kwargs.pop("file_purpose"),
         expires_after_seconds=kwargs.pop("file_expires_after_seconds", None),

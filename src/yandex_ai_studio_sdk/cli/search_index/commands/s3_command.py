@@ -6,7 +6,7 @@ from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.s3 import S3FileSource
 from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
-from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor
+from yandex_ai_studio_sdk.cli.search_index.utils.helpers import run_command
 
 
 class S3Command(BaseCommand):
@@ -136,4 +136,4 @@ def s3_command(**kwargs):
     This command downloads files from an S3 bucket, uploads them to
     Yandex Cloud, and creates a search index.
     """
-    create_command_executor(S3Command, **kwargs)
+    run_command(S3Command, **kwargs)

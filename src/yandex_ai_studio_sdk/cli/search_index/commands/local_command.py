@@ -8,7 +8,7 @@ from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.local import LocalFileSource
 from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
-from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor
+from yandex_ai_studio_sdk.cli.search_index.utils.helpers import run_command
 
 
 class LocalCommand(BaseCommand):
@@ -92,4 +92,4 @@ def local_command(**kwargs):
         vector-stores local /docs/*.pdf /notes/*.md\n
         vector-stores local report.pdf summary.txt
     """
-    create_command_executor(LocalCommand, **kwargs)
+    run_command(LocalCommand, **kwargs)

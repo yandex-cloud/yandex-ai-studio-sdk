@@ -103,8 +103,7 @@ class AsyncSearchIndexUploader:
         """
         Upload files from a source and create a search index.
 
-        Args:
-            source: File source to upload from
+        :param source: File source to upload from.
         """
         logger.info("Starting upload from source: %s", source.__class__.__name__)
 
@@ -125,8 +124,7 @@ class AsyncSearchIndexUploader:
         """
         Upload all files from the source with concurrent execution.
 
-        Args:
-            source: File source to upload from
+        :param source: File source to upload from.
         """
         # Collect file metadata only (not content)
         files_metadata = source.list_files()
@@ -175,6 +173,7 @@ class AsyncSearchIndexUploader:
                     len(files_metadata),
                 )
             else:
+                # result is None: file was skipped due to skip_on_error=True
                 self.stats.failed_files += 1
 
         logger.info("Upload completed: %d succeeded, %d failed", self.stats.uploaded_files, self.stats.failed_files)
@@ -189,13 +188,9 @@ class AsyncSearchIndexUploader:
         """
         Upload a single file by reading its content on-demand.
 
-        Args:
-            file_metadata: Metadata about the file
-            source: File source to read content from
-            semaphore: Semaphore to limit concurrent uploads
-
-        Returns:
-            Uploaded file object or None if upload failed
+        :param file_metadata: Metadata about the file.
+        :param source: File source to read content from.
+        :param semaphore: Semaphore to limit concurrent uploads.
         """
         async with semaphore:
             try:
@@ -213,9 +208,8 @@ class AsyncSearchIndexUploader:
         """
         Upload a single file to Yandex Cloud.
 
-        Args:
-            file_metadata: Metadata about the file
-            content: File content as bytes
+        :param file_metadata: Metadata about the file.
+        :param content: File content as bytes.
         """
         try:
             labels = {}
@@ -248,8 +242,7 @@ class AsyncSearchIndexUploader:
         """
         Create a search index from uploaded files.
 
-        Args:
-            files: List of uploaded File objects
+        :param files: List of uploaded File objects.
         """
         logger.info("Creating search index with %d files...", len(files))
 

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import asyncio
 import os
 from pathlib import Path
 from typing import Union
+
+import aiofiles
 
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._types.misc import PathLike, coerce_path
@@ -27,11 +28,8 @@ class LocalFileSource(BaseFileSource):
         """
         Initialize local file source.
 
-        Args:
-            paths: One path or a list of paths (files or directories).
-                   Directories are scanned recursively.
-                   Shell glob expansion is handled by the caller (bash).
-            max_file_size: Maximum file size in bytes (larger files will be skipped)
+        :param paths: One path or a list of paths. Shell glob expansion is handled by the caller (bash).
+        :param max_file_size: Maximum file size in bytes (larger files will be skipped).
         """
         if isinstance(paths, (str, os.PathLike)):
             self.paths = [coerce_path(paths)]
@@ -78,7 +76,8 @@ class LocalFileSource(BaseFileSource):
         """Read file content from the local filesystem."""
         file_path = Path(file_metadata.path)
         try:
-            return await asyncio.to_thread(file_path.read_bytes)
+            async with aiofiles.open(file_path, "rb") as f:
+                return await f.read()
         except OSError as e:
             logger.error("Failed to read file: %s - %s", file_path, e)
             raise

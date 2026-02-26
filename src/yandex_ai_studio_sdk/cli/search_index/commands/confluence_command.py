@@ -6,7 +6,7 @@ from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.confluence import ConfluenceExportFormat, ConfluenceFileSource
 from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
-from yandex_ai_studio_sdk.cli.search_index.utils.helpers import create_command_executor, validate_authentication
+from yandex_ai_studio_sdk.cli.search_index.utils.helpers import run_command, validate_authentication
 
 
 class ConfluenceCommand(BaseCommand):
@@ -134,4 +134,4 @@ def confluence_command(**kwargs):
     --username and --api-token. For private instances, provide credentials via
     command line options or CONFLUENCE_USERNAME and CONFLUENCE_API_TOKEN environment variables.
     """
-    create_command_executor(ConfluenceCommand, **kwargs)
+    run_command(ConfluenceCommand, **kwargs)

@@ -127,14 +127,10 @@ class LegacyYandexMapper:
         This method bridges OpenAI params to old UploadConfig structure.
         It will be removed when we switch to native OpenAI API implementation.
 
-        Args:
-            file_create_params: OpenAI-compatible file creation parameters
-            vector_store_create_params: OpenAI-compatible vector store creation parameters
-            skip_on_error: Whether to skip failed files
-            max_concurrent_uploads: Maximum concurrent upload tasks
-
-        Returns:
-            UploadConfig for legacy Yandex SDK uploader
+        :param file_create_params: OpenAI-compatible file creation parameters.
+        :param vector_store_create_params: OpenAI-compatible vector store creation parameters.
+        :param skip_on_error: Whether to skip failed files.
+        :param max_concurrent_uploads: Maximum concurrent upload tasks.
         """
         return UploadConfig(
             # File settings (mapped from OpenAI)
