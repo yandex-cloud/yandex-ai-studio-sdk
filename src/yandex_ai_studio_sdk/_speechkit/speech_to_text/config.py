@@ -4,7 +4,6 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from typing_extensions import override
-
 from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat, LanguageCode
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownInput

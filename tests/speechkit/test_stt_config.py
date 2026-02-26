@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-
 from yandex_ai_studio_sdk._speechkit.enums import PCM16, AudioFormat, LanguageCode
 from yandex_ai_studio_sdk._speechkit.speech_to_text.config import SpeechToTextConfig
 from yandex_ai_studio_sdk.exceptions import AIStudioConfigurationError
