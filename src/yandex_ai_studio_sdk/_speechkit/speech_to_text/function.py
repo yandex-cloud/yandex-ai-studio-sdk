@@ -38,12 +38,12 @@ class BaseSpeechToTextFunction(BaseModelFunction[SpeechToTextTypeT]):
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `STT documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        `STT docs <https://yandex.cloud/docs/speechkit/stt>`_
 
         :param audio_format: Specifies the input audio format.
         :param model: The name of the STT model to use for recognition.
             See the list of available models and versions in the
-            `documentation <https://yandex.cloud/docs/speechkit/stt/models>`_.
+            `speech to text documentation <https://yandex.cloud/docs/speechkit/stt/models>`_.
         :param language_codes: The list of `language codes <https://yandex.cloud/docs/speechkit/stt/models>`_
             to restrict recognition in the case of an automatic model, or a single language code.
         :param text_normalization:
@@ -51,14 +51,16 @@ class BaseSpeechToTextFunction(BaseModelFunction[SpeechToTextTypeT]):
 
             * ``True`` — turn on text normalization with default parameters;
             * ``False`` — turn text normalization off;
-            * :py:class:`~.TextNormalization` instance — text normalization with custom parameters;
+            * :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.TextNormalization`
+              instance — text normalization with custom parameters;
             * ``None`` — for server default.
         :param eou_classifier:
             Configuration for `end of utterance detection model <https://yandex.cloud/docs/speechkit/stt/eou>`_:
 
             * ``True`` — use default EOU classifier;
             * ``False`` — disable EOU classifier ("external EOU classifier" in documentation);
-            * :py:class:`~.EndOfUtteranceClassifier` instance — use custom EOU classifier settings;
+            * :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.EndOfUtteranceClassifier`
+              instance — use custom EOU classifier settings;
             * ``None`` — for server default.
         :param recognition_classifiers: Classifier or list of
             `classifiers for speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
@@ -75,9 +77,9 @@ class BaseSpeechToTextFunction(BaseModelFunction[SpeechToTextTypeT]):
             audio_format=audio_format
         )
 
-        tts = self._model_type(sdk=self._sdk, uri='<speechkit>', config=config)
+        stt = self._model_type(sdk=self._sdk, uri='<speechkit>', config=config)
 
-        return tts.configure(
+        return stt.configure(
             model=model,
             language_codes=language_codes,
             text_normalization=text_normalization,

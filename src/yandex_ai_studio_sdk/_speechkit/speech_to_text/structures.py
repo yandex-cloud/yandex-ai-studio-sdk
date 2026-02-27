@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -224,7 +225,7 @@ class WellKnownRecognitionClassifiers(str, Enum):
 class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
     """Classifier to use in speech recognition.
 
-    For detailed information refer to `documentation
+    For detailed information refer to `classification documentation
     <https://yandex.cloud/docs/speechkit/stt/analysis>`_.
 
     You can pass a string as a trigger:

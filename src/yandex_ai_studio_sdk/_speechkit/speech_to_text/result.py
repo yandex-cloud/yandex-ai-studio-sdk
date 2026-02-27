@@ -15,8 +15,7 @@ from .config import SpeechToTextConfig
 
 @dataclass(frozen=True)
 class SpeechToTextResult(BaseProtoModelResult[StreamingResponse, RequestDetails[SpeechToTextConfig]]):
-    """A class representing the partially parsed result of a Web search request
-    with XML format.
+    """A class representing result of speech recognition request.
     """
 
     _request_details: RequestDetails[SpeechToTextConfig] = field(repr=False)

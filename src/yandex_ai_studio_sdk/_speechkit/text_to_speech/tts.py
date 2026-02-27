@@ -33,9 +33,9 @@ class BaseTextToSpeech(
     and incapsulates synthesis setting.
     """
 
-    #: Link to :py:class:`~.AudioFormat` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat` for more convenient access.
     AudioFormat = AudioFormat_
-    #: Link to :py:class:`~.LoudnessNormalization` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.LoudnessNormalization` for more convenient access.
     LoudnessNormalization = LoudnessNormalization_
 
     _config_type = TextToSpeechConfig
@@ -67,7 +67,7 @@ class BaseTextToSpeech(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `TTS documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        TTS `documentation <https://yandex.cloud/docs/speechkit/stt>`_
 
         :param loudness_normalization: Specifies type of loudness normalization.
             Default: `LUFS`.

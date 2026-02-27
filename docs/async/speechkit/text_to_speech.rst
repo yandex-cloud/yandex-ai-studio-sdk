@@ -1,5 +1,5 @@
-Domain
-------
+Function
+--------
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.text_to_speech.function.AsyncTextToSpeechFunction
 

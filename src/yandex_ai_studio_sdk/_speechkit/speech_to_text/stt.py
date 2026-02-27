@@ -39,19 +39,26 @@ class BaseSpeechToText(
     and incapsulates speech recognition settings.
     """
 
-    #: Link to :py:class:`~.AudioFormat` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat`
+    #: for more convenient access.
     AudioFormat = AudioFormat_
-    #: Link to :py:class:`~.RecognitionClassifier` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.RecognitionClassifier`
+    #: for more convenient access.
     RecognitionClassifier = RecognitionClassifier_
-    #: Link to :py:class:`~.EndOfUtteranceClassifier` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.EndOfUtteranceClassifier`
+    #: for more convenient access.
     EndOfUtteranceClassifier = EndOfUtteranceClassifier_
-    #: Link to :py:class:`~.LLMPostProcessing` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.LLMPostProcessing`
+    #: for more convenient access.
     LLMPostProcessing = LLMPostProcessing_
-    #: Link to :py:class:`~.SpeechAnalysis` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.SpeechAnalysis`
+    #: for more convenient access.
     SpeechAnalysis = SpeechAnalysis_
-    #: Link to :py:class:`~.TextNormalization` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.TextNormalization`
+    #: for more convenient access.
     TextNormalization = TextNormalization_
-    #: Link to :py:class:`~.LanguageCode` for more convenient access.
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.LanguageCode`
+    #: for more convenient access.
     LanguageCode = LanguageCode_
 
     _config_type = SpeechToTextConfig
@@ -88,8 +95,8 @@ class BaseSpeechToText(
 
         :param audio_format: Specifies the input audio format.
         :param model: The name of the STT model to use for recognition.
-            See the list of available models and versions in the
-            `documentation <https://yandex.cloud/docs/speechkit/stt/models>`_.
+            See the list of available models and versions
+            `in the documentation <https://yandex.cloud/docs/speechkit/stt/models>`_.
         :param language_codes: The list of `language codes <https://yandex.cloud/docs/speechkit/stt/models>`_
             to restrict recognition in the case of an automatic model, or a single language code.
         :param text_normalization:
@@ -97,14 +104,16 @@ class BaseSpeechToText(
 
             * ``True`` — turn on text normalization with default parameters;
             * ``False`` — turn text normalization off;
-            * :py:class:`~.TextNormalization` instance — text normalization with custom parameters;
+            * :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.TextNormalization`
+              instance — text normalization with custom parameters;
             * ``None`` — for server default.
         :param eou_classifier:
             Configuration for `end of utterance detection model <https://yandex.cloud/docs/speechkit/stt/eou>`_:
 
             * ``True`` — use default EOU classifier;
             * ``False`` — disable EOU classifier ("external EOU classifier" in documentation);
-            * :py:class:`~.EndOfUtteranceClassifier` instance — use custom EOU classifier settings;
+            * :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.EndOfUtteranceClassifier`
+              instance — use custom EOU classifier settings;
             * ``None`` — for server default.
         :param recognition_classifiers: Classifier or list of
             `classifiers for speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
