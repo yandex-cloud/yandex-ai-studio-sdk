@@ -12,7 +12,6 @@ from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSour
 
 logger = get_logger(__name__)
 
-# Accepts a single path or a list of paths
 PathsInput = Union[PathLike, list[PathLike]]
 
 

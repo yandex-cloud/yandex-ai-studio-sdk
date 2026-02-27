@@ -38,7 +38,6 @@ class BaseCommand(abc.ABC):
     # Output
     output_format: str
 
-    # Derived field (NOT in __init__, set by __post_init__)
     sdk: AsyncAIStudio = field(init=False)
 
     def __post_init__(self) -> None:
@@ -85,12 +84,7 @@ class BaseCommand(abc.ABC):
 
     @abc.abstractmethod
     def create_file_source(self) -> BaseFileSource:
-        """
-        Create file source specific to this command.
-
-        This method must be implemented by subclasses to return
-        the appropriate file source (LocalFileSource, S3FileSource, etc.)
-        """
+        """Create file source specific to this command."""
 
     def execute(self) -> None:
         asyncio.run(self._execute_async())

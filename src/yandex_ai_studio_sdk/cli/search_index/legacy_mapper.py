@@ -19,7 +19,7 @@ class LegacyYandexMapper:
     """
     Maps OpenAI-compatible parameters to legacy Yandex Cloud SDK parameters.
 
-    ⚠️ TEMPORARY: This mapper will be removed when we migrate to native OpenAI API.
+    TEMPORARY: This mapper will be removed when we migrate to native OpenAI API.
     All conversion logic is isolated here for easy deletion.
     """
 

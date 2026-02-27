@@ -10,13 +10,7 @@ from .commands.wiki_command import wiki_command
 
 @click.group(name="vector-stores")
 def vector_stores():
-    """
-    Create Yandex Cloud search indexes from various file sources.
-
-    This tool helps you upload files from different sources (local filesystem,
-    S3, Confluence, Wiki) and create search indexes for use with Yandex Cloud
-    Assistants API.
-    """
+    """Create Yandex Cloud search indexes from various file sources."""
 
 
 vector_stores.add_command(local_command)
