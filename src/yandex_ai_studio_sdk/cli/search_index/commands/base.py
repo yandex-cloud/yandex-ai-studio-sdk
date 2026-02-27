@@ -118,14 +118,3 @@ class BaseCommand(abc.ABC):
                 click.echo(f"Name: {search_index.name}")
             if self.folder_id:
                 click.echo(f"Folder ID: {self.folder_id}")
-
-    def _output_error(self, message: str) -> None:
-        """Output error message in the configured format."""
-        if self.output_format == "json":
-            result = {
-                "status": "error",
-                "error": message,
-            }
-            print(json.dumps(result))
-        else:
-            click.echo(f"\n{message}", err=True)
