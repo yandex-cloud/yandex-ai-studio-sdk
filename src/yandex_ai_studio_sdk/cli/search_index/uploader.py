@@ -179,9 +179,14 @@ class AsyncSearchIndexUploader:
                 )
             else:
                 # result is None: file was skipped due to skip_on_error=True
-                self.stats.failed_files += 1
+                self.stats.skipped_files += 1
 
-        logger.info("Upload completed: %d succeeded, %d failed", self.stats.uploaded_files, self.stats.failed_files)
+        logger.info(
+            "Upload completed: %d succeeded, %d failed, %d skipped",
+            self.stats.uploaded_files,
+            self.stats.failed_files,
+            self.stats.skipped_files,
+        )
         return uploaded_files
 
     async def _upload_single_file_on_demand(
