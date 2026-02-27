@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from typing_extensions import Self, override
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
-
 from yandex_ai_studio_sdk._types.request import RequestDetails
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, SDKType
 

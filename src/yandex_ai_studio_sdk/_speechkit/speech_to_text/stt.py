@@ -6,7 +6,6 @@ from typing import Generic, TypeVar
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
-
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LanguageCode as LanguageCode_
