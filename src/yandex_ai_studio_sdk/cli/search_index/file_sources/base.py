@@ -32,7 +32,7 @@ class BaseFileSource(abc.ABC):
     """
 
     @abc.abstractmethod
-    def list_files(self) -> list[FileMetadata]:
+    async def list_files(self) -> list[FileMetadata]:
         """List all files available from this source."""
 
     @abc.abstractmethod

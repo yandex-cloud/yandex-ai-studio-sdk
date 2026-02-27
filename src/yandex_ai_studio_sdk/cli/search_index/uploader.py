@@ -132,7 +132,7 @@ class AsyncSearchIndexUploader:
         :param source: File source to upload from.
         """
         # Collect file metadata only (not content)
-        files_metadata = source.list_files()
+        files_metadata = await source.list_files()
         self.stats.total_files = len(files_metadata)
 
         if len(files_metadata) > MAX_FILES_PER_INDEX_CREATE:

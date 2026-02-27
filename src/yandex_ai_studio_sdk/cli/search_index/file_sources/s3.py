@@ -88,16 +88,18 @@ class S3FileSource(BaseFileSource):
             if "Contents" in page:
                 yield from page["Contents"]
 
-    def list_files(self) -> list[FileMetadata]:
+    async def list_files(self) -> list[FileMetadata]:
         """List files in S3 bucket using pagination."""
         logger.info("Listing files in s3://%s/%s", self.bucket, self.prefix)
 
-        result = [
-            FileMetadata(path=obj["Key"], name=Path(obj["Key"]).name, mime_type=None)
-            for obj in self._iter_objects()
-            if self._should_include(obj["Key"], obj["Size"])
-        ]
+        def collect() -> list[FileMetadata]:
+            return [
+                FileMetadata(path=obj["Key"], name=Path(obj["Key"]).name, mime_type=None)
+                for obj in self._iter_objects()
+                if self._should_include(obj["Key"], obj["Size"])
+            ]
 
+        result = await asyncio.to_thread(collect)
         logger.info("Found %d files matching patterns", len(result))
         return result
 

@@ -60,7 +60,7 @@ class WikiFileSource(BaseFileSource):
 
         raise ValueError(f"Unable to parse MediaWiki page URL: {page_url}")
 
-    def list_files(self) -> list[FileMetadata]:
+    async def list_files(self) -> list[FileMetadata]:
         """List pages from MediaWiki by URL."""
         logger.info("Listing %d page(s) from wiki", len(self.page_urls))
 

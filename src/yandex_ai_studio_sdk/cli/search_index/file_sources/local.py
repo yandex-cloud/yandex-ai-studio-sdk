@@ -38,7 +38,7 @@ class LocalFileSource(BaseFileSource):
 
         self.max_file_size = max_file_size
 
-    def list_files(self) -> list[FileMetadata]:
+    async def list_files(self) -> list[FileMetadata]:
         """List all files from provided paths."""
         seen: set[Path] = set()
         result: list[FileMetadata] = []

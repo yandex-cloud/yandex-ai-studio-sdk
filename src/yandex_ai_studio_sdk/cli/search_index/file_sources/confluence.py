@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import re
 from functools import lru_cache
 from typing import Literal
@@ -50,24 +49,24 @@ class ConfluenceFileSource(BaseFileSource):
                 raise ValueError(f"Page URL {page_url} does not start with base URL {self.url}")
 
         auth = (username, api_token) if username and api_token else None
-        self._client = httpx.Client(auth=auth, verify=verify_ssl)
+        self._client = httpx.AsyncClient(auth=auth, verify=verify_ssl)
         self._api_base = f"{self.url}/rest/api"
         self._wiki_base = self.url
 
         logger.info("ConfluenceFileSource initialized for %s", self.url)
 
-    def _get_page(self, page_id: str, expand: str = "") -> dict:
+    async def _get_page(self, page_id: str, expand: str = "") -> dict:
         """Fetch page data from Confluence REST API."""
         params: dict[str, str] = {}
         if expand:
             params["expand"] = expand
-        response = self._client.get(f"{self._api_base}/content/{page_id}", params=params)
+        response = await self._client.get(f"{self._api_base}/content/{page_id}", params=params)
         response.raise_for_status()
         return response.json()
 
-    def _export_page(self, page_id: str) -> bytes:
+    async def _export_page(self, page_id: str) -> bytes:
         """Export page via Confluence exportword endpoint."""
-        response = self._client.get(f"{self._wiki_base}/exportword", params={"pageId": page_id})
+        response = await self._client.get(f"{self._wiki_base}/exportword", params={"pageId": page_id})
         response.raise_for_status()
         return response.content
 
@@ -105,15 +104,14 @@ class ConfluenceFileSource(BaseFileSource):
             "Expected format: /pages/123456 or ?pageId=123456"
         )
 
-    def list_files(self) -> list[FileMetadata]:
+    async def list_files(self) -> list[FileMetadata]:
         """List pages from Confluence by URL."""
         logger.info("Listing %d page(s) from Confluence", len(self.page_urls))
 
         result = []
         for page_url in self.page_urls:
             page_id = self._parse_page_id(page_url)
-            # Get page title for better metadata
-            page_info = self._get_page(page_id)
+            page_info = await self._get_page(page_id)
             title = page_info.get("title", page_id)
 
             result.append(FileMetadata(
@@ -126,19 +124,16 @@ class ConfluenceFileSource(BaseFileSource):
 
     async def get_file_content(self, file_metadata: FileMetadata) -> bytes:
         """Export page content from Confluence."""
-        return await asyncio.to_thread(self._get_file_content_sync, file_metadata)
-
-    def _get_file_content_sync(self, file_metadata: FileMetadata) -> bytes:
         page_id = str(file_metadata.path)
         logger.debug("Exporting Confluence page ID %s as %s", page_id, self.export_format)
 
         if self.export_format == "pdf":
-            return self._export_page(page_id)
+            return await self._export_page(page_id)
 
         expand_map: dict[str, str] = {"html": "body.view", "markdown": "body.storage"}
         expand = expand_map[self.export_format]
 
-        page = self._get_page(page_id, expand=expand)
+        page = await self._get_page(page_id, expand=expand)
         body_type = "view" if self.export_format == "html" else "storage"
         content = page.get("body", {}).get(body_type, {}).get("value", "")
 
