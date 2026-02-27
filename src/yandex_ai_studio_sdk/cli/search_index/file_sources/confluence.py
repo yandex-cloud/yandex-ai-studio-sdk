@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from functools import lru_cache
 from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
@@ -85,7 +84,6 @@ class ConfluenceFileSource(BaseFileSource):
                 return base + parsed.path[:idx]
         return base
 
-    @lru_cache(maxsize=None)
     def _parse_page_id(self, page_url: str) -> str:
         """Extract page ID from Confluence URL."""
         parsed = urlparse(page_url)
