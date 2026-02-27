@@ -64,7 +64,7 @@ class BaseCommand(abc.ABC):
             auth=self.auth if self.auth else UNDEFINED,
             endpoint=self.endpoint if self.endpoint else UNDEFINED,
         )
-        logger.info("SDK initialized successfully")
+        logger.debug("SDK initialized successfully")
         return sdk
 
     def create_upload_config(self) -> UploadConfig:

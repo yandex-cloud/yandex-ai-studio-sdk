@@ -9,16 +9,7 @@ from yandex_ai_studio_sdk.cli.search_index.constants import (
 
 
 def common_options(func):
-    """
-    Decorator to add common options to all subcommands.
-
-    Adds:
-    - --folder-id: Yandex Cloud folder ID
-    - --auth: Authentication token
-    - --endpoint: Custom API endpoint
-    - -v/--verbose: Verbosity level
-    - --format: Output format (text or json)
-    """
+    """Add common options to all subcommands."""
     func = click.option(
         "--folder-id",
         envvar="YC_FOLDER_ID",
@@ -51,17 +42,7 @@ def common_options(func):
 
 
 def index_options(func):
-    """
-    Decorator to add vector store configuration options (OpenAI-compatible).
-
-    Adds:
-    - --name: Name for the vector store
-    - --metadata: Metadata key-value pairs (multiple)
-    - --expires-after-days: TTL in days
-    - --expires-after-anchor: Expiration anchor point
-    - --max-chunk-size-tokens: Chunk size
-    - --chunk-overlap-tokens: Chunk overlap
-    """
+    """Add vector store configuration options."""
     func = click.option(
         "--name",
         help="Name for the vector store",
@@ -107,18 +88,7 @@ def index_options(func):
 
 
 def file_options(func):
-    """
-    Decorator to add file upload configuration options (OpenAI-compatible).
-
-    Adds:
-    - --file-purpose: Purpose of the file
-    - --file-expires-after-seconds: TTL for files in seconds
-    - --file-expires-after-anchor: Expiration anchor for files
-    - --max-concurrent-uploads: Number of concurrent uploads
-    - --skip-on-error: Skip failed files
-
-    Note: MIME types are auto-detected by the server, no need to specify.
-    """
+    """Add file upload configuration options."""
     func = click.option(
         "--file-purpose",
         default="assistants",
@@ -153,11 +123,7 @@ def file_options(func):
 
 
 def all_common_options(func):
-    """
-    Convenience decorator that applies all common option decorators.
-
-    This combines common_options, index_options, and file_options.
-    """
+    """Apply all common option decorators."""
     func = file_options(func)
     func = index_options(func)
     func = common_options(func)
