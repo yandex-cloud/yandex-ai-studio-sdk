@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import asyncio
 import json
+from dataclasses import dataclass, field
 
 import click
 
@@ -13,65 +14,34 @@ from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSour
 from yandex_ai_studio_sdk.cli.search_index.legacy_mapper import LegacyYandexMapper
 from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams, OpenAIVectorStoreCreateParams
 from yandex_ai_studio_sdk.cli.search_index.uploader import AsyncSearchIndexUploader, UploadConfig
-from yandex_ai_studio_sdk.search_indexes import (
-    HybridSearchIndexType, StaticIndexChunkingStrategy, TextSearchIndexType, VectorSearchIndexType
-)
 
 logger = get_logger(__name__)
 
 
+@dataclass
 class BaseCommand(abc.ABC):
     """
     Base class for all CLI commands.
     """
+    # SDK options
+    folder_id: str | None
+    auth: str | None
+    endpoint: str | None
+    verbose: int
+    # Vector store & file options
+    vector_store_params: OpenAIVectorStoreCreateParams
+    file_create_params: OpenAIFileCreateParams
+    # Upload options
+    max_concurrent_uploads: int
+    skip_on_error: bool
+    poll_timeout: int
+    # Output
+    output_format: str
 
-    def __init__(
-        self,
-        # SDK options
-        folder_id: str | None,
-        auth: str | None,
-        endpoint: str | None,
-        verbose: int,
-        # Vector store options (OpenAI-compatible)
-        name: str | None,
-        metadata: tuple[str, ...],
-        expires_after_days: int | None,
-        expires_after_anchor: str | None,
-        max_chunk_size_tokens: int,
-        chunk_overlap_tokens: int,
-        # File options (OpenAI-compatible)
-        file_create_params: OpenAIFileCreateParams,
-        max_concurrent_uploads: int,
-        skip_on_error: bool,
-        poll_timeout: int,
-        # Output options
-        output_format: str,
-    ):
-        """Initialize base command with OpenAI-compatible parameters."""
-        # SDK options
-        self.folder_id = folder_id
-        self.auth = auth
-        self.endpoint = endpoint
-        self.verbose = verbose
+    # Derived field (NOT in __init__, set by __post_init__)
+    sdk: AsyncAIStudio = field(init=False)
 
-        self.openai_file_create_params = file_create_params
-
-        self.openai_vector_store_create_params = OpenAIVectorStoreCreateParams(
-            name=name,
-            metadata=self.parse_metadata(metadata) if metadata else None,
-            expires_after_days=expires_after_days,
-            expires_after_anchor=expires_after_anchor,  # type: ignore[arg-type]
-            chunking_strategy=self.create_search_index_type(
-                max_chunk_size_tokens,
-                chunk_overlap_tokens
-            ),
-        )
-
-        self.max_concurrent_uploads = max_concurrent_uploads
-        self.skip_on_error = skip_on_error
-        self.poll_timeout = poll_timeout
-        self.output_format = output_format
-
+    def __post_init__(self) -> None:
         self.setup_logging()
         self.sdk = self.create_sdk()
 
@@ -98,43 +68,6 @@ class BaseCommand(abc.ABC):
         logger.info("SDK initialized successfully")
         return sdk
 
-    @staticmethod
-    def parse_metadata(label_tuples: tuple[str, ...]) -> dict[str, str]:
-        """Parse metadata strings in format 'KEY=VALUE' into a dictionary."""
-        labels = {}
-        for label_str in label_tuples:
-            if "=" not in label_str:
-                raise click.BadParameter(
-                    f"Invalid metadata format '{label_str}', expected KEY=VALUE"
-                )
-            key, value = label_str.split("=", 1)
-            labels[key.strip()] = value.strip()
-        return labels
-
-    def create_search_index_type(
-        self,
-        max_chunk_size_tokens: int,
-        chunk_overlap_tokens: int,
-    ) -> HybridSearchIndexType:
-        """
-        Create search index type configuration.
-
-        For OpenAI compatibility, we always use hybrid index (vector store).
-        """
-        chunking_strategy = StaticIndexChunkingStrategy(
-            max_chunk_size_tokens=max_chunk_size_tokens,
-            chunk_overlap_tokens=chunk_overlap_tokens,
-        )
-
-        return HybridSearchIndexType(
-            text_search_index=TextSearchIndexType(
-                chunking_strategy=chunking_strategy
-            ),
-            vector_search_index=VectorSearchIndexType(
-                chunking_strategy=chunking_strategy
-            ),
-        )
-
     def create_upload_config(self) -> UploadConfig:
         """
         Create upload configuration from OpenAI-compatible CLI parameters.
@@ -143,8 +76,8 @@ class BaseCommand(abc.ABC):
         Uses LegacyYandexMapper to convert OpenAI params to Yandex SDK format.
         """
         return LegacyYandexMapper.create_legacy_upload_config(
-            file_create_params=self.openai_file_create_params,
-            vector_store_create_params=self.openai_vector_store_create_params,
+            file_create_params=self.file_create_params,
+            vector_store_create_params=self.vector_store_params,
             skip_on_error=self.skip_on_error,
             max_concurrent_uploads=self.max_concurrent_uploads,
             poll_timeout=self.poll_timeout,

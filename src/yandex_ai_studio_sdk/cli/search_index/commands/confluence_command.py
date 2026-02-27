@@ -1,78 +1,34 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import click
 
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.confluence import ConfluenceExportFormat, ConfluenceFileSource
-from yandex_ai_studio_sdk.cli.search_index.openai_types import OpenAIFileCreateParams
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
 from yandex_ai_studio_sdk.cli.search_index.utils.helpers import run_command, validate_authentication
 
 
+@dataclass
 class ConfluenceCommand(BaseCommand):
     """Command for creating search index from Atlassian Confluence pages."""
 
-    def __init__(
-        self,
-        # Confluence-specific options
-        page_urls: tuple[str, ...],
-        base_url: str | None,
-        username: str | None,
-        api_token: str | None,
-        export_format: ConfluenceExportFormat,
-        no_verify: bool,
-        # Common options
-        folder_id: str | None,
-        auth: str | None,
-        endpoint: str | None,
-        verbose: int,
-        name: str | None,
-        metadata: tuple[str, ...],
-        expires_after_days: int | None,
-        expires_after_anchor: str | None,
-        max_chunk_size_tokens: int,
-        chunk_overlap_tokens: int,
-        file_create_params: OpenAIFileCreateParams,
-        max_concurrent_uploads: int,
-        skip_on_error: bool,
-        poll_timeout: int,
-        output_format: str,
-    ):
-        """Initialize Confluence command with Confluence-specific and common parameters."""
-        self.page_urls = page_urls
-        self.base_url = base_url
-        self.username = username
-        self.api_token = api_token
-        self.export_format = export_format
-        self.no_verify = no_verify
+    page_urls: tuple[str, ...]
+    base_url: str | None
+    username: str | None
+    api_token: str | None
+    export_format: ConfluenceExportFormat
+    no_verify: bool
 
-        # Validate authentication (optional for public instances)
+    def __post_init__(self) -> None:
         if self.username or self.api_token:
-            # If either is provided, both must be provided
             self.username, self.api_token = validate_authentication(
                 self.username,
                 self.api_token,
                 auth_type="Confluence authentication",
             )
-
-        # Initialize base command
-        super().__init__(
-            folder_id=folder_id,
-            auth=auth,
-            endpoint=endpoint,
-            verbose=verbose,
-            name=name,
-            metadata=metadata,
-            expires_after_days=expires_after_days,
-            expires_after_anchor=expires_after_anchor,
-            max_chunk_size_tokens=max_chunk_size_tokens,
-            chunk_overlap_tokens=chunk_overlap_tokens,
-            file_create_params=file_create_params,
-            max_concurrent_uploads=max_concurrent_uploads,
-            skip_on_error=skip_on_error,
-            poll_timeout=poll_timeout,
-            output_format=output_format,
-        )
+        super().__post_init__()
 
     def create_file_source(self) -> ConfluenceFileSource:
         """Create ConfluenceFileSource with configured parameters."""
