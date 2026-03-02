@@ -6,7 +6,7 @@ from abc import abstractmethod
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, cast
+from typing import cast
 
 from typing_extensions import Self
 # pylint: disable=no-name-in-module
@@ -16,22 +16,25 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr, get_defined_value, is_defined
-from yandex_ai_studio_sdk._types.proto import ProtoBased, ProtoMessageTypeT, SDKType
+from yandex_ai_studio_sdk._types.proto import ProtoMessageTypeT, ProtoSerializable, SDKType
 from yandex_ai_studio_sdk._types.schemas import ResponseType, make_response_format_kwargs
-from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 
-class ProtoBasedWithBoolDefault(ProtoBased[ProtoMessageTypeT]):
+class ProtoBasedWithBoolDefault(ProtoSerializable[ProtoMessageTypeT]):
     @abstractmethod
     def _to_proto(self, sdk: SDKType) -> ProtoMessageTypeT:
         pass
 
     @classmethod
-    def _coerce(cls, value: Self | bool) -> Self | None:
+    def _coerce(cls, value: Self | bool | None) -> Self | None:
+        if value is None:
+            return None
+
         if isinstance(value, cls):
             return value
 
@@ -63,22 +66,6 @@ class TextNormalization(ProtoBasedWithBoolDefault[ProtoTextNormalizationOptions]
     profanity_filter: UndefinedOr[bool] = UNDEFINED
     #: Rewrite text in literature style
     literature_text: UndefinedOr[bool] = UNDEFINED
-
-    @classmethod
-    def _from_proto(cls, proto: ProtoTextNormalizationOptions, sdk: SDKType) -> Self:
-        kwargs: dict[str, bool] = {}
-
-        if proto.HasField('literature_text'):
-            kwargs['literature_text'] = proto.literature_text
-        if proto.HasField('profanity_filter'):
-            kwargs['profanity_filter'] = proto.profanity_filter
-
-        if proto.HasField('phone_formatting_mode'):
-            kwargs['phone_formatting'] = not (
-                proto.phone_formatting_mode == ProtoTextNormalizationOptions.PhoneFormattingMode.PHONE_FORMATTING_MODE_DISABLED
-            )
-
-        return cls(**kwargs)
 
     def _to_proto(self, sdk: SDKType) -> ProtoTextNormalizationOptions:
         phone_formatting: bool | None = get_defined_value(self.phone_formatting, None)
@@ -157,16 +144,6 @@ class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifi
                 EndOfUtteranceSensitivity._coerce(self.sensitivity)  # type: ignore[arg-type]
             )
 
-    @classmethod
-    def _from_proto(cls, proto: ProtoDefaultEouClassifier, sdk: SDKType) -> Self:
-        kwargs: dict[str, Any] = {}
-        if proto.HasField('type') and proto.type:
-            kwargs['sensitivity'] = EndOfUtteranceSensitivity._coerce(proto.type)
-        if proto.HasField('max_pause_between_words_hint_ms'):
-            kwargs['max_pause_between_words_hint_ms'] = proto.max_pause_between_words_hint_ms
-
-        return cls(**kwargs)
-
     def _to_proto(self, sdk: SDKType) -> ProtoDefaultEouClassifier:
         result = ProtoDefaultEouClassifier()
         if is_defined(self.sensitivity):
@@ -221,7 +198,7 @@ class WellKnownRecognitionClassifiers(str, Enum):
 
 
 @dataclass(frozen=True)
-class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
+class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
     """Classifier to use in speech recognition.
 
     For detailed information refer to `classification documentation
@@ -283,13 +260,6 @@ class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
 
         object.__setattr__(self, 'triggers', coerced)
 
-    @classmethod
-    def _from_proto(cls, proto: ProtoRecognitionClassifier, sdk: SDKType) -> Self:
-        return cls(
-            name=proto.classifier,
-            triggers=tuple(RecognitionTriggerType._coerce(t) for t in proto.triggers)
-        )
-
     def _to_proto(self, sdk: SDKType) -> ProtoRecognitionClassifier:
         triggers = self.triggers
         assert isinstance(triggers, tuple)
@@ -328,22 +298,6 @@ class SpeechAnalysis(ProtoBasedWithBoolDefault[ProtoSpeechAnalysisOptions]):
     #: Quantile levels in range (0, 1) for descriptive statistics
     descriptive_statistics_quantiles: UndefinedOr[Sequence[float]] = UNDEFINED
 
-    @classmethod
-    def _from_proto(cls, proto: ProtoSpeechAnalysisOptions, sdk: SDKType) -> Self:
-        kwargs: dict[str, Any] = {}
-
-        if proto.HasField('enable_speaker_analysis'):
-            kwargs['speaker_analysis'] = proto.enable_speaker_analysis
-        if proto.HasField('enable_conversation_analysis'):
-            kwargs['conversation_analysis'] = proto.enable_conversation_analysis
-
-        if proto.descriptive_statistics_quantiles:
-            kwargs['descriptive_statistics_quantiles'] = tuple(
-                proto.descriptive_statistics_quantiles
-            )
-
-        return cls(**kwargs)
-
     def _to_proto(self, sdk: SDKType) -> ProtoSpeechAnalysisOptions:
         result = ProtoSpeechAnalysisOptions()
         if is_defined(self.speaker_analysis):
@@ -380,7 +334,7 @@ class LLMPostProcessingInstruction:
 
 
 @dataclass(frozen=True)
-class LLMPostProcessing(ProtoBased[ProtoSummarizationOptions]):
+class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
     """Class for encapsulating
     `transcription llm post processing settings
     <https://yandex.cloud/docs/speechkit/stt/llm-results>`_
@@ -458,30 +412,6 @@ class LLMPostProcessing(ProtoBased[ProtoSummarizationOptions]):
         return dataclasses.replace(
             self,
             instructions=new_instructions
-        )
-
-    @classmethod
-    def _response_format_from_proto(cls, proto: SummarizationProperty) -> ResponseType | None:
-        if proto.HasField('json_object'):
-            return 'json'
-
-        if proto.HasField('json_schema'):
-            return {
-                "json_schema": proto_to_dict(proto.json_schema.schema),
-            }
-
-        return None
-
-    @classmethod
-    def _from_proto(cls, proto: ProtoSummarizationOptions, sdk: SDKType) -> Self:
-        return cls(
-            model_name=proto.model_uri,
-            instructions=tuple(
-                LLMPostProcessingInstruction(
-                    instruction=i.instruction,
-                    response_format=cls._response_format_from_proto(i)
-                ) for i in proto.properties
-            )
         )
 
     def _to_proto(self, sdk: SDKType) -> ProtoSummarizationOptions:

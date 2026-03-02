@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 from google.protobuf.message import Message as ProtoMessage
 from typing_extensions import Self, TypeAlias
+
 from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 if TYPE_CHECKING:
@@ -29,6 +30,19 @@ class ProtoBased(abc.ABC, Generic[ProtoMessageTypeT]):
     @abc.abstractmethod
     def _from_proto(cls, *, proto: ProtoMessageTypeT, sdk: BaseSDK) -> Self:
         raise NotImplementedError()
+
+
+class ProtoSerializable(abc.ABC, Generic[ProtoMessageTypeT]):
+    @abc.abstractmethod
+    def _to_proto(self, sdk: BaseSDK) -> ProtoMessageTypeT:
+        raise NotImplementedError()
+
+    @classmethod
+    def _coerce_to_proto(cls, sdk: BaseSDK, value: Self | None) -> ProtoMessageTypeT | None:
+        if value is None:
+            return None
+
+        return value._to_proto(sdk)
 
 
 class ProtoBasedWithCtx(abc.ABC, Generic[ProtoMessageTypeT, ContextTypeT]):

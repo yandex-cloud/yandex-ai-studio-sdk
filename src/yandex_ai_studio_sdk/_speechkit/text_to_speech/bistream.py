@@ -7,9 +7,11 @@ from typing import TYPE_CHECKING, TypeVar, cast
 
 import grpc.aio
 from yandex.cloud.ai.tts.v3.tts_pb2 import (
-    ForceSynthesisEvent, StreamSynthesisRequest, StreamSynthesisResponse, SynthesisInput, SynthesisOptions
+    AudioFormatOptions, ForceSynthesisEvent, StreamSynthesisRequest, StreamSynthesisResponse, SynthesisInput,
+    SynthesisOptions
 )
 from yandex.cloud.ai.tts.v3.tts_service_pb2_grpc import SynthesizerStub
+
 from yandex_ai_studio_sdk._client import AsyncCloudClient
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat
 from yandex_ai_studio_sdk._types.proto import SDKType
@@ -69,7 +71,7 @@ class BaseTTSBidirectionalStream:
         options = SynthesisOptions(
             loudness_normalization_type=c.loudness_normalization,  # type: ignore[arg-type]
             model=c.model or "",
-            output_audio_spec=AudioFormat._to_proto(c.audio_format),
+            output_audio_spec=AudioFormat._to_proto(AudioFormatOptions, c.audio_format),
             pitch_shift=c.pitch_shift,
             role=c.role,
             speed=c.speed,

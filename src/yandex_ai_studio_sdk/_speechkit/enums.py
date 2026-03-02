@@ -2,15 +2,25 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from enum import Enum
-from typing import Union
+from typing import TypeVar, Union
 
 from typing_extensions import Never, TypeAlias
+from yandex.cloud.ai.stt.v3.stt_pb2 import AudioFormatOptions as STTAudioFormatOptions
+from yandex.cloud.ai.stt.v3.stt_pb2 import ContainerAudio as STTContainerAudio
 from yandex.cloud.ai.stt.v3.stt_pb2 import DefaultEouClassifier
-from yandex.cloud.ai.tts.v3.tts_pb2 import AudioFormatOptions, ContainerAudio, LoudnessNormalizationType, RawAudio
+from yandex.cloud.ai.stt.v3.stt_pb2 import RawAudio as STTRawAudio
+from yandex.cloud.ai.tts.v3.tts_pb2 import AudioFormatOptions as TTSAudioFormatOptions
+from yandex.cloud.ai.tts.v3.tts_pb2 import ContainerAudio as TTSContainerAudio
+from yandex.cloud.ai.tts.v3.tts_pb2 import LoudnessNormalizationType
+from yandex.cloud.ai.tts.v3.tts_pb2 import RawAudio as TTSRawAudio
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UnknownEnumValue
 )
+
+AudioFormatOptionsTypeT = TypeVar('AudioFormatOptionsTypeT', STTAudioFormatOptions, TTSAudioFormatOptions)
 
 
 class PCM16(UnknownEnumValue['AudioFormat']):
@@ -60,7 +70,7 @@ class PCM16(UnknownEnumValue['AudioFormat']):
 
 
 class AudioFormat(ProtoBasedEnum):
-    __proto_enum_type__ = ContainerAudio.ContainerAudioType
+    __proto_enum_type__ = STTContainerAudio.ContainerAudioType
     __common_prefix__ = ''
     __unspecified_name__ = 'CONTAINER_AUDIO_TYPE_UNSPECIFIED'
     __pcm16_re__ = re.compile(
@@ -72,11 +82,11 @@ class AudioFormat(ProtoBasedEnum):
     }
 
     #: Data is encoded using MPEG-1/2 Layer III and compressed using the MP3 container format
-    MP3 = ContainerAudio.ContainerAudioType.MP3
+    MP3 = STTContainerAudio.ContainerAudioType.MP3
     #: Audio bit depth 16-bit signed little-endian (Linear PCM) paked into WAV container format
-    WAV = ContainerAudio.ContainerAudioType.WAV
+    WAV = STTContainerAudio.ContainerAudioType.WAV
     #: Data is encoded using the OPUS audio codec and compressed using the OGG container format
-    OGG_OPUS = ContainerAudio.ContainerAudioType.OGG_OPUS
+    OGG_OPUS = STTContainerAudio.ContainerAudioType.OGG_OPUS
 
     @classmethod
     def PCM16(cls, sample_rate_hertz: int, channels: int = 1) -> PCM16:
@@ -104,20 +114,33 @@ class AudioFormat(ProtoBasedEnum):
         return super()._get_available() + ('PCM16(<int>)', 'PCM16(<int>, <int>)')
 
     @staticmethod
-    def _to_proto(value: EnumWithUnknownAlias[AudioFormat] | None) -> AudioFormatOptions | None:
+    def _to_proto(
+        proto_type: type[AudioFormatOptionsTypeT],
+        value: EnumWithUnknownAlias[AudioFormat] | None,
+    ) -> AudioFormatOptionsTypeT | None:
         if isinstance(value, PCM16):
-            return AudioFormatOptions(
-                raw_audio=RawAudio(
-                    audio_encoding=RawAudio.AudioEncoding.LINEAR16_PCM,
+            raw_audio_type = {
+                STTAudioFormatOptions: STTRawAudio,
+                TTSAudioFormatOptions: TTSRawAudio,
+            }[proto_type]
+            encoding = getattr(raw_audio_type, 'AudioEncoding')
+            return proto_type(
+                raw_audio=raw_audio_type(
+                    audio_encoding=encoding.LINEAR16_PCM,
                     sample_rate_hertz=value.sample_rate_hertz,
                 )
             )
 
         if value is None:
-            return AudioFormatOptions()
+            return proto_type()
 
-        return AudioFormatOptions(
-            container_audio=ContainerAudio(
+        container_audio_type = {
+            STTAudioFormatOptions: STTContainerAudio,
+            TTSAudioFormatOptions: TTSContainerAudio,
+        }[proto_type]
+
+        return proto_type(
+            container_audio=container_audio_type(
                 container_audio_type=int(value)  # type: ignore[arg-type]
             )
         )
@@ -205,5 +228,22 @@ class LanguageCode(str, Enum):
 
         raise ValueError(f'failed to parse language code string {value!r}')
 
+    @classmethod
+    def _coerce_to_proto(
+        cls: type[LanguageCode],
+        value: LanguageCodesInputType | None,
+    ) -> list[str] | None:
+        if value is None:
+            return None
+
+        codes: list[LanguageCodeInputType]
+        if isinstance(value, (str, LanguageCode)):
+            codes = [value]
+        else:
+            codes = list(value)
+
+        return [cls._coerce_to_str(code) for code in codes]
+
 
 LanguageCodeInputType: TypeAlias = Union[str, LanguageCode]
+LanguageCodesInputType: TypeAlias = Union[LanguageCodeInputType | Sequence[LanguageCodeInputType]]

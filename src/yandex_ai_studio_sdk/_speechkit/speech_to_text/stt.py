@@ -1,11 +1,17 @@
 # pylint: disable=arguments-renamed,no-name-in-module,protected-access,redefined-builtin
 from __future__ import annotations
 
-from collections.abc import AsyncIterator, Iterator
-from typing import Generic, TypeVar
+from collections.abc import AsyncIterator, Iterator, Sequence
+from typing import Generic, Literal, TypeVar, Union
 
 from typing_extensions import Self, override
-from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
+from yandex.cloud.ai.stt.v3.stt_pb2 import (
+    AudioChunk, AudioFormatOptions, EouClassifierOptions, ExternalEouClassifier, LanguageRestrictionOptions,
+    RecognitionClassifierOptions, RecognitionModelOptions, SilenceChunk, SpeakerLabelingOptions, StreamingOptions,
+    StreamingRequest, StreamingResponse
+)
+from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import RecognizerStub
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LanguageCode as LanguageCode_
@@ -26,6 +32,10 @@ from .structures import SpeechAnalysis as SpeechAnalysis_
 from .structures import TextNormalization as TextNormalization_
 
 logger = get_logger(__name__)
+
+
+DeferredSTTInputType = Union[str, bytes, Sequence[Union[bytes, int]]]
+STTInputType = Union[bytes, Sequence[Union[bytes, int]]]
 
 
 class BaseSpeechToText(
@@ -144,10 +154,131 @@ class BaseSpeechToText(
         # to make an additional ancestor without an uri
         return f'{self.__class__.__name__}(config={self._config})'
 
+    # pylint: disable-next=too-many-locals
+    def _create_streaming_options(
+        self,
+        mode: Literal['real_time', 'full_data'],
+    ) -> StreamingOptions:
+
+        c = self._config
+
+        audio_processing_type = {
+            'real_time': RecognitionModelOptions.AudioProcessingType.REAL_TIME,
+            'full_data': RecognitionModelOptions.AudioProcessingType.FULL_DATA,
+        }[mode]
+
+        language_restriction = LanguageRestrictionOptions(
+            language_code=LanguageCode_._coerce_to_proto(c.language_codes),
+            restriction_type=LanguageRestrictionOptions.LanguageRestrictionType.WHITELIST,
+        ) if c.language_codes else None
+
+        text_normalization = TextNormalization_._coerce_to_proto(
+            self._sdk,
+            TextNormalization_._coerce(c.text_normalization),
+        )
+
+        eou_classifier: EouClassifierOptions | None = None
+        if eou := c.eou_classifier:  # EndOfUtteranceClassifier or True
+            assert isinstance(eou, (bool, EndOfUtteranceClassifier_))
+            eou_classifier = EouClassifierOptions(
+                default_classifier=EndOfUtteranceClassifier_._coerce_to_proto(
+                    self._sdk,
+                    EndOfUtteranceClassifier_._coerce(eou),
+                )
+            )
+        elif c.eou_classifier is False:
+            eou_classifier = EouClassifierOptions(
+                external_classifier=ExternalEouClassifier()
+            )
+
+        speech_analysis = SpeechAnalysis_._coerce_to_proto(self._sdk, c.speech_analysis)
+        speaker_labeling = {
+            True: SpeakerLabelingOptions.SpeakerLabeling.SPEAKER_LABELING_ENABLED,
+            False: SpeakerLabelingOptions.SpeakerLabeling.SPEAKER_LABELING_DISABLED,
+            None: SpeakerLabelingOptions.SpeakerLabeling.SPEAKER_LABELING_UNSPECIFIED,
+        }[c.speaker_labeling]
+        summarization = LLMPostProcessing_._coerce_to_proto(self._sdk, c.llm_post_process)
+        classifiers = None
+        if raw_classifiers := c.recognition_classifiers:
+            list_classifiers: list[RecognitionClassifier_]
+            if isinstance(raw_classifiers, RecognitionClassifier_):
+                list_classifiers = [raw_classifiers]
+            else:
+                list_classifiers = list(raw_classifiers)
+
+            classifiers = [c._to_proto(self._sdk) for c in list_classifiers]
+
+        return StreamingOptions(
+            recognition_model=RecognitionModelOptions(
+                audio_format=AudioFormat_._to_proto(AudioFormatOptions, c.audio_format),  # type: ignore[arg-type]
+                audio_processing_type=audio_processing_type,
+                language_restriction=language_restriction,
+                model=c.model or '',
+                text_normalization=text_normalization,
+            ),
+            eou_classifier=eou_classifier,
+            recognition_classifier=RecognitionClassifierOptions(
+                classifiers=classifiers,
+            ),
+            speaker_labeling=SpeakerLabelingOptions(speaker_labeling=speaker_labeling),
+            speech_analysis=speech_analysis,
+            summarization=summarization,
+        )
+
+    def _coerce_streaming_input(
+        self,
+        raw_input: STTInputType
+    ) -> list[bytes | int]:
+        input: Sequence[bytes | int]
+        if isinstance(raw_input, bytes):
+            input = [raw_input]
+        elif (
+            isinstance(raw_input, Sequence) and
+            all(isinstance(el, (bytes, int)) for el in raw_input)
+        ):
+            input = list(raw_input)
+        else:
+            raise TypeError(
+                'input for stt.run/stt.run_stream must contain a bytes or sequence of bytes | int elements')
+
+        return input
+
+    async def _run_stream_impl(
+        self,
+        raw_input: STTInputType,
+        timeout: float,
+        mode: Literal['real_time', 'full_data'],
+    ) -> AsyncIterator[StreamingResponse]:
+        options = self._create_streaming_options(mode=mode)
+        input_list = self._coerce_streaming_input(raw_input)
+
+        async def input_generator():
+            yield StreamingRequest(session_options=options)
+            for element in input_list:
+                if isinstance(element, bytes):
+                    yield StreamingRequest(
+                        chunk=AudioChunk(data=element)
+                    )
+                else:
+                    assert isinstance(element, int)
+                    yield StreamingRequest(
+                        silence_chunk=SilenceChunk(duration_ms=element)
+                    )
+
+
+        async with self._client.get_service_stub(RecognizerStub, timeout=timeout) as stub:
+            async for response in self._client.stream_service_stream(
+                stub.RecognizeStreaming,
+                requests=input_generator(),
+                timeout=timeout,
+                expected_type=StreamingResponse
+            ):
+                yield response
+
     @override
     async def _run(
         self,
-        input: str | bytes,
+        input: STTInputType,
         *,
         timeout: float = 60,
     ) -> SpeechToTextResult:
@@ -161,13 +292,21 @@ class BaseSpeechToText(
         :param input:
             In case of bytes input, input treated as an audio-data.
             In case of str input, input treated as a S3 url.
+            In case of bytes/int sequence, input treated as chunks of audio data with integers for silence chunks.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: recognition result
         """
 
-        print(input)
+        result = []
+        async for proto in self._run_stream_impl(
+            raw_input=input,
+            timeout=timeout,
+            mode='full_data',
+        ):
+            result.append(proto)
+
         return self._result_type._from_proto_iterable(
-            proto=None,  # type: ignore[arg-type]
+            proto=result,
             sdk=self._sdk,
             ctx=RequestDetails(model_config=self.config, timeout=timeout)
         )
@@ -175,7 +314,7 @@ class BaseSpeechToText(
     @override
     async def _run_deferred(
         self,
-        input: str | bytes,
+        input: DeferredSTTInputType,
         *,
         timeout: float = 60,
     ) -> OperationTypeT:
@@ -190,6 +329,7 @@ class BaseSpeechToText(
         :param input:
             In case of bytes input, input treated as an audio-data.
             In case of str input, input treated as a S3 url.
+            In case of bytes/int sequence, input treated as chunks of audio data with integers for silence chunks.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: Operation object.
         """
@@ -205,7 +345,7 @@ class BaseSpeechToText(
     @override
     async def _run_stream(
         self,
-        input: str | bytes,
+        input: STTInputType,
         *,
         timeout: float = 60,
     ) -> AsyncIterator[SpeechToTextResult]:
@@ -219,6 +359,7 @@ class BaseSpeechToText(
         :param input:
             In case of bytes input, input treated as an audio-data.
             In case of str input, input treated as a S3 url.
+            In case of bytes/int sequence, input treated as chunks of audio data with integers for silence chunks.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: recognition result
         """
@@ -252,15 +393,16 @@ class AsyncSpeechToText(BaseSpeechToText[AsyncSTTBidirectionalStream, AsyncOpera
     @doc_from(BaseSpeechToText._run)
     async def run(
         self,
-        input: str,
+        input: STTInputType,
         *,
         timeout: float = 60
     ) -> SpeechToTextResult:
         return await self._run(input=input, timeout=timeout)
 
+    @doc_from(BaseSpeechToText._run_stream)
     async def run_stream(
         self,
-        input: str,
+        input: STTInputType,
         *,
         timeout: float = 60
     ) -> AsyncIterator[SpeechToTextResult]:
@@ -270,7 +412,7 @@ class AsyncSpeechToText(BaseSpeechToText[AsyncSTTBidirectionalStream, AsyncOpera
     @doc_from(BaseSpeechToText._run_deferred)
     async def run_deferred(
         self,
-        input: str,
+        input: DeferredSTTInputType,
         *,
         timeout: float = 60
     ) -> AsyncOperation[SpeechToTextResult]:
@@ -288,7 +430,7 @@ class SpeechToText(BaseSpeechToText[STTBidirectionalStream, Operation[SpeechToTe
     @doc_from(BaseSpeechToText._run)
     def run(
         self,
-        input: str,
+        input: STTInputType,
         *,
         timeout: float = 60
     ) -> SpeechToTextResult:
@@ -297,7 +439,7 @@ class SpeechToText(BaseSpeechToText[STTBidirectionalStream, Operation[SpeechToTe
     @doc_from(BaseSpeechToText._run_stream)
     def run_stream(
         self,
-        input: str,
+        input: STTInputType,
         *,
         timeout: float = 60
     ) -> Iterator[SpeechToTextResult]:
@@ -306,7 +448,7 @@ class SpeechToText(BaseSpeechToText[STTBidirectionalStream, Operation[SpeechToTe
     @doc_from(BaseSpeechToText._run_deferred)
     def run_deferred(
         self,
-        input: str,
+        input: DeferredSTTInputType,
         *,
         timeout: float = 60
     ) -> Operation[SpeechToTextResult]:

@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from typing import Union
 
 from typing_extensions import override
+
 from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError
-from yandex_ai_studio_sdk._speechkit.enums import AudioFormat, LanguageCode
+from yandex_ai_studio_sdk._speechkit.enums import AudioFormat, LanguageCode, LanguageCodesInputType
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownInput
 from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 
@@ -14,8 +15,6 @@ from .structures import (
     EndOfUtteranceClassifier, LLMPostProcessing, RecognitionClassifier, SpeechAnalysis, TextNormalization
 )
 
-LanguageCodeInputType = Union[str, LanguageCode]
-LanguageCodesInputType = Union[LanguageCodeInputType, Sequence[LanguageCodeInputType]]
 RecognitionClassifiersInputType = Union[RecognitionClassifier, Sequence[RecognitionClassifier]]
 
 
