@@ -21,6 +21,8 @@ SynthesisResponse = Union[UtteranceSynthesisResponse, StreamSynthesisResponse]
 
 @dataclass(frozen=True)
 class TextToSpeechChunk:
+    """Result chunk of text to speech generation"""
+
     data: bytes
     text: str
     start_ms: int
@@ -52,8 +54,14 @@ class TextToSpeechChunk:
 
 @dataclass(frozen=True)
 class TextToSpeechResult(BaseProtoModelResult[SynthesisResponse, RequestDetails[TextToSpeechConfig]]):
-    """A class representing the partially parsed result of a Web search request
-    with XML format.
+    """A class representing result of a speech generation request.
+
+    In case of different run modes could contain one chunk of data or
+    several data chunks.
+    Class provides identical interface for both cases.
+
+    Also have a rich representation in Jupyter Notebooks.
+
     """
 
     chunks: tuple[TextToSpeechChunk, ...]

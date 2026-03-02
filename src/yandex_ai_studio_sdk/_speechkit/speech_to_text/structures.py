@@ -224,7 +224,7 @@ class WellKnownRecognitionClassifiers(str, Enum):
 class RecognitionClassifier(ProtoBased[ProtoRecognitionClassifier]):
     """Classifier to use in speech recognition.
 
-    For detailed information refer to `documentation
+    For detailed information refer to `classification documentation
     <https://yandex.cloud/docs/speechkit/stt/analysis>`_.
 
     You can pass a string as a trigger:

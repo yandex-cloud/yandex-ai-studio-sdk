@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import Union
 
 from typing_extensions import override
 from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError
@@ -12,6 +13,10 @@ from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 from .structures import (
     EndOfUtteranceClassifier, LLMPostProcessing, RecognitionClassifier, SpeechAnalysis, TextNormalization
 )
+
+LanguageCodeInputType = Union[str, LanguageCode]
+LanguageCodesInputType = Union[LanguageCodeInputType, Sequence[LanguageCodeInputType]]
+RecognitionClassifiersInputType = Union[RecognitionClassifier, Sequence[RecognitionClassifier]]
 
 
 @dataclass(frozen=True)
@@ -27,7 +32,7 @@ class SpeechToTextConfig(BaseModelConfig):
 
     #: The list of `language codes <https://yandex.cloud/docs/speechkit/stt/models>`_
     #: to restrict recognition in the case of an auto model (or just one language code).
-    language_codes: str | LanguageCode | Sequence[str | LanguageCode] | None = None
+    language_codes: LanguageCodesInputType | None = None
 
     #: `Text normalization options <https://yandex.cloud/docs/speechkit/stt/normalization>`_:
     #:
@@ -47,7 +52,7 @@ class SpeechToTextConfig(BaseModelConfig):
 
     #: Classifier or list of
     #: `classifiers over speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
-    recognition_classifiers: RecognitionClassifier | Sequence[RecognitionClassifier] | None = None
+    recognition_classifiers: RecognitionClassifiersInputType | None = None
 
     #: Configuration for
     #: `speech analysis over speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#statistics>`_.

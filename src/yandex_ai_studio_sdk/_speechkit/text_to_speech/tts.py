@@ -29,10 +29,12 @@ class BaseTextToSpeech(
     ModelSyncStreamMixin[TextToSpeechConfig, TextToSpeechResult],
 ):
     """Text to Speech class which provides concrete methods for working with SpeechKit TTS API
-    and incapsulates sintesis setting.
+    and incapsulates synthesis setting.
     """
 
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat` for more convenient access.
     AudioFormat = AudioFormat_
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.LoudnessNormalization` for more convenient access.
     LoudnessNormalization = LoudnessNormalization_
 
     _config_type = TextToSpeechConfig
@@ -64,7 +66,7 @@ class BaseTextToSpeech(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `TTS documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        TTS `documentation <https://yandex.cloud/docs/speechkit/stt>`_
 
         :param loudness_normalization: Specifies type of loudness normalization.
             Default: `LUFS`.
@@ -104,7 +106,7 @@ class BaseTextToSpeech(
 
     @override
     def __repr__(self) -> str:
-        # Web Search doesn't have an uri value, but I'm lazy to refactor
+        # TTS doesn't have an uri value, but I'm lazy to refactor
         # to make an additional ancestor without an uri
         return f'{self.__class__.__name__}(config={self._config})'
 
@@ -115,14 +117,14 @@ class BaseTextToSpeech(
         *,
         timeout: float = 60,
     ) -> TextToSpeechResult:
-        """Run a speech synthesis for given `text` and return joined result.
+        """Run a speech synthesis for given `input` and return joined result.
 
-        To change initial search settings use ``.configure`` method:
+        To change initial tts settings use ``.configure`` method:
 
-        >>> search = sdk.speechkit.text_to_speech(audio_format='mp3')
-        >>> search = search.configure(audio_format='WAV')
+        >>> tts = sdk.speechkit.text_to_speech(audio_format='mp3')
+        >>> tts = tts.configure(audio_format='WAV')
 
-        :param text: Text to vocalize.
+        :param input: Text to vocalize.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: synthesis result; joined in case of >1 chunks in synthesis response.
         """
@@ -144,14 +146,14 @@ class BaseTextToSpeech(
     ) -> AsyncIterator[TextToSpeechResult]:
         """Run a speech synthesis for given text at `input`; method have an iterator return.
 
-        To change initial search settings use ``.configure`` method:
+        To change initial tts settings use ``.configure`` method:
 
-        >>> search = sdk.speechkit.text_to_speech(audio_format='mp3')
-        >>> search = search.configure(audio_format='WAV')
+        >>> tts = sdk.speechkit.text_to_speech(audio_format='mp3')
+        >>> tts = tts.configure(audio_format='WAV')
 
-        :param text: Text to vocalize.
+        :param input: Text to vocalize.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
-        :returns: synthesis result; joined in case of >1 chunks in synthesis response.
+        :returns: synthesis result chunks.
         """
 
         async for proto in self._run_impl(input=input, timeout=timeout):
@@ -264,7 +266,7 @@ class TextToSpeech(BaseTextToSpeech[TTSBidirectionalStream]):
         input: str,
         *,
         timeout: float = 60
-    ):
+    ) -> TextToSpeechResult:
         return self.__run(input=input, timeout=timeout)
 
     @doc_from(BaseTextToSpeech._run_stream)
