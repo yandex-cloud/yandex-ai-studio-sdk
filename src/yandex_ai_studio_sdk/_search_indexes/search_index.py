@@ -19,6 +19,7 @@ from yandex.cloud.ai.assistants.v1.searchindex.search_index_service_pb2 import (
 )
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_service_pb2_grpc import SearchIndexServiceStub
 from yandex.cloud.operation.operation_pb2 import Operation as ProtoOperation
+
 from yandex_ai_studio_sdk._files.file import BaseFile
 from yandex_ai_studio_sdk._types.expiration import ExpirationConfig, ExpirationPolicyAlias
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr, get_defined_value
@@ -166,8 +167,11 @@ class BaseSearchIndex(
 
         return SearchIndexFile._from_proto(proto=response, sdk=self._sdk)
 
-    # pylint: disable=unused-argument
-    async def _transform_add_files(self, proto: BatchCreateSearchIndexFileResponse, timeout: float) -> SearchIndexFileTuple:
+    async def _transform_add_files(
+        self,
+        proto: BatchCreateSearchIndexFileResponse,
+        *_,
+    ) -> SearchIndexFileTuple:
         return tuple(
             SearchIndexFile._from_proto(proto=f, sdk=self._sdk)
             for f in proto.files

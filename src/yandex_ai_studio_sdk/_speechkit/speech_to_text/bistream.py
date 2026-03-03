@@ -7,7 +7,7 @@ from typing import TypeVar
 from yandex_ai_studio_sdk._types.proto import SDKType
 
 from .config import SpeechToTextConfig
-from .result import RequestDetails, SpeechToTextResult
+from .result import SpeechToTextResult
 
 
 class BaseSTTBidirectionalStream:
@@ -33,7 +33,7 @@ class AsyncSTTBidirectionalStream(BaseSTTBidirectionalStream, AsyncIterator[Spee
         """Same as ``.read``, but makes AsyncSTTBidirectionalStream
         eligible to be used as AsyncIterator."""
 
-        return SpeechToTextResult(_request_details=RequestDetails(model_config=self._config, timeout=100500))
+        return SpeechToTextResult(_sdk=self._sdk)
 
     def __aiter__(self) -> AsyncIterator[SpeechToTextResult]:
         return self
@@ -44,7 +44,7 @@ class STTBidirectionalStream(BaseSTTBidirectionalStream, Iterator[SpeechToTextRe
         """Same as ``.read``, but makes STTBidirectionalStream
         eligible to be used as Iterator."""
 
-        return SpeechToTextResult(_request_details=RequestDetails(model_config=self._config, timeout=100500))
+        return SpeechToTextResult(_sdk=self._sdk)
 
 
 STTBidirectionalStreamTypeT = TypeVar('STTBidirectionalStreamTypeT', bound=BaseSTTBidirectionalStream)

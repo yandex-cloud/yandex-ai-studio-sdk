@@ -17,6 +17,7 @@ from .tuning.params import BaseTuningParams
 
 if TYPE_CHECKING:
     from typing_extensions import Self
+
     from yandex_ai_studio_sdk._sdk import BaseSDK
 
 
@@ -128,6 +129,13 @@ class ModelAsyncMixin(
 
     # pylint: disable=unused-argument
     async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
+        """
+        Attaches to an ongoing deferred operation using its operation id.
+
+        :param operation_id: the id of the deferred operation to attach to.
+        :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
+            Defaults to 60 seconds.
+        """
         return self._operation_type(
             id=operation_id,
             sdk=self._sdk,

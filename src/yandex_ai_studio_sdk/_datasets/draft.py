@@ -9,9 +9,12 @@ from typing_extensions import Self
 from yandex.cloud.ai.dataset.v1.dataset_service_pb2 import ValidateDatasetRequest, ValidateDatasetResponse
 from yandex.cloud.ai.dataset.v1.dataset_service_pb2_grpc import DatasetServiceStub
 from yandex.cloud.operation.operation_pb2 import Operation as ProtoOperation
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._types.misc import PathLike, coerce_path
-from yandex_ai_studio_sdk._types.operation import AsyncOperation, Operation, OperationTypeT, ReturnsOperationMixin
+from yandex_ai_studio_sdk._types.operation import (
+    AsyncOperation, BaseOperation, Operation, OperationTypeT, ReturnsOperationMixin
+)
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
@@ -82,6 +85,7 @@ class BaseDatasetDraft(Generic[DatasetTypeT, OperationTypeT], ReturnsOperationMi
         self,
         proto: Any,
         timeout: float,
+        ctx: BaseOperation.Context,  # pylint: disable=unused-argument
         raise_on_validation_failure: bool,
     ) -> DatasetTypeT:
         proto = cast(ValidateDatasetResponse, proto)

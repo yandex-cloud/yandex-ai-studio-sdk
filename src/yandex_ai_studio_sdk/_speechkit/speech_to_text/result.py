@@ -1,31 +1,34 @@
+# pylint: disable=no-name-in-module
 from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass, field
+from typing import TypeVar
 
+from google.protobuf.empty_pb2 import Empty
 from typing_extensions import Self, override
-# pylint: disable-next=no-name-in-module
-from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
-from yandex_ai_studio_sdk._types.request import RequestDetails
-from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, SDKType
+from yandex.cloud.ai.stt.v3.stt_pb2 import DeleteRecognitionRequest, StreamingResponse
+from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
 
-from .config import SpeechToTextConfig
+from yandex_ai_studio_sdk._types.result import BaseProtoResult, SDKType
+from yandex_ai_studio_sdk._utils.doc import doc_from
+from yandex_ai_studio_sdk._utils.sync import run_sync
 
 
 @dataclass(frozen=True)
-class SpeechToTextResult(BaseProtoModelResult[StreamingResponse, RequestDetails[SpeechToTextConfig]]):
+class SpeechToTextResult(BaseProtoResult[StreamingResponse]):
     """A class representing result of speech recognition request.
     """
 
-    _request_details: RequestDetails[SpeechToTextConfig] = field(repr=False)
+    _sdk: SDKType = field(repr=False)
 
     # NB: classmethod and override in opposite order breaking Jedi autocompletion
     @classmethod
     @override
-    # pylint: disable-next=unused-argument
-    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType, ctx: RequestDetails[SpeechToTextConfig]) -> Self:
+    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType) -> Self:
+        print(proto)
         return cls(
-            _request_details=ctx
+            _sdk=sdk,
         )
 
     @classmethod
@@ -33,11 +36,95 @@ class SpeechToTextResult(BaseProtoModelResult[StreamingResponse, RequestDetails[
         cls,
         *,
         proto: Iterable[StreamingResponse],
-        # pylint: disable-next=unused-argument
         sdk: SDKType,
-        ctx: RequestDetails[SpeechToTextConfig]
     ) -> Self:
         print(proto)
         return cls(
-            _request_details=ctx
+            _sdk=sdk,
         )
+
+
+@dataclass(frozen=True)
+class DeferredSpeechToTextBaseResult(SpeechToTextResult):
+    operation_id: str
+
+    async def _delete(self, timeout: float = 60) -> None:
+        """Deletes results of asynchronous recognition."""
+
+        request = DeleteRecognitionRequest(operation_id=self.operation_id)
+        async with self._sdk._client.get_service_stub(AsyncRecognizerStub, timeout=timeout) as stub:
+            await self._sdk._client.call_service(
+                stub.DeleteRecognition,
+                request,
+                timeout=timeout,
+                expected_type=Empty
+            )
+
+    # NB: classmethod and override in opposite order breaking Jedi autocompletion
+    @classmethod
+    @override
+    def _from_proto(
+        cls,
+        *,
+        proto: StreamingResponse,
+        sdk: SDKType,
+        operation_id: str | None = None
+    ) -> Self:
+        assert operation_id
+        raw_result = SpeechToTextResult._from_proto(proto=proto, sdk=sdk)
+
+        return cls(
+            operation_id=operation_id,
+            _sdk=raw_result._sdk,
+        )
+
+    @classmethod
+    def _from_proto_iterable(
+        cls,
+        *,
+        proto: Iterable[StreamingResponse],
+        sdk: SDKType,
+        operation_id: str | None = None
+    ) -> Self:
+        assert operation_id
+        raw_result = SpeechToTextResult._from_proto_iterable(proto=proto, sdk=sdk)
+        return cls(
+            operation_id=operation_id,
+            _sdk=raw_result._sdk,
+        )
+
+
+class AsyncDeferredSpeechToTextResult(DeferredSpeechToTextBaseResult):
+    @doc_from(DeferredSpeechToTextBaseResult._delete)
+    async def delete(self, timeout: float = 60) -> None:
+        await self._delete(timeout=timeout)
+
+
+class DeferredSpeechToTextResult(DeferredSpeechToTextBaseResult):
+    __delete = run_sync(DeferredSpeechToTextBaseResult._delete)
+
+    @doc_from(DeferredSpeechToTextBaseResult._delete)
+    def delete(self, timeout: float = 60) -> None:
+        self.__delete(timeout=timeout)
+
+
+@dataclass(frozen=True)
+class SpeechToTextStreamingEvent(BaseProtoResult[StreamingResponse]):
+    """A class representing streaming event of speech recognition request."""
+
+    _sdk: SDKType = field(repr=False)
+
+    # NB: classmethod and override in opposite order breaking Jedi autocompletion
+    @classmethod
+    @override
+    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType) -> Self:
+        print(proto)
+        return cls(
+            _sdk=sdk,
+        )
+
+
+DeferredSpeechToTextResultTypeT = TypeVar(
+    'DeferredSpeechToTextResultTypeT',
+    bound=DeferredSpeechToTextBaseResult
+)
