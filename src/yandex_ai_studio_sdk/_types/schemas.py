@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Literal, TypedDict, Union
+from typing import Literal, TypeAlias, TypedDict, TypeGuard, Union
 
 from typing_extensions import NotRequired, Required
-from typing import TypeAlias, TypeGuard
 from yandex_ai_studio_sdk._logging import get_logger
 
 logger = get_logger(__name__)

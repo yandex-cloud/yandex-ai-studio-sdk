@@ -3,13 +3,11 @@ from __future__ import annotations
 import asyncio
 import dataclasses
 import functools
-from collections.abc import Awaitable
-from typing import TYPE_CHECKING, Any, TypeVar
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING, Any, Concatenate, TypeVar
 
 from google.protobuf.field_mask_pb2 import FieldMask  # pylint: disable=no-name-in-module
 from typing_extensions import ParamSpec, Self
-from typing import Concatenate
 from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 from .expiration import ExpirationConfig, ExpirationProtoTypeT_contra

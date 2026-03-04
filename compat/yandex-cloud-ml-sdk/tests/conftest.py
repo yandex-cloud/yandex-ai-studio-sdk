@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import os
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 from concurrent import futures
-from collections.abc import Callable
 from unittest.mock import AsyncMock
 
 import grpc.aio

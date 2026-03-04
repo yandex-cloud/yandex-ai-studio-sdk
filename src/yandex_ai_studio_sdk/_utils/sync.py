@@ -3,13 +3,11 @@ from __future__ import annotations
 import asyncio
 import inspect
 import threading
-from collections.abc import AsyncIterator, Awaitable, Iterator
+from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
 from functools import wraps
-from typing import TYPE_CHECKING, Any, TypeVar
-from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, Concatenate, TypeVar
 
 from typing_extensions import ParamSpec
-from typing import Concatenate
 
 if TYPE_CHECKING:
     from yandex_ai_studio_sdk._sdk import BaseSDK
