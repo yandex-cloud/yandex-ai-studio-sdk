@@ -11,7 +11,8 @@ from typing import TYPE_CHECKING, Literal, TypeVar, cast
 
 import grpc
 import grpc.aio
-from typing_extensions import TypeAlias, overload
+from typing_extensions import overload
+from typing import TypeAlias
 
 from ._utils.grpc import (
     UnaryStreamCallResponseIterator, UnaryStreamCallType, UnaryStreamContinuationType, UnaryUnaryContinuationType

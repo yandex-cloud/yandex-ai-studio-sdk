@@ -6,7 +6,7 @@ from functools import cached_property
 from typing import Generic, TypeVar
 
 from google.protobuf.message import Message
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 from yandex.cloud.ai.foundation_models.v1.text_generation.text_generation_service_pb2 import BatchCompletionMetadata
 from yandex.cloud.ai.foundation_models.v1.text_generation.text_generation_service_pb2_grpc import (
     TextGenerationBatchServiceStub

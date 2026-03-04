@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal, Union, cast
 
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 # pylint: disable=no-name-in-module
 from yandex.cloud.ai.assistants.v1.common_pb2 import CallStrategy as ProtoCallStrategy
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType

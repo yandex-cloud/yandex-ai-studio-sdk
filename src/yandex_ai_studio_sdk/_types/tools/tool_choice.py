@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal, TypeVar, Union, cast
 
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 # pylint: disable=no-name-in-module
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import ToolChoice as ProtoCompletionsToolChoice
 from yandex_ai_studio_sdk._tools.tool import FunctionTool

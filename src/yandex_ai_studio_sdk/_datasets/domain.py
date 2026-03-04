@@ -5,7 +5,7 @@ import warnings
 from collections.abc import AsyncIterator, Iterable, Iterator
 from typing import Generic, Union
 
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 from yandex.cloud.ai.dataset.v1.dataset_service_pb2 import (
     CreateDatasetRequest, CreateDatasetResponse, DescribeDatasetRequest, DescribeDatasetResponse, ListDatasetsRequest,
     ListDatasetsResponse, ListUploadFormatsRequest, ListUploadFormatsResponse, ListUploadSchemasRequest,

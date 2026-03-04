@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from typing import Generic, Literal, TypeVar, overload
 
-from typing_extensions import Self, TypeAlias, override
+from typing_extensions import Self, override
+from typing import TypeAlias
 from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchRequest, ImageSearchResponse, ImageSpec
 from yandex.cloud.searchapi.v2.img_search_service_pb2_grpc import ImageSearchServiceStub
 from yandex.cloud.searchapi.v2.search_query_pb2 import SearchQuery

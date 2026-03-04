@@ -4,7 +4,7 @@ import os
 import pathlib
 from typing import Any, TypeVar, Union, cast
 
-from typing_extensions import TypeAlias, TypeGuard
+from typing import TypeAlias, TypeGuard
 
 _T = TypeVar('_T')
 _D = TypeVar('_D')

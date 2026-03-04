@@ -4,7 +4,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TypedDict, Union, cast
 
-from typing_extensions import Self, TypeAlias, override
+from typing_extensions import Self, override
+from typing import TypeAlias
 # pylint: disable=no-name-in-module
 from yandex.cloud.searchapi.v2.gen_search_service_pb2 import GenSearchRequest
 from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError

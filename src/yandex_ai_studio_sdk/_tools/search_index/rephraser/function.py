@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Literal, Union
 
-from typing_extensions import TypeAlias, override
+from typing_extensions import override
+from typing import TypeAlias
 from yandex_ai_studio_sdk._models.completions.function import BaseCompletions
 
 from .model import Rephraser

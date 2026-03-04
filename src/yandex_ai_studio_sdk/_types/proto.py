@@ -5,7 +5,8 @@ import dataclasses
 from typing import TYPE_CHECKING, Any, Generic, Protocol, TypeVar, runtime_checkable
 
 from google.protobuf.message import Message as ProtoMessage
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self
+from typing import TypeAlias
 from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 if TYPE_CHECKING:

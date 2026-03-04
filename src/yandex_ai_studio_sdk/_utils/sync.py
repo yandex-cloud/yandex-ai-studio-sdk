@@ -5,9 +5,11 @@ import inspect
 import threading
 from collections.abc import AsyncIterator, Awaitable, Iterator
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
+from collections.abc import Callable
 
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import ParamSpec
+from typing import Concatenate
 
 if TYPE_CHECKING:
     from yandex_ai_studio_sdk._sdk import BaseSDK
