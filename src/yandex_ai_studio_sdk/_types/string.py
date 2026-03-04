@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Union
-
-from typing_extensions import TypeAlias
+from typing import TypeAlias, Union
 
 SmartStringSequence: TypeAlias = Union[str, Sequence[str]]
 

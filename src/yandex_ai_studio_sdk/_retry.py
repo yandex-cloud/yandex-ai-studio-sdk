@@ -7,11 +7,11 @@ import uuid
 from collections.abc import AsyncIterator, Iterable
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Literal, TypeVar, cast
+from typing import TYPE_CHECKING, Literal, TypeAlias, TypeVar, cast
 
 import grpc
 import grpc.aio
-from typing_extensions import TypeAlias, overload
+from typing_extensions import overload
 
 from ._utils.grpc import (
     UnaryStreamCallResponseIterator, UnaryStreamCallType, UnaryStreamContinuationType, UnaryUnaryContinuationType

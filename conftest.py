@@ -21,8 +21,7 @@ langchain_paths = [
 ]
 
 def pytest_ignore_collect(collection_path, config):  # pylint: disable=unused-argument
-    if sys.version_info > (3, 9):
-        return None
+    return None
 
     base_path = pathlib.Path(__file__).parent
     for suffix in langchain_paths:

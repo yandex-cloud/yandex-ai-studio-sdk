@@ -1,9 +1,9 @@
 # pylint: disable=arguments-renamed,no-name-in-module,redefined-builtin,protected-access
 from __future__ import annotations
 
-from typing import Generic, Literal, TypeVar, overload
+from typing import Generic, Literal, TypeAlias, TypeVar, overload
 
-from typing_extensions import Self, TypeAlias, override
+from typing_extensions import Self, override
 from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchRequest, ImageSearchResponse, ImageSpec
 from yandex.cloud.searchapi.v2.img_search_service_pb2_grpc import ImageSearchServiceStub
 from yandex.cloud.searchapi.v2.search_query_pb2 import SearchQuery

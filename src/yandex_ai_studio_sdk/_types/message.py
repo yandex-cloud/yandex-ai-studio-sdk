@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol, TypedDict, Union, runtime_checkable
+from typing import Protocol, TypeAlias, TypedDict, Union, runtime_checkable
 
-from typing_extensions import NotRequired, Required, TypeAlias
+from typing_extensions import NotRequired, Required
 
 
 @dataclass(frozen=True)

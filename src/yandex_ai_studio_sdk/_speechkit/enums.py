@@ -4,9 +4,9 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 from enum import Enum
-from typing import TypeVar, Union
+from typing import TypeAlias, TypeVar, Union
 
-from typing_extensions import Never, TypeAlias
+from typing_extensions import Never
 from yandex.cloud.ai.stt.v3.stt_pb2 import AudioFormatOptions as STTAudioFormatOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import ContainerAudio as STTContainerAudio
 from yandex.cloud.ai.stt.v3.stt_pb2 import DefaultEouClassifier

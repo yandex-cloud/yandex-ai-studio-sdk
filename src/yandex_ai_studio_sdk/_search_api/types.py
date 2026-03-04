@@ -7,9 +7,9 @@ from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import ClassVar, Generic, TypeVar, Union, overload
+from typing import ClassVar, Generic, TypeAlias, TypeVar, Union, overload
 
-from typing_extensions import Self, TypeAlias, override
+from typing_extensions import Self, override
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchResponse
 # pylint: disable-next=no-name-in-module

@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import abc
 import dataclasses
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, TypeAlias, TypeVar
 
 from google.protobuf.message import Message as ProtoMessage
-from typing_extensions import Self, TypeAlias
+from typing_extensions import Self
 
 from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 

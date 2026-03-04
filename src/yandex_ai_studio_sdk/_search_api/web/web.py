@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Generic, Literal, TypeVar, overload
+from typing import Generic, Literal, TypeAlias, TypeVar, overload
 
-from typing_extensions import Self, TypeAlias, override
+from typing_extensions import Self, override
 from yandex.cloud.operation.operation_pb2 import Operation as ProtoOperation
 from yandex.cloud.searchapi.v2.search_query_pb2 import SearchMetadata, SearchQuery
 from yandex.cloud.searchapi.v2.search_service_pb2 import GroupSpec, SortSpec, WebSearchRequest, WebSearchResponse
