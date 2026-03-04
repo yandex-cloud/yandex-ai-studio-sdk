@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import abc
 import asyncio
-from collections.abc import Awaitable, Iterable
+from collections.abc import Awaitable, Callable, Iterable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, ClassVar, Generic, TypeVar, cast, get_origin
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, TypeVar, cast, get_origin
 
 from google.protobuf.message import Message
 from typing_extensions import Self

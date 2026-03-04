@@ -1,2 +1,2 @@
-langchain-core>=0.3; python_version >= '3.9'
+langchain-core>=0.3
 numpy

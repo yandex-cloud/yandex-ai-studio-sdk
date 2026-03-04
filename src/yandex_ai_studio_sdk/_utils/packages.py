@@ -4,7 +4,8 @@ import functools
 import importlib.metadata
 import inspect
 import types
-from typing import Callable, TypeVar
+from collections.abc import Callable
+from typing import TypeVar
 
 import packaging.specifiers
 import packaging.version
