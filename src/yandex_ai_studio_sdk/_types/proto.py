@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import dataclasses
-from typing import TYPE_CHECKING, Any, Generic, Protocol, TypeAlias, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Any, Generic, TypeAlias, TypeVar
 
 from google.protobuf.message import Message as ProtoMessage
 from typing_extensions import Self
