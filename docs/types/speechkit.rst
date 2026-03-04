@@ -15,7 +15,7 @@ Text to speech
 Speech to text
 --------------
 
-.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.SpeechToTextResult
+.. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.result
    :undoc-members:
 
 .. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.structures
