@@ -9,12 +9,12 @@ from typing import TypeAlias, TypeVar, Union
 from typing_extensions import Never
 from yandex.cloud.ai.stt.v3.stt_pb2 import AudioFormatOptions as STTAudioFormatOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import ContainerAudio as STTContainerAudio
-from yandex.cloud.ai.stt.v3.stt_pb2 import DefaultEouClassifier
 from yandex.cloud.ai.stt.v3.stt_pb2 import RawAudio as STTRawAudio
 from yandex.cloud.ai.tts.v3.tts_pb2 import AudioFormatOptions as TTSAudioFormatOptions
 from yandex.cloud.ai.tts.v3.tts_pb2 import ContainerAudio as TTSContainerAudio
 from yandex.cloud.ai.tts.v3.tts_pb2 import LoudnessNormalizationType
 from yandex.cloud.ai.tts.v3.tts_pb2 import RawAudio as TTSRawAudio
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UnknownEnumValue
 )
@@ -154,17 +154,6 @@ class LoudnessNormalization(ProtoBasedEnum):
     MAX_PEAK = LoudnessNormalizationType.MAX_PEAK
     #: The type of normalization based on EBU R 128 recommendation
     LUFS = LoudnessNormalizationType.LUFS
-
-
-class EouSensitivity(ProtoBasedEnum):
-    __proto_enum_type__ = DefaultEouClassifier.EouSensitivity
-    __common_prefix__ = ''
-    __unspecified_name__ = 'EOU_SENSITIVITY_UNSPECIFIED'
-
-    #: Default and more conservative EOU detector.
-    DEFAULT = DefaultEouClassifier.EouSensitivity.DEFAULT
-    #: A high-sensitive and fast EOU detector, which may produce more false positives
-    HIGH = DefaultEouClassifier.EouSensitivity.HIGH
 
 
 class LanguageCode(str, Enum):

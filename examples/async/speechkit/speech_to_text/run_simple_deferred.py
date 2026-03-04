@@ -39,13 +39,13 @@ async def main() -> None:
     )
 
     # most simple deferred pipeline:
-    operation = await stt.run_deferred(voice_data.data)
+    operation = await stt.run_deferred(voice_data)
     result = await operation.wait()
     print(result)
     await result.delete()
 
     # showcase on operation restore
-    operation = await stt.run_deferred(voice_data.data)
+    operation = await stt.run_deferred(voice_data)
     try:
         # NB: we are not assigning this call to a variable
         # to showcase result fetching later
@@ -59,7 +59,7 @@ async def main() -> None:
         await restored_operation.wait(poll_timeout=100)
 
     # also you can get result at any time
-    result = sdk.speechkit.speech_to_text.get_recognition_result(operation.id)
+    result = await sdk.speechkit.speech_to_text.get_recognition_result(operation.id)
     # and not forget to clean it
     await result.delete()
 

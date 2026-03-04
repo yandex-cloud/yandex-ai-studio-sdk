@@ -12,6 +12,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import (
     SpeechAnalysisOptions, StreamingOptions, StreamingRequest, StreamingResponse, SummarizationOptions
 )
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub, RecognizerStub
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LanguageCode as LanguageCode_
@@ -481,7 +482,7 @@ class AsyncSpeechToText(
         input: DeferredSTTInputType,
         *,
         timeout: float = 60
-    ) -> AsyncOperation[SpeechToTextResult]:
+    ) -> AsyncOperation[AsyncDeferredSpeechToTextResult]:
         return await self._run_deferred(input=input, timeout=timeout)
 
     @doc_from(BaseSpeechToText._attach_deferred)
@@ -533,7 +534,7 @@ class SpeechToText(
         input: DeferredSTTInputType,
         *,
         timeout: float = 60
-    ) -> Operation[SpeechToTextResult]:
+    ) -> Operation[DeferredSpeechToTextResult]:
         return self.__run_deferred(input=input, timeout=timeout)
 
     @doc_from(BaseSpeechToText._attach_deferred)
@@ -541,7 +542,7 @@ class SpeechToText(
         self,
         operation_id: str,
         timeout: float = 60
-    ) -> AsyncOperation[AsyncDeferredSpeechToTextResult]:
+    ) -> Operation[DeferredSpeechToTextResult]:
         return self.__attach_deferred(operation_id=operation_id, timeout=timeout)
 
 SpeechToTextTypeT = TypeVar('SpeechToTextTypeT', bound=BaseSpeechToText)

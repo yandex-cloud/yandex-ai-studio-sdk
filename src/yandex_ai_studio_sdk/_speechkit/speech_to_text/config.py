@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from typing_extensions import override
+
 from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat, LanguageCode, LanguageCodesInputType
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownInput
@@ -61,7 +62,7 @@ class SpeechToTextConfig(BaseModelConfig):
 
     #: Configuration for
     #: `LLM recognition results processing <https://yandex.cloud/docs/speechkit/stt/llm-results>`_.
-    #: At some point in historu also known as ``Summarization``.
+    #: At some point in history also known as ``Summarization``.
     llm_post_process: LLMPostProcessing | None = None
 
     @override
@@ -85,15 +86,15 @@ class SpeechToTextConfig(BaseModelConfig):
         else:
             language_codes = self.language_codes
 
-        if not language_codes:
-            raise AIStudioConfigurationError("language_codes configuration parameter can't be empty")
-
         if not isinstance(language_codes, Sequence):
             raise AIStudioConfigurationError(
                 'language_codes configuration parameter could be only '
                 'str, LanguageCode or sequence of either, '
                 f'got {self.language_codes}'
             )
+
+        if not language_codes:
+            raise AIStudioConfigurationError("language_codes configuration parameter can't be empty")
 
         for language_code in language_codes:
             try:
