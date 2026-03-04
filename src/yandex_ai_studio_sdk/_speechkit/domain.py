@@ -3,6 +3,7 @@ from __future__ import annotations
 from yandex_ai_studio_sdk._types.domain import DomainWithFunctions
 from yandex_ai_studio_sdk._utils.doc import doc_from
 
+from .enums import AudioFormat as AudioFormat_
 from .speech_to_text.function import AsyncSpeechToTextFunction, BaseSpeechToTextFunction, SpeechToTextFunction
 from .text_to_speech.function import AsyncTextToSpeechFunction, BaseTextToSpeechFunction, TextToSpeechFunction
 
@@ -11,6 +12,9 @@ class BaseSpeechKitDomain(DomainWithFunctions):
     """
     Domain for working with `Yandex SpeechKit services <https://yandex.cloud/docs/speechkit/>`_.
     """
+
+    #: Synonym for :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat`
+    AudioFormat = AudioFormat_
 
     #: API for `text to speech <https://yandex.cloud/docs/speechkit/tts/>`_ service
     text_to_speech: BaseTextToSpeechFunction

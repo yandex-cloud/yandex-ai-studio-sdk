@@ -5,7 +5,9 @@ from collections.abc import AsyncIterator, Iterator
 from typing import Generic, TypeVar
 
 from typing_extensions import Self, override
-from yandex.cloud.ai.tts.v3.tts_pb2 import DurationHint, Hints, UtteranceSynthesisRequest, UtteranceSynthesisResponse
+from yandex.cloud.ai.tts.v3.tts_pb2 import (
+    AudioFormatOptions, DurationHint, Hints, UtteranceSynthesisRequest, UtteranceSynthesisResponse
+)
 from yandex.cloud.ai.tts.v3.tts_service_pb2_grpc import SynthesizerStub
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
@@ -172,7 +174,7 @@ class BaseTextToSpeech(
         c = self._config
         c._validate_run()
 
-        output_audio_spec =  AudioFormat_._to_proto(c.audio_format)
+        output_audio_spec =  AudioFormat_._to_proto(AudioFormatOptions, c.audio_format)
 
         hints: list[Hints] = []
         _p = DurationHint.DurationHintPolicy

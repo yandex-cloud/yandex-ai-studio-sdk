@@ -31,6 +31,19 @@ class ProtoBased(abc.ABC, Generic[ProtoMessageTypeT]):
         raise NotImplementedError()
 
 
+class ProtoSerializable(abc.ABC, Generic[ProtoMessageTypeT]):
+    @abc.abstractmethod
+    def _to_proto(self, sdk: BaseSDK) -> ProtoMessageTypeT:
+        raise NotImplementedError()
+
+    @classmethod
+    def _coerce_to_proto(cls, sdk: BaseSDK, value: Self | None) -> ProtoMessageTypeT | None:
+        if value is None:
+            return None
+
+        return value._to_proto(sdk)
+
+
 class ProtoBasedWithCtx(abc.ABC, Generic[ProtoMessageTypeT, ContextTypeT]):
     @classmethod
     @abc.abstractmethod

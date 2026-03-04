@@ -202,6 +202,10 @@ class OperationInterface(abc.ABC, Generic[AnyResultTypeT_co, OperationStatusType
 class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, OperationStatus]):
     _last_known_status: OperationStatus | None
 
+    @dataclass
+    class Context:
+        id: str
+
     def __init__(
         self,
         *,
@@ -212,7 +216,7 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         proto_metadata_type: type[Message] | None = None,
         initial_operation: ProtoOperation | None = None,
         service_name: str | None = None,
-        transformer: None | Callable[[Any, float], Awaitable[ResultTypeT_co]] = None,
+        transformer: None | Callable[[Any, float, BaseOperation.Context], Awaitable[ResultTypeT_co]] = None,
         custom_default_poll_timeout: int = 3600,
     ):  # pylint: disable=redefined-builtin
         self._id = id
@@ -241,7 +245,12 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         return f'{self.__class__.__name__}<{args}>'
 
     # pylint: disable=unused-argument
-    async def _default_result_transofrmer(self, proto: Any, timeout: float) -> ResultTypeT_co:
+    async def _default_result_transofrmer(
+        self,
+        proto: Any,
+        timeout: float,
+        ctx: BaseOperation.Context,  # pylint: disable=unused-argument
+    ) -> ResultTypeT_co:
         # NB: default_result_transformer should be used only with _result_type
         # which are BaseProtoResult-compatible, but I don't know how to express it with typing,
         # maybe we need special operation class, which support transforming (probably a base one)
@@ -318,7 +327,13 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
             proto_result = self._proto_result_type()
             status.response.Unpack(proto_result)
 
-            return await self._transformer(proto_result, timeout)
+            return await self._transformer(
+                proto_result,
+                timeout,
+                self.Context(
+                    id=self.id
+                )
+            )
 
         if status.is_failed:
             assert status.error is not None
