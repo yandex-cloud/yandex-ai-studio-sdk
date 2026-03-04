@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import AsyncIterator, Awaitable
-from typing import Callable, Generic, TypeVar, Union
+from collections.abc import AsyncIterator, Awaitable, Callable
+from typing import Generic, TypeAlias, TypeVar, Union
 
 import grpc
 import grpc.aio
 from grpc.aio._typing import RequestType, ResponseType
-from typing_extensions import TypeAlias
 
 UnaryUnaryCallType: TypeAlias = grpc.aio.UnaryUnaryCall[RequestType, ResponseType]
 UnaryStreamCallType: TypeAlias = grpc.aio.UnaryStreamCall[RequestType, ResponseType]

@@ -3,9 +3,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Union
+from typing import TypeAlias, Union
 
-from typing_extensions import TypeAlias
 # pylint: disable=no-name-in-module
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import ReasoningOptions as ProtoReasoningOptions
 from yandex_ai_studio_sdk._tools.tool import FunctionTool

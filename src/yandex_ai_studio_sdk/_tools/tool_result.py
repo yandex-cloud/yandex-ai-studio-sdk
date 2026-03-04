@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import TypedDict, TypeVar, Union, cast
+from typing import TypeAlias, TypedDict, TypeVar, Union, cast
 
-from typing_extensions import NotRequired, Required, TypeAlias
+from typing_extensions import NotRequired, Required
 from yandex.cloud.ai.assistants.v1.common_pb2 import FunctionResult as ProtoAssistantFunctionResult
 from yandex.cloud.ai.assistants.v1.common_pb2 import ToolResult as ProtoAssistantToolResult
 from yandex.cloud.ai.assistants.v1.common_pb2 import ToolResultList as ProtoAssistantToolResultList

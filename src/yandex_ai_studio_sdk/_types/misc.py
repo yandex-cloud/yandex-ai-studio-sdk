@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import os
 import pathlib
-from typing import Any, TypeVar, Union, cast
-
-from typing_extensions import TypeAlias, TypeGuard
+from typing import Any, TypeAlias, TypeGuard, TypeVar, Union, cast
 
 _T = TypeVar('_T')
 _D = TypeVar('_D')
