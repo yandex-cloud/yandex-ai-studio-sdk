@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TypeVar
+
 from .json import JsonBased
 from .proto import ProtoBased, ProtoBasedWithCtx, ProtoMessage, ProtoMessageTypeT, SDKType
 from .request import RequestDetailsTypeT
@@ -24,3 +26,6 @@ class BaseProtoModelResult(
 
 class BaseJsonResult(BaseResult, JsonBased):
     pass
+
+
+ProtoModelResultTypeT = TypeVar('ProtoModelResultTypeT', bound=BaseProtoModelResult)
