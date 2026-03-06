@@ -7,11 +7,10 @@ from typing import Generic, Literal, TypeVar, Union, cast
 from google.protobuf.empty_pb2 import Empty
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import (
-    AudioChunk, AudioFormatOptions, EouClassifierOptions, ExternalEouClassifier, LanguageRestrictionOptions,
-    RecognitionClassifierOptions, RecognitionModelOptions, RecognizeFileRequest, SilenceChunk, SpeakerLabelingOptions,
-    SpeechAnalysisOptions, StreamingOptions, StreamingRequest, StreamingResponse, SummarizationOptions
+    AudioChunk, SilenceChunk, StreamingOptions, StreamingRequest, StreamingResponse
 )
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub, RecognizerStub
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LanguageCode as LanguageCode_
@@ -35,6 +34,7 @@ from .structures import LLMPostProcessing as LLMPostProcessing_
 from .structures import RecognitionClassifier as RecognitionClassifier_
 from .structures import SpeechAnalysis as SpeechAnalysis_
 from .structures import TextNormalization as TextNormalization_
+from .utils import create_recognize_file_request, create_streaming_options
 
 logger = get_logger(__name__)
 
@@ -160,89 +160,6 @@ class BaseSpeechToText(
         # to make an additional ancestor without an uri
         return f'{self.__class__.__name__}(config={self._config})'
 
-    def _create_recognition_model_options(self, mode: Literal['real_time', 'full_data']) -> RecognitionModelOptions:
-        c = self._config
-
-        language_restriction = LanguageRestrictionOptions(
-            language_code=LanguageCode_._coerce_to_proto(c.language_codes),
-            restriction_type=LanguageRestrictionOptions.LanguageRestrictionType.WHITELIST,
-        ) if c.language_codes else None
-
-        text_normalization = TextNormalization_._coerce_to_proto(
-            self._sdk,
-            TextNormalization_._coerce(c.text_normalization),
-        )
-
-        audio_processing_type = {
-            'real_time': RecognitionModelOptions.AudioProcessingType.REAL_TIME,
-            'full_data': RecognitionModelOptions.AudioProcessingType.FULL_DATA,
-        }[mode]
-
-        return RecognitionModelOptions(
-            audio_format=AudioFormat_._to_proto(AudioFormatOptions, c.audio_format),  # type: ignore[arg-type]
-            audio_processing_type=audio_processing_type,
-            language_restriction=language_restriction,
-            model=c.model or '',
-            text_normalization=text_normalization,
-        )
-
-    def _create_speech_analysis(self) -> SpeechAnalysisOptions | None:
-        return SpeechAnalysis_._coerce_to_proto(self._sdk, self._config.speech_analysis)
-
-    def _create_speaker_labeling(self) -> SpeakerLabelingOptions:
-        speaker_labeling = {
-            True: SpeakerLabelingOptions.SpeakerLabeling.SPEAKER_LABELING_ENABLED,
-            False: SpeakerLabelingOptions.SpeakerLabeling.SPEAKER_LABELING_DISABLED,
-            None: SpeakerLabelingOptions.SpeakerLabeling.SPEAKER_LABELING_UNSPECIFIED,
-        }[self._config.speaker_labeling]
-        return SpeakerLabelingOptions(speaker_labeling=speaker_labeling)
-
-    def _create_summarization(self) -> SummarizationOptions | None:
-        return LLMPostProcessing_._coerce_to_proto(self._sdk, self._config.llm_post_process)
-
-    def _create_classifiers(self) -> RecognitionClassifierOptions:
-        classifiers = None
-        if raw_classifiers := self._config.recognition_classifiers:
-            list_classifiers: list[RecognitionClassifier_]
-            if isinstance(raw_classifiers, RecognitionClassifier_):
-                list_classifiers = [raw_classifiers]
-            else:
-                list_classifiers = list(raw_classifiers)
-
-            classifiers = [c._to_proto(self._sdk) for c in list_classifiers]
-        return RecognitionClassifierOptions(
-            classifiers=classifiers,
-        )
-
-    # pylint: disable-next=too-many-locals
-    def _create_streaming_options(
-        self,
-        mode: Literal['real_time', 'full_data'],
-    ) -> StreamingOptions:
-        c = self._config
-
-        eou_classifier: EouClassifierOptions | None = None
-        if eou := c.eou_classifier:  # EndOfUtteranceClassifier or True
-            assert isinstance(eou, (bool, EndOfUtteranceClassifier_))
-            eou_classifier = EouClassifierOptions(
-                default_classifier=EndOfUtteranceClassifier_._coerce_to_proto(
-                    self._sdk,
-                    EndOfUtteranceClassifier_._coerce(eou),
-                )
-            )
-        elif c.eou_classifier is False:
-            eou_classifier = EouClassifierOptions(
-                external_classifier=ExternalEouClassifier()
-            )
-
-        return StreamingOptions(
-            recognition_model=self._create_recognition_model_options(mode),
-            eou_classifier=eou_classifier,
-            recognition_classifier=self._create_classifiers(),
-            speaker_labeling=self._create_speaker_labeling(),
-            speech_analysis=self._create_speech_analysis(),
-            summarization=self._create_summarization(),
-        )
 
     def _coerce_streaming_input(
         self,
@@ -285,7 +202,11 @@ class BaseSpeechToText(
         timeout: float,
         mode: Literal['real_time', 'full_data'],
     ) -> AsyncIterator[StreamingResponse]:
-        options = self._create_streaming_options(mode=mode)
+        options = create_streaming_options(
+            sdk=self._sdk,
+            config=self._config,
+            mode=mode
+        )
         input_list = self._coerce_streaming_input(raw_input)
 
         async with self._client.get_service_stub(RecognizerStub, timeout=timeout) as stub:
@@ -368,12 +289,9 @@ class BaseSpeechToText(
         :returns: Operation object.
         """
 
-        request = RecognizeFileRequest(
-            recognition_classifier=self._create_classifiers(),
-            recognition_model=self._create_recognition_model_options('full_data'),
-            speaker_labeling=self._create_speaker_labeling(),
-            speech_analysis=self._create_speech_analysis(),
-            summarization=self._create_summarization(),
+        request = create_recognize_file_request(
+            sdk=self._sdk,
+            config=self._config
         )
         if isinstance(input, str):
             request.uri = input
