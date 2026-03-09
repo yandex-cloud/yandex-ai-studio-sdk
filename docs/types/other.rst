@@ -93,6 +93,12 @@ Generic types
 .. py:class:: yandex_ai_studio_sdk._speechkit.speech_to_text.bistream.STTBidirectionalStreamTypeT
 
 
+.. py:class:: yandex_ai_studio_sdk._speechkit.bistream.InputTypeT
+
+
+.. py:class:: yandex_ai_studio_sdk._types.result.ProtoModelResultTypeT
+
+
 Miscellaneous types
 ~~~~~~~~~~~~~~~~~~~
 
