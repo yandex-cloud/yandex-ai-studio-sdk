@@ -9,9 +9,13 @@ from google.protobuf.empty_pb2 import Empty
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import DeleteRecognitionRequest, StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
-from yandex_ai_studio_sdk._types.result import BaseProtoResult, SDKType
+
+from yandex_ai_studio_sdk._types.request import RequestDetails
+from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, BaseProtoResult, SDKType
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
+
+from .config import SpeechToTextConfig
 
 
 @dataclass(frozen=True)
@@ -108,7 +112,7 @@ class DeferredSpeechToTextResult(DeferredSpeechToTextBaseResult):
 
 
 @dataclass(frozen=True)
-class SpeechToTextStreamingEvent(BaseProtoResult[StreamingResponse]):
+class SpeechToTextStreamingEvent(BaseProtoModelResult[StreamingResponse, RequestDetails[SpeechToTextConfig]]):
     """A class representing streaming event of speech recognition request."""
 
     _sdk: SDKType = field(repr=False)
@@ -116,7 +120,7 @@ class SpeechToTextStreamingEvent(BaseProtoResult[StreamingResponse]):
     # NB: classmethod and override in opposite order breaking Jedi autocompletion
     @classmethod
     @override
-    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType) -> Self:
+    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType, ctx: RequestDetails[SpeechToTextConfig]) -> Self:
         print(proto)
         return cls(
             _sdk=sdk,

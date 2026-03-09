@@ -96,7 +96,7 @@ class BaseBidirectionalStream(
     def _create_request(self, input: InputTypeT) -> RequestTypeT:
         pass
 
-    async def _write(self, input: InputTypeT) -> None:
+    async def _write_request(self, request: RequestTypeT) -> None:
         """Write a input to be synthesized"""
         async with self._done_writing_lock:
             if self._done_writing_flag:
@@ -106,10 +106,15 @@ class BaseBidirectionalStream(
                 )
 
             call = await self._get_call()
-            request = self._create_request(input)
 
             with self._client.with_sdk_error(self._stub_class):
                 await call.write(request)
+
+    async def _write(self, input: InputTypeT) -> None:
+        """Send given input into the stream."""
+
+        request = self._create_request(input)
+        await self._write_request(request)
 
     async def _read(self) -> ProtoModelResultTypeT | None:
         """Read chunk of synthesized result.

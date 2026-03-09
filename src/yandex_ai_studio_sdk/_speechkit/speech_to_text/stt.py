@@ -26,8 +26,8 @@ from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
 from .bistream import AsyncSTTBidirectionalStream, STTBidirectionalStream, STTBidirectionalStreamTypeT
 from .config import LanguageCodesInputType, RecognitionClassifiersInputType, SpeechToTextConfig
 from .result import (
-    AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, SpeechToTextResult,
-    SpeechToTextStreamingEvent
+    AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, RequestDetails,
+    SpeechToTextResult, SpeechToTextStreamingEvent
 )
 from .structures import EndOfUtteranceClassifier as EndOfUtteranceClassifier_
 from .structures import LLMPostProcessing as LLMPostProcessing_
@@ -346,6 +346,10 @@ class BaseSpeechToText(
             yield SpeechToTextStreamingEvent._from_proto(
                 proto=proto,
                 sdk=self._sdk,
+                ctx=RequestDetails(
+                    model_config=self._config,
+                    timeout=timeout
+                )
             )
 
     def create_bistream(self, *, timeout: float = 10 * 60) -> STTBidirectionalStreamTypeT:

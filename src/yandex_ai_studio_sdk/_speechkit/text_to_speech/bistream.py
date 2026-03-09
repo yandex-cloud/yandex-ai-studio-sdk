@@ -1,9 +1,8 @@
 # pylint: disable=no-name-in-module,redefined-builtin,protected-access
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TypeVar
 
-import grpc.aio
 from yandex.cloud.ai.tts.v3.tts_pb2 import (
     AudioFormatOptions, ForceSynthesisEvent, StreamSynthesisRequest, StreamSynthesisResponse, SynthesisInput,
     SynthesisOptions
@@ -19,14 +18,6 @@ from yandex_ai_studio_sdk._utils.sync import run_sync
 
 from .config import TextToSpeechConfig
 from .result import TextToSpeechResult
-
-if TYPE_CHECKING:
-    # because grpc have a very funny type stubs which are not 100% synced with grpc itself
-    EOFType = grpc.aio._EOFType
-    EOF = EOFType()
-else:
-    EOF = grpc.aio.EOF
-    EOFType = type(EOF)
 
 
 class BaseTTSBidirectionalStream(
@@ -78,12 +69,10 @@ class BaseTTSBidirectionalStream(
     async def _flush(self) -> None:
         """Send message to server to force synthesis with already given input"""
 
-        call = await self._get_call()
-        with self._client.with_sdk_error(SynthesizerStub):
-            request = StreamSynthesisRequest(
-                force_synthesis=ForceSynthesisEvent()
-            )
-            await call.write(request)
+        request = StreamSynthesisRequest(
+            force_synthesis=ForceSynthesisEvent()
+        )
+        await self._write_request(request)
 
 
 class AsyncTTSBidirectionalStream(
