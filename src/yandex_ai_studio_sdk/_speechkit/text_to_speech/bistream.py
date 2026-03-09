@@ -8,7 +8,6 @@ from yandex.cloud.ai.tts.v3.tts_pb2 import (
     SynthesisOptions
 )
 from yandex.cloud.ai.tts.v3.tts_service_pb2_grpc import SynthesizerStub
-
 from yandex_ai_studio_sdk._speechkit.bistream import (
     AsyncBidirectionalStreamMixin, BaseBidirectionalStream, BidirectionalStreamMixin
 )

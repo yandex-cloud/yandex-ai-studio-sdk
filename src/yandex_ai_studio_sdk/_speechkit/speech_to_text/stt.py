@@ -10,7 +10,6 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import (
     AudioChunk, SilenceChunk, StreamingOptions, StreamingRequest, StreamingResponse
 )
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub, RecognizerStub
-
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LanguageCode as LanguageCode_
