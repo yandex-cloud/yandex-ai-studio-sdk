@@ -35,7 +35,8 @@ class WikiFileSource(BaseFileSource):
 
         # Extract site domain from first page URL
         parsed = urlparse(page_urls[0])
-        self.site = mwclient.Site(parsed.netloc, path=parsed.path.split("/wiki/")[0] + "/")
+        path_prefix = parsed.path.split("/wiki/")[0]
+        self.site = mwclient.Site(parsed.netloc, path=(path_prefix or "/w") + "/")
 
         if username and password:
             self.site.login(username, password)

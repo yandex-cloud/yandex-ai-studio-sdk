@@ -12,15 +12,6 @@ DEFAULT_MAX_CHUNK_SIZE_TOKENS = 800
 DEFAULT_CHUNK_OVERLAP_TOKENS = 400
 """Default chunk overlap in tokens (OpenAI uses 400 for auto strategy)"""
 
-DEFAULT_FILE_PATTERN = "**/*"
-"""Default glob pattern for file matching"""
-
-DEFAULT_RECURSIVE = True
-"""Default behavior for recursive directory scanning"""
-
-PROGRESS_BAR_FORMAT = "{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]"
-"""Format for tqdm progress bar"""
-
 BYTES_PER_MB = 1024 * 1024
 """Bytes per megabyte for display"""
 
