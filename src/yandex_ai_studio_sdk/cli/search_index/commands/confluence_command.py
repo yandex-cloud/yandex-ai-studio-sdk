@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import click
-
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.confluence import ConfluenceExportFormat, ConfluenceFileSource
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
