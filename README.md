@@ -109,3 +109,24 @@ langchain_result = model.invoke([
 ```
 
 For more LangChain integration examples look into `examples/langchain` folder.
+
+## CLI
+
+The SDK ships a command-line tool for building vector search indexes from local
+files, S3-compatible storage, MediaWiki pages, and Confluence:
+
+```bash
+# Install base CLI (local files + Confluence)
+pip install yandex-ai-studio-sdk
+
+# With S3 / Yandex Object Storage support
+pip install "yandex-ai-studio-sdk[cli-s3]"
+
+# With Wikipedia / MediaWiki support
+pip install "yandex-ai-studio-sdk[cli-wiki]"
+
+yandex-ai-studio vector-stores local docs/*.pdf --name "My index"
+```
+
+See the full CLI reference in
+[`src/yandex_ai_studio_sdk/cli/search_index/README.md`](src/yandex_ai_studio_sdk/cli/search_index/README.md).

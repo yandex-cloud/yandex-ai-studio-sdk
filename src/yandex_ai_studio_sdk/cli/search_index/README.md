@@ -22,17 +22,27 @@ pip install "yandex-ai-studio-sdk[cli-wiki,cli-s3]"
 
 ## Authentication
 
-Every command requires a Yandex Cloud folder ID and an authentication
-credential. Pass them on the command line or via environment variables.
+Every command requires a Yandex Cloud folder ID. Authentication is resolved
+automatically in the following order — no `--auth` flag is required if any of
+these is available:
+
+1. `--auth` flag / `YC_API_KEY` / `YC_IAM_TOKEN` environment variable
+2. `yc` CLI — if the [Yandex Cloud CLI](https://yandex.cloud/docs/cli/) is
+   installed and configured, its credentials are used automatically
+3. Compute metadata service — on Yandex Compute Cloud VMs authentication works
+   out of the box with no configuration
 
 | Option | Environment variable | Description |
 |--------|----------------------|-------------|
 | `--folder-id` | `YC_FOLDER_ID` | Yandex Cloud folder ID |
-| `--auth` | `YC_API_KEY` | API key, IAM token, or OAuth token |
+| `--auth` | `YC_API_KEY` | API key for explicit authentication |
+| `--auth` | `YC_IAM_TOKEN` | IAM token for explicit authentication |
 
 ```bash
 export YC_FOLDER_ID=b1g...
 export YC_API_KEY=AQVN...
+# or
+export YC_IAM_TOKEN=t1.9euelZ...
 ```
 
 ## Usage
@@ -254,7 +264,7 @@ All subcommands accept the following options.
 | Option | Env var | Description |
 |--------|---------|-------------|
 | `--folder-id TEXT` | `YC_FOLDER_ID` | Yandex Cloud folder ID |
-| `--auth TEXT` | `YC_API_KEY` | Authentication credential |
+| `--auth TEXT` | `YC_API_KEY` or `YC_IAM_TOKEN` | Authentication credential (optional, see [Authentication](#authentication)) |
 | `--endpoint URL` | — | Custom API endpoint |
 
 ### Index settings
