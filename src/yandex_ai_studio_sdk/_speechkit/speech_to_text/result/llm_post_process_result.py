@@ -7,7 +7,6 @@ from typing import overload
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import Summarization
-
 from yandex_ai_studio_sdk._models.completions.result import Usage
 from yandex_ai_studio_sdk._speechkit.speech_to_text.config import SpeechToTextConfig
 from yandex_ai_studio_sdk._types.proto import ProtoBasedWithCtx, SDKType

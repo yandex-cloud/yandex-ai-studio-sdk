@@ -6,7 +6,6 @@ import asyncio
 import pprint
 
 import numpy as np
-
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 SAMPLERATE = 44100

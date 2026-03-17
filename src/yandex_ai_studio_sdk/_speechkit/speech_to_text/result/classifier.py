@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import PhraseHighlight as ProtoPhraseHighlight
 from yandex.cloud.ai.stt.v3.stt_pb2 import RecognitionClassifierUpdate
-
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, ProtoBasedEnum
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
 

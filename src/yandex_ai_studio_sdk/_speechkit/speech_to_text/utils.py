@@ -8,7 +8,6 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import (
     RecognitionClassifierOptions, RecognitionModelOptions, RecognizeFileRequest, SpeakerLabelingOptions,
     SpeechAnalysisOptions, StreamingOptions, SummarizationOptions
 )
-
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat, LanguageCode
 from yandex_ai_studio_sdk._types.proto import SDKType
 

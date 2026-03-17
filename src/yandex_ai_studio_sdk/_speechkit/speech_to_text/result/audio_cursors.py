@@ -4,7 +4,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from yandex.cloud.ai.stt.v3.stt_pb2 import AudioCursors as ProtoAudioCursors
-
 from yandex_ai_studio_sdk._types.proto import ProtoMirrored
 
 
