@@ -13,7 +13,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import Word as ProtoWord
 
 from yandex_ai_studio_sdk._types.proto import ProtoBased, ProtoMirrored, SDKType
 
-from .utils import NotNoneReprMixin, TimeSpan
+from .utils import TimeSpan
 
 
 @dataclass(frozen=True)
@@ -36,7 +36,7 @@ class Word(ProtoBased[ProtoWord]):
 
 
 @dataclass(frozen=True, repr=False)
-class Alternative(NotNoneReprMixin, ProtoMirrored[ProtoAlternative]):
+class Alternative(ProtoMirrored[ProtoAlternative]):
     """Recognition of specific time frame."""
 
     #: Words in time frame.
