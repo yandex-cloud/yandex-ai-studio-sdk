@@ -7,6 +7,7 @@ from typing_extensions import override
 from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2 import GetRecognitionRequest
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
+
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownInput
 from yandex_ai_studio_sdk._types.function import BaseModelFunction
@@ -18,11 +19,13 @@ from .config import LanguageCodesInputType, RecognitionClassifiersInputType, Spe
 from .result import AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT
 from .structures import EndOfUtteranceClassifier, LLMPostProcessing, SpeechAnalysis, TextNormalization
 from .stt import AsyncSpeechToText, SpeechToText, SpeechToTextTypeT
+from .synonyms import SynonymsMixin
 
 
 class BaseSpeechToTextFunction(
     Generic[SpeechToTextTypeT, DeferredSpeechToTextResultTypeT],
-    BaseModelFunction[SpeechToTextTypeT]
+    BaseModelFunction[SpeechToTextTypeT],
+    SynonymsMixin
 ):
     """Speech to Text function for creating speech recognition object which provides
     methods for invoking recognition.

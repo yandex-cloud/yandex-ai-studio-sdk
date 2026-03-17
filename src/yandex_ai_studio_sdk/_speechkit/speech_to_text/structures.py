@@ -6,7 +6,7 @@ from abc import abstractmethod
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
+from typing import Any, cast
 
 from typing_extensions import Self
 # pylint: disable=no-name-in-module
@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -264,10 +265,11 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
         assert isinstance(triggers, tuple)
         assert all(isinstance(t, RecognitionTriggerType) for t in triggers)
 
-        return ProtoRecognitionClassifier(
+        result = ProtoRecognitionClassifier(
             classifier=self.name,
             triggers=triggers
         )
+        return result
 
     @classmethod
     def on_utterance(cls, name: str) -> Self:
@@ -286,7 +288,7 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
 
 
 @dataclass(frozen=True)
-class SpeechAnalysis(ProtoBasedWithBoolDefault[ProtoSpeechAnalysisOptions]):
+class SpeechAnalysis(ProtoSerializable[ProtoSpeechAnalysisOptions]):
     """Class which encapsulates
     `speech analysis settings <https://yandex.cloud/docs/speechkit/stt/analysis>`_"""
 
@@ -314,7 +316,7 @@ class SpeechAnalysis(ProtoBasedWithBoolDefault[ProtoSpeechAnalysisOptions]):
 
 
 @dataclass
-class LLMPostProcessingInstruction:
+class LLMPostProcessingInstruction(ProtoSerializable[SummarizationProperty]):
     """Class for encapsulating exactly one post processing settings."""
 
     #: Instruction for model.
@@ -330,6 +332,14 @@ class LLMPostProcessingInstruction:
     #: * pydantic model or pydantic dataclass
     #:   (which will be transformed into JsonSchema by SDK);
     response_format: ResponseType | None
+
+    def _to_proto(self, sdk: SDKType) -> SummarizationProperty:
+        response_format_kwargs = make_response_format_kwargs(self.response_format)
+        response_format_kwargs_rich: dict[str, Any] = response_format_kwargs or {'json_object': False}
+        return SummarizationProperty(
+            instruction=self.instruction,
+            **response_format_kwargs_rich
+        )
 
 
 @dataclass(frozen=True)
@@ -422,12 +432,9 @@ class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
                 'use .with_instruction method to add instructions to the object'
             )
 
-        return ProtoSummarizationOptions(
+        result = ProtoSummarizationOptions(
             model_uri=uri,
-            properties=[
-                SummarizationProperty(
-                    instruction=i.instruction,
-                    **make_response_format_kwargs(i.response_format)
-                ) for i in self.instructions
-            ]
+            properties=[i._to_proto(sdk) for i in self.instructions],
         )
+        print(result)
+        return result

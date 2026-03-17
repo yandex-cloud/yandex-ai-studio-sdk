@@ -10,9 +10,9 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import (
     AudioChunk, SilenceChunk, StreamingOptions, StreamingRequest, StreamingResponse
 )
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub, RecognizerStub
+
 from yandex_ai_studio_sdk._logging import get_logger
-from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
-from yandex_ai_studio_sdk._speechkit.enums import LanguageCode as LanguageCode_
+from yandex_ai_studio_sdk._speechkit.enums import AudioFormat
 from yandex_ai_studio_sdk._types.enum import UndefinedOrEnumWithUnknownInput
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
 from yandex_ai_studio_sdk._types.model import ModelAsyncMixin, ModelSyncMixin, ModelSyncStreamMixin
@@ -28,11 +28,8 @@ from .result import (
     AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, RequestDetails,
     SpeechToTextResult, SpeechToTextStreamingEvent
 )
-from .structures import EndOfUtteranceClassifier as EndOfUtteranceClassifier_
-from .structures import LLMPostProcessing as LLMPostProcessing_
-from .structures import RecognitionClassifier as RecognitionClassifier_
-from .structures import SpeechAnalysis as SpeechAnalysis_
-from .structures import TextNormalization as TextNormalization_
+from .structures import EndOfUtteranceClassifier, LLMPostProcessing, SpeechAnalysis, TextNormalization
+from .synonyms import SynonymsMixin
 from .utils import create_recognize_file_request, create_streaming_options
 
 logger = get_logger(__name__)
@@ -47,32 +44,11 @@ class BaseSpeechToText(
     ModelSyncMixin[SpeechToTextConfig, SpeechToTextResult],
     ModelSyncStreamMixin[SpeechToTextConfig, SpeechToTextStreamingEvent],
     ModelAsyncMixin[SpeechToTextConfig, DeferredSpeechToTextResultTypeT, OperationTypeT],
+    SynonymsMixin
 ):
     """Speech To Text class which provides concrete methods for working with SpeechKit STT API
     and incapsulates speech recognition settings.
     """
-
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat`
-    #: for more convenient access.
-    AudioFormat = AudioFormat_
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.RecognitionClassifier`
-    #: for more convenient access.
-    RecognitionClassifier = RecognitionClassifier_
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.EndOfUtteranceClassifier`
-    #: for more convenient access.
-    EndOfUtteranceClassifier = EndOfUtteranceClassifier_
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.LLMPostProcessing`
-    #: for more convenient access.
-    LLMPostProcessing = LLMPostProcessing_
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.SpeechAnalysis`
-    #: for more convenient access.
-    SpeechAnalysis = SpeechAnalysis_
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.speech_to_text.structures.TextNormalization`
-    #: for more convenient access.
-    TextNormalization = TextNormalization_
-    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.LanguageCode`
-    #: for more convenient access.
-    LanguageCode = LanguageCode_
 
     _config_type = SpeechToTextConfig
     _result_type = SpeechToTextResult
@@ -86,17 +62,17 @@ class BaseSpeechToText(
     def configure(  # type: ignore[override]
         self,
         *,
-        audio_format: UndefinedOrEnumWithUnknownInput[AudioFormat_] | None = UNDEFINED,
+        audio_format: UndefinedOrEnumWithUnknownInput[AudioFormat] | None = UNDEFINED,
         model: UndefinedOr[str] | None = UNDEFINED,
         language_codes: UndefinedOr[LanguageCodesInputType] | None = UNDEFINED,
-        text_normalization: UndefinedOr[TextNormalization_ | bool] | None = UNDEFINED,
-        eou_classifier: UndefinedOr[EndOfUtteranceClassifier_ | bool] | None= UNDEFINED,
+        text_normalization: UndefinedOr[TextNormalization | bool] | None = UNDEFINED,
+        eou_classifier: UndefinedOr[EndOfUtteranceClassifier | bool] | None= UNDEFINED,
         recognition_classifiers: (
             UndefinedOr[RecognitionClassifiersInputType | bool] | None
         ) = UNDEFINED,
-        speech_analysis: UndefinedOr[SpeechAnalysis_] | None = UNDEFINED,
+        speech_analysis: UndefinedOr[SpeechAnalysis] | None = UNDEFINED,
         speaker_labeling: UndefinedOr[bool] | None = UNDEFINED,
-        llm_post_process: UndefinedOr[LLMPostProcessing_] | None = UNDEFINED,
+        llm_post_process: UndefinedOr[LLMPostProcessing] | None = UNDEFINED,
     ) -> Self:
         """
         Returns the new object with config fields overrode by passed values.

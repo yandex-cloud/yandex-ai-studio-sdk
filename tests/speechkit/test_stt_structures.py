@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._speechkit.speech_to_text.structures import (
     EndOfUtteranceClassifier, EndOfUtteranceSensitivity, LLMPostProcessing, LLMPostProcessingInstruction,
@@ -163,7 +164,7 @@ def test_llm_post_processing(async_sdk: AsyncAIStudio, folder_id: str) -> None:
         model_uri=f'gpt://{folder_id}/some_model/latest',
         properties=[SummarizationProperty(
             instruction='foo',
-            json_object=None,  # type: ignore[arg-type]
+            json_object=False,
             json_schema=None,
         )]
     )

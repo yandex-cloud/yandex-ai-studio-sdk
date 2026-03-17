@@ -42,6 +42,9 @@ class ProtoSerializable(abc.ABC, Generic[ProtoMessageTypeT]):
         if value is None:
             return None
 
+        if not isinstance(value, ProtoSerializable):
+            raise TypeError(f'{value!r} is not proto serializable')
+
         return value._to_proto(sdk)
 
 

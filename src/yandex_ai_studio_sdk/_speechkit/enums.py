@@ -123,10 +123,14 @@ class AudioFormat(ProtoBasedEnum):
                 TTSAudioFormatOptions: TTSRawAudio,
             }[proto_type]
             encoding = getattr(raw_audio_type, 'AudioEncoding')
+            kwargs = {}
+            if raw_audio_type is STTRawAudio and value.channels > 1:
+                kwargs['audio_channel_count'] = value.channels
             return proto_type(
                 raw_audio=raw_audio_type(
                     audio_encoding=encoding.LINEAR16_PCM,
                     sample_rate_hertz=value.sample_rate_hertz,
+                    **kwargs,
                 )
             )
 
