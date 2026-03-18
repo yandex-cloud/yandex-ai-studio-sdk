@@ -7,14 +7,15 @@ from typing import overload
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import Summarization
+
 from yandex_ai_studio_sdk._models.completions.result import Usage
-from yandex_ai_studio_sdk._speechkit.speech_to_text.config import SpeechToTextConfig
 from yandex_ai_studio_sdk._types.proto import ProtoBasedWithCtx, SDKType
-from yandex_ai_studio_sdk._types.request import RequestDetails
+
+from .context import RequestDetails
 
 
 @dataclass(frozen=True)
-class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails[SpeechToTextConfig]], Sequence):
+class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails], Sequence):
     """Result of the LLM postprocessing"""
 
     #: A set of statistics describing the number of content tokens used by the completion model.
@@ -23,10 +24,12 @@ class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails[Speec
     #: text results returned by model
     texts: tuple[str, ...]
     #: instructions given to model
-    instructions: tuple[str, ...]
+    instructions: tuple[str, ...] | None
 
     @property
     def by_instructions(self) -> dict[str, str]:
+        if not self.instructions:
+            raise RuntimeError('by_instructions field is unavailable with deferred recognition')
         return dict(zip(self.instructions, self.texts))
 
     @classmethod
@@ -36,13 +39,12 @@ class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails[Speec
         *,
         proto: Summarization,
         sdk: SDKType,
-        ctx: RequestDetails[SpeechToTextConfig]
+        ctx: RequestDetails
     ) -> Self:
-        instructions: tuple[str, ...]
-        if config := ctx.model_config.llm_post_process:
-            instructions = tuple(i.instruction for i in config.instructions)
-        else:
-            instructions = ('<sdk> somewhy instructions are missing',)
+        instructions: tuple[str, ...] | None = None
+        if ctx.model_config:
+            if config := ctx.model_config.llm_post_process:
+                instructions = tuple(i.instruction for i in config.instructions)
 
         return cls(
             texts=tuple(property.response for property in proto.results),

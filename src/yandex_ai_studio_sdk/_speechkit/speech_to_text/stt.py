@@ -10,6 +10,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import (
     AudioChunk, SilenceChunk, StreamingOptions, StreamingRequest, StreamingResponse
 )
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub, RecognizerStub
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat
 from yandex_ai_studio_sdk._types.enum import UndefinedOrEnumWithUnknownInput
@@ -24,9 +25,10 @@ from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
 from .bistream import AsyncSTTBidirectionalStream, STTBidirectionalStream, STTBidirectionalStreamTypeT
 from .config import LanguageCodesInputType, RecognitionClassifiersInputType, SpeechToTextConfig
 from .result import (
-    AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, RequestDetails,
-    SpeechToTextResult, SpeechToTextStreamingEvent
+    AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, SpeechToTextResult,
+    SpeechToTextStreamingEvent
 )
+from .result.context import RequestDetails
 from .structures import EndOfUtteranceClassifier, LLMPostProcessing, SpeechAnalysis, TextNormalization
 from .synonyms import SynonymsMixin
 from .utils import create_recognize_file_request, create_streaming_options
@@ -221,9 +223,14 @@ class BaseSpeechToText(
         ):
             result.append(proto)
 
+        ctx = RequestDetails(
+            model_config=self._config,
+        )
+
         return self._result_type._from_proto_iterable(
             proto=result,
             sdk=self._sdk,
+            ctx=ctx,
         )
 
     async def _deferred_result_transformer(
@@ -322,7 +329,6 @@ class BaseSpeechToText(
                 sdk=self._sdk,
                 ctx=RequestDetails(
                     model_config=self._config,
-                    timeout=timeout
                 )
             )
 

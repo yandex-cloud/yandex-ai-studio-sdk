@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TypeVar
 
 from .json import JsonBased
-from .proto import ProtoBased, ProtoBasedWithCtx, ProtoMessage, ProtoMessageTypeT, SDKType
-from .request import RequestDetailsTypeT
+from .proto import ContextTypeT, ProtoBased, ProtoBasedWithCtx, ProtoMessage, ProtoMessageTypeT, SDKType
 
 # it is left here until further refactoring
 __all__ = ['ProtoMessage', 'BaseProtoResult', 'SDKType', 'BaseResult', 'BaseJsonResult']
@@ -20,7 +19,7 @@ class BaseProtoResult(BaseResult, ProtoBased[ProtoMessageTypeT]):
 
 class BaseProtoModelResult(
     BaseResult,
-    ProtoBasedWithCtx[ProtoMessageTypeT, RequestDetailsTypeT],
+    ProtoBasedWithCtx[ProtoMessageTypeT, ContextTypeT],
 ):
     pass
 

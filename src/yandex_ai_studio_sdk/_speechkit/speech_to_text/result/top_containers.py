@@ -4,22 +4,22 @@ from __future__ import annotations
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, TypeVar
+from typing import Any, ClassVar, TypeVar
 
 from google.protobuf.empty_pb2 import Empty
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import DeleteRecognitionRequest, StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
-from yandex_ai_studio_sdk._speechkit.speech_to_text.config import SpeechToTextConfig
+
 from yandex_ai_studio_sdk._types.proto import ProtoBased
-from yandex_ai_studio_sdk._types.request import RequestDetails
-from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, BaseProtoResult, SDKType
+from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, BaseResult, SDKType
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
 from .alternatives import Alternatives, FinalRefinement
 from .audio_cursors import AudioCursors
 from .classifier import ClassifierUpdate
+from .context import RequestDetails
 from .conversation_analysis import ConversationAnalysis
 from .llm_post_process_result import LLMPostProcessResult
 from .speaker_analysis import SpeakerAnalysis
@@ -50,20 +50,11 @@ class SpeechToTextStreamingEventType(str, Enum):
 
 
 @dataclass(frozen=True)
-class SpeechToTextResult(BaseProtoResult[StreamingResponse]):
+class SpeechToTextResult(BaseResult):
     """A class representing result of speech recognition request.
     """
 
     _sdk: SDKType = field(repr=False)
-
-    # NB: classmethod and override in opposite order breaking Jedi autocompletion
-    @classmethod
-    @override
-    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType) -> Self:
-        print(proto)
-        return cls(
-            _sdk=sdk,
-        )
 
     @classmethod
     def _from_proto_iterable(
@@ -71,8 +62,10 @@ class SpeechToTextResult(BaseProtoResult[StreamingResponse]):
         *,
         proto: Iterable[StreamingResponse],
         sdk: SDKType,
+        ctx: RequestDetails,
     ) -> Self:
-        print(proto)
+        events = [SpeechToTextStreamingEvent._from_proto(proto=p, sdk=sdk, ctx=ctx) for p in proto]
+        print(events)
         return cls(
             _sdk=sdk,
         )
@@ -94,34 +87,16 @@ class DeferredSpeechToTextBaseResult(SpeechToTextResult):
                 expected_type=Empty
             )
 
-    # NB: classmethod and override in opposite order breaking Jedi autocompletion
     @classmethod
-    @override
-    def _from_proto(
-        cls,
-        *,
-        proto: StreamingResponse,
-        sdk: SDKType,
-        operation_id: str | None = None
-    ) -> Self:
-        assert operation_id
-        raw_result = SpeechToTextResult._from_proto(proto=proto, sdk=sdk)
-
-        return cls(
-            operation_id=operation_id,
-            _sdk=raw_result._sdk,
-        )
-
-    @classmethod
-    def _from_proto_iterable(
+    def _from_proto_iterable_operation(
         cls,
         *,
         proto: Iterable[StreamingResponse],
         sdk: SDKType,
-        operation_id: str | None = None
+        ctx: RequestDetails,
+        operation_id: str,
     ) -> Self:
-        assert operation_id
-        raw_result = SpeechToTextResult._from_proto_iterable(proto=proto, sdk=sdk)
+        raw_result = SpeechToTextResult._from_proto_iterable(proto=proto, sdk=sdk, ctx=ctx)
         return cls(
             operation_id=operation_id,
             _sdk=raw_result._sdk,
@@ -145,11 +120,15 @@ class DeferredSpeechToTextResult(DeferredSpeechToTextBaseResult):
 @dataclass(frozen=True)
 # pylint: disable=too-many-instance-attributes
 class SpeechToTextStreamingEvent(
-    BaseProtoModelResult[StreamingResponse, RequestDetails[SpeechToTextConfig]],
+    BaseProtoModelResult[StreamingResponse, RequestDetails],
 ):
     """A class representing streaming event of speech recognition request."""
 
     _sdk: SDKType = field(repr=False)
+
+    #: Field role is required to be compatible with TextMessage Protocol, to
+    #: other part of SDK could use this object an input.
+    role: ClassVar[str] = 'user'
 
     #: str/enum representation of event type
     event_type: SpeechToTextStreamingEventType
@@ -195,10 +174,30 @@ class SpeechToTextStreamingEvent(
     #: Result of llm post_process, may be also known as `Summarization` at some old documentation.
     llm_post_process_result: LLMPostProcessResult | None = None
 
+    @property
+    def final_text(self) -> str | None:
+        """Helper for ``result.final.text if result.final else None``"""
+        return self.final.text if self.final else None
+
+    @property
+    def final_refinement_text(self) -> str | None:
+        """Helper for ``result.final_refinement.text if result.final_refinement else None``"""
+        return self.final_refinement.text if self.final_refinement else None
+
+    @property
+    def partial_text(self) -> str | None:
+        """Helper for ``result.partial.text if result.partial else None``"""
+        return self.partial.text if self.partial else None
+
+    @property
+    def text(self) -> str | None:
+        """Helper for getting refined, final or partial text if event have any"""
+        return self.final_refinement_text or self.final_text or self.partial_text
+
     # NB: classmethod and override in opposite order breaking Jedi autocompletion
     @classmethod
     @override
-    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType, ctx: RequestDetails[SpeechToTextConfig]) -> Self:
+    def _from_proto(cls, *, proto: StreamingResponse, sdk: SDKType, ctx: RequestDetails) -> Self:
         value: Any = None
         event_type: SpeechToTextStreamingEventType
 
