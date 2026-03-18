@@ -14,7 +14,6 @@ from yandex.cloud.ai.tts.v3.tts_pb2 import AudioFormatOptions as TTSAudioFormatO
 from yandex.cloud.ai.tts.v3.tts_pb2 import ContainerAudio as TTSContainerAudio
 from yandex.cloud.ai.tts.v3.tts_pb2 import LoudnessNormalizationType
 from yandex.cloud.ai.tts.v3.tts_pb2 import RawAudio as TTSRawAudio
-
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UnknownEnumValue
 )
@@ -123,10 +122,14 @@ class AudioFormat(ProtoBasedEnum):
                 TTSAudioFormatOptions: TTSRawAudio,
             }[proto_type]
             encoding = getattr(raw_audio_type, 'AudioEncoding')
+            kwargs = {}
+            if raw_audio_type is STTRawAudio and value.channels > 1:
+                kwargs['audio_channel_count'] = value.channels
             return proto_type(
                 raw_audio=raw_audio_type(
                     audio_encoding=encoding.LINEAR16_PCM,
                     sample_rate_hertz=value.sample_rate_hertz,
+                    **kwargs,
                 )
             )
 

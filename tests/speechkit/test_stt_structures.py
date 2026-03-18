@@ -163,7 +163,7 @@ def test_llm_post_processing(async_sdk: AsyncAIStudio, folder_id: str) -> None:
         model_uri=f'gpt://{folder_id}/some_model/latest',
         properties=[SummarizationProperty(
             instruction='foo',
-            json_object=None,  # type: ignore[arg-type]
+            json_object=False,
             json_schema=None,
         )]
     )

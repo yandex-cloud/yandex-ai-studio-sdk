@@ -23,22 +23,48 @@ async def main() -> None:
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE),
     )
     stt = sdk.speechkit.speech_to_text(
+        model='general',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE),
-        language_codes='en_EN',
+        # Classifiers working only with russian language, so in purpose of this
+        # example we use russian
+        language_codes='ru_RU',
+        recognition_classifiers=(
+            sdk.speechkit.speech_to_text.RecognitionClassifier.on_utterance('informal_greeting'),
+        ),
+    )
+    stt = stt.configure(
+        recognition_classifiers=(
+            # you could also use the shortcuts for all of the data structures
+            stt.RecognitionClassifier.on_utterance('informal_greeting'),
+            stt.RecognitionClassifier.on_utterance(
+                stt.RecognitionClassifier.WellKnown.informal_farewell,
+            ),
+        )
     )
     bistream = stt.create_bistream()
 
     async def producer():
-        async for input_chunk in tts.run_stream('Hello! How are you? ' * 10):
-            print(f'Sending {len(input_chunk.data)=} bytes')
+        async for input_chunk in tts.run_stream('Привет! Как дела?'):
+            print(f'>>> Sending {len(input_chunk.data)=} bytes')
             await bistream.write(input_chunk.data)
+
+        await asyncio.sleep(1)
+
+        print('>>> Sending 1 second of silence')
+        await bistream.write_silence(1000)
+
+        await asyncio.sleep(1)
+
+        input_chunk = await tts.run('Хорошего вечера, пока!')
+        print(f'>>> Sending {len(input_chunk.data)=} bytes')
+        await bistream.write(input_chunk.data)
 
         await bistream.done_writing()
 
     task = asyncio.create_task(producer())
 
     async for recognition_result in bistream:
-        print(f'got new {recognition_result=}')
+        print(f'<<< got new {recognition_result=}')
 
     await task
 

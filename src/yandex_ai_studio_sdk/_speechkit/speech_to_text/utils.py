@@ -38,7 +38,9 @@ def _create_recognition_model_options(
     }[mode]
 
     return RecognitionModelOptions(
-        audio_format=AudioFormat._to_proto(AudioFormatOptions, config.audio_format),  # type: ignore[arg-type]
+        audio_format=AudioFormat._to_proto(
+            AudioFormatOptions, AudioFormat._coerce(config.audio_format),
+        ),  # type: ignore[arg-type]
         audio_processing_type=audio_processing_type,
         language_restriction=language_restriction,
         model=config.model or '',

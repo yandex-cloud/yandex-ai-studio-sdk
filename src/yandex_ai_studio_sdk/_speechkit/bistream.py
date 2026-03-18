@@ -69,7 +69,7 @@ class BaseBidirectionalStream(
     async def _create_call(self, timeout: float) -> grpc.aio.StreamStreamCall:
         pass
 
-    async def _get_call(self):
+    async def _get_call(self) -> grpc.aio.StreamStreamCall:
         if self.__call is not None:
             return self.__call
 
@@ -137,10 +137,14 @@ class BaseBidirectionalStream(
     async def _gen(self) -> AsyncGenerator[ProtoModelResultTypeT]:
         """Returns generator over all synthesized result parts."""
 
-        chunk = await self._read()
-        while chunk is not None:
-            yield chunk
+        try:
             chunk = await self._read()
+            while chunk is not None:
+                yield chunk
+                chunk = await self._read()
+        except:
+            await self._release()
+            raise
 
     async def _done_writing(self) -> None:
         """Close the stream to tell to a server you done writing.
@@ -155,6 +159,13 @@ class BaseBidirectionalStream(
             self._done_writing_flag = True
             with self._client.with_sdk_error(self._stub_class):
                 await call.done_writing()
+
+    async def _release(self) -> None:
+        try:
+            await self._done_writing()
+        finally:
+            if self.__call:
+                self.__call.cancel()
 
 
 class AsyncBidirectionalStreamMixin(
@@ -189,7 +200,11 @@ class AsyncBidirectionalStreamMixin(
         """Same as ``.read``, but makes AsyncBidirectionalStream
         eligible to be used as AsyncIterator."""
 
-        result = await self._read()
+        try:
+            result = await self._read()
+        except:
+            await self._release()
+            raise
         if result is None:
             raise StopAsyncIteration
         return result

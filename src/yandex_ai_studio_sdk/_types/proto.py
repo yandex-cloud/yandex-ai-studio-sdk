@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, Generic, TypeAlias, TypeVar
 
 from google.protobuf.message import Message as ProtoMessage
 from typing_extensions import Self
-
 from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 if TYPE_CHECKING:
@@ -41,6 +40,9 @@ class ProtoSerializable(abc.ABC, Generic[ProtoMessageTypeT]):
     def _coerce_to_proto(cls, sdk: BaseSDK, value: Self | None) -> ProtoMessageTypeT | None:
         if value is None:
             return None
+
+        if not isinstance(value, ProtoSerializable):
+            raise TypeError(f'{value!r} is not proto serializable')
 
         return value._to_proto(sdk)
 

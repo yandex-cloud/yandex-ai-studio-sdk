@@ -122,6 +122,8 @@ Miscellaneous types
 
 .. py:class:: yandex_ai_studio_sdk._types.enum.UnknownEnumValue
 
+.. py:class:: yandex_ai_studio_sdk._types.enum.EnumWithUnknownAlias
+
 .. py:class:: yandex_ai_studio_sdk._search_api.utils.NestedDict
 
 

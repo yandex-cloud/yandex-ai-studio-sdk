@@ -18,11 +18,13 @@ from .config import LanguageCodesInputType, RecognitionClassifiersInputType, Spe
 from .result import AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT
 from .structures import EndOfUtteranceClassifier, LLMPostProcessing, SpeechAnalysis, TextNormalization
 from .stt import AsyncSpeechToText, SpeechToText, SpeechToTextTypeT
+from .synonyms import SynonymsMixin
 
 
 class BaseSpeechToTextFunction(
     Generic[SpeechToTextTypeT, DeferredSpeechToTextResultTypeT],
-    BaseModelFunction[SpeechToTextTypeT]
+    BaseModelFunction[SpeechToTextTypeT],
+    SynonymsMixin
 ):
     """Speech to Text function for creating speech recognition object which provides
     methods for invoking recognition.
