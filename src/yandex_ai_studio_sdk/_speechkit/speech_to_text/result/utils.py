@@ -11,5 +11,10 @@ class TimeSpan:
     #: Audio segment end time.
     end_time_ms: int
 
+    @property
+    def length_ms(self) -> int:
+        """Return length of given time span in milliseconds"""
+        return self.end_time_ms - self.start_time_ms
+
     def __repr__(self) -> str:
         return f'[{self.start_time_ms}-{self.end_time_ms}]ms'

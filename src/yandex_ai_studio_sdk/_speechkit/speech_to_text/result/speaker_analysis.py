@@ -6,6 +6,7 @@ from typing import Any
 
 from typing_extensions import override
 from yandex.cloud.ai.stt.v3.stt_pb2 import SpeakerAnalysis as ProtoSpeakerAnalysis
+
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, ProtoBasedEnum
 from yandex_ai_studio_sdk._types.proto import ProtoMirrored, SDKType
 
@@ -26,7 +27,6 @@ class SpeakerAnalysis(ProtoMirrored[ProtoSpeakerAnalysis]):
         LAST_UTTERANCE = ProtoSpeakerAnalysis.WindowType.LAST_UTTERANCE
         #: Stats for all received audio
         TOTAL = ProtoSpeakerAnalysis.WindowType.TOTAL
-
 
     #: Audio segment boundaries
     timespan: TimeSpan

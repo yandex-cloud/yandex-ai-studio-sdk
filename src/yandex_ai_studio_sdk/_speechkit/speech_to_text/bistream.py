@@ -5,6 +5,7 @@ from typing import TypeVar
 
 from yandex.cloud.ai.stt.v3.stt_pb2 import AudioChunk, Eou, SilenceChunk, StreamingRequest, StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import RecognizerStub
+
 from yandex_ai_studio_sdk._speechkit.bistream import (
     AsyncBidirectionalStreamMixin, BaseBidirectionalStream, BidirectionalStreamMixin
 )
@@ -97,6 +98,8 @@ class AsyncSTTBidirectionalStream(
     async def write_end_of_utterance(self) -> None:
         await self._write_end_of_utterance()
 
+    eou = write_end_of_utterance
+
 
 class STTBidirectionalStream(
     BaseSTTBidirectionalStream,
@@ -120,6 +123,8 @@ class STTBidirectionalStream(
     @doc_from(BaseSTTBidirectionalStream._write_end_of_utterance)
     def write_end_of_utterance(self) -> None:
         self.__write_end_of_utterance()
+
+    eou = write_end_of_utterance
 
 
 STTBidirectionalStreamTypeT = TypeVar('STTBidirectionalStreamTypeT', bound=BaseSTTBidirectionalStream)

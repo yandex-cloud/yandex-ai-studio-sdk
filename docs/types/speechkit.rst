@@ -35,6 +35,9 @@ Speech to text
 .. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier.ClassifierUpdate
    :exclude-members: to_bytes,from_bytes
 
+.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier.ClassifierResult
+   :exclude-members: to_bytes,from_bytes
+
 .. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier.PhraseHighlight
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.descriptive_statistics.DescriptiveStatistics

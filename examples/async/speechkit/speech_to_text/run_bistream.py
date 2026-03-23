@@ -41,30 +41,36 @@ async def main() -> None:
             ),
         )
     )
+
     bistream = stt.create_bistream()
 
     async def producer():
         async for input_chunk in tts.run_stream('Привет! Как дела?'):
-            print(f'>>> Sending {len(input_chunk.data)=} bytes')
+            seconds = len(input_chunk.data) / SAMPLERATE
+            print(f'>>> Sending {seconds} seconds of data')
             await bistream.write(input_chunk.data)
 
         await asyncio.sleep(1)
 
-        print('>>> Sending 1 second of silence')
-        await bistream.write_silence(1000)
+        silence = 2
+        print(f'>>> Sending {silence} seconds of silence')
+        await bistream.write_silence(1000 * silence)
 
         await asyncio.sleep(1)
 
         input_chunk = await tts.run('Хорошего вечера, пока!')
-        print(f'>>> Sending {len(input_chunk.data)=} bytes')
+        seconds = len(input_chunk.data) / SAMPLERATE
+        print(f'>>> Sending {seconds} seconds data')
         await bistream.write(input_chunk.data)
 
         await bistream.done_writing()
 
     task = asyncio.create_task(producer())
 
-    async for recognition_result in bistream:
-        print(f'<<< got new {recognition_result=}')
+    async for recognition_event in bistream:
+        if recognition_event.event_type == 'status_code':
+            continue
+        print(f'<<< got new {recognition_event=}')
 
     await task
 

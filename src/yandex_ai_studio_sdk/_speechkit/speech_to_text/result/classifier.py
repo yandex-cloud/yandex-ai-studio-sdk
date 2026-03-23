@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import PhraseHighlight as ProtoPhraseHighlight
 from yandex.cloud.ai.stt.v3.stt_pb2 import RecognitionClassifierUpdate
+
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, ProtoBasedEnum
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
 
@@ -30,7 +31,31 @@ class PhraseHighlight(ProtoBased[ProtoPhraseHighlight]):
 
 
 @dataclass(frozen=True)
-class ClassifierUpdate(ProtoBased[RecognitionClassifierUpdate]):
+class ClassifierBase:
+    #: Name of the triggered classifier.
+    name: str
+
+    #: List of highlights, i.e. parts of phrase that determine the result of the classification
+    highlights: tuple[PhraseHighlight, ...]
+
+    #: Classifier predictions
+    labels: dict[str, float]
+
+    #: Audio segment used for classification boundaries
+    timespan: TimeSpan
+
+    @property
+    def confidence(self) -> float:
+        """Synonym for easy access to 'confidence' label if it exists"""
+
+        if 'cofindence' not in self.labels:
+            raise ValueError(f'classifier {self.name} have no "confidence" label')
+
+        return self.labels['confidence']
+
+
+@dataclass(frozen=True)
+class ClassifierUpdate(ClassifierBase, ProtoBased[RecognitionClassifierUpdate]):
     """Result of the triggered classifier"""
 
     class WindowType(ProtoBasedEnum):
@@ -48,29 +73,12 @@ class ClassifierUpdate(ProtoBased[RecognitionClassifierUpdate]):
     #: Response window type.
     window_type: EnumWithUnknownAlias[WindowType]
 
-    #: Name of the triggered classifier.
-    classifier: str
-
-    #: List of highlights, i.e. parts of phrase that determine the result of the classification
-    highlights: tuple[PhraseHighlight, ...]
-
-    #: Classifier predictions
-    labels: dict[str, float]
-
-    #: Audio segment used for classification boundaries
-    timespan: TimeSpan
-
-    @property
-    def confidence(self) -> float | None:
-        """Synonym for easy access to 'confidence' label if it exists"""
-        return self.labels.get('confidence')
-
     @classmethod
     @override
     def _from_proto(cls, *, proto: RecognitionClassifierUpdate, sdk: SDKType) -> Self:
         return cls(
             window_type=cls.WindowType._coerce(proto.window_type),
-            classifier=proto.classifier_result.classifier,
+            name=proto.classifier_result.classifier,
             highlights=tuple(
                 PhraseHighlight._from_proto(proto=highlight, sdk=sdk)
                 for highlight in proto.classifier_result.highlights
@@ -80,4 +88,16 @@ class ClassifierUpdate(ProtoBased[RecognitionClassifierUpdate]):
                 for label in proto.classifier_result.labels
             },
             timespan=TimeSpan(start_time_ms=proto.start_time_ms, end_time_ms=proto.end_time_ms)
+        )
+
+
+class ClassifierResult(ClassifierBase):
+    """Result of a classifier, tied to SpeechToTextResult object hierarchy"""
+    @classmethod
+    def _from_classifier_update(cls, update: ClassifierUpdate) -> Self:
+        return cls(
+            name=update.name,
+            highlights=update.highlights,
+            labels=update.labels,
+            timespan=update.timespan,
         )
