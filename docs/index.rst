@@ -7,6 +7,8 @@ Current package version: |version|
    :maxdepth: 1
 
    auth
+   types/index
+   retry
 
 .. toctree::
    :maxdepth: 2
@@ -15,12 +17,6 @@ Current package version: |version|
 
    sync/sdk
    async/sdk
-
-.. toctree::
-   :maxdepth: 1
-
-   types/index
-   retry
 
 .. toctree::
    :hidden:
