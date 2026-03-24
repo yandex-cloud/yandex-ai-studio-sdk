@@ -268,7 +268,7 @@ Available for all subcommands.
 | `--name TEXT`                  | —       | Name of the created search index |
 | `--metadata KEY=VALUE`         | —       | Add metadata (up to 16 key-value pairs, repeatable) |
 | `--expires-after-days INT`     | —       | Time-to-live (TTL) for the index in days |
-| `--expires-after-anchor TEXT`  | `created_at` | Start time for TTL: `created_at` or `last_active_at` |
+| `--expires-after-anchor TEXT`  | —       | Start time for TTL: `created_at` or `last_active_at` |
 | `--max-chunk-size-tokens INT`  | `800`   | Maximum number of tokens per text chunk |
 | `--chunk-overlap-tokens INT`   | `400`   | Number of overlapping tokens between adjacent chunks |
 | `--poll-timeout INT`           | `3600`  | Maximum time (seconds) to wait for index creation to complete |
