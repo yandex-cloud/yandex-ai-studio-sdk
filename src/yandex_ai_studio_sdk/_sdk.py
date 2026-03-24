@@ -60,7 +60,7 @@ class BaseSDK:
     #: Domain for working with batch tasks
     batch: BaseBatch
     #: Domain for working with
-    #: `Yandex Cloud OpenAI Compatible API_BaseSDK_URL <https://aistudio.yandex.ru/docs//ai-studio/concepts/api#openai>`_.
+    #: `Yandex Cloud OpenAI Compatible API <https://aistudio.yandex.ru/docs//ai-studio/concepts/api#openai>`_.
     chat: BaseChat
     #: Domain for working with
     #: `Yandex SpeechKit <https://aistudio.yandex.ru/docs/speechkit>`_ services.
