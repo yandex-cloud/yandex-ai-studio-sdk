@@ -1,6 +1,6 @@
 # Vector Stores CLI
 
-Command-line tool for creating Yandex AI Studio search indexes from various file sources. Files are uploaded to Yandex Cloud, processed, and used to build a vector search index. The following types of source data are supported: 
+Command-line tool for creating Yandex AI Studio search indexes from various file sources. Files are uploaded to Yandex Cloud, processed, and used to build a vector search index. The following types of source data are supported:
 
 - Local files
 - Atlassian Confluence
