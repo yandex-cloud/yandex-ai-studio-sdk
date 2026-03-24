@@ -280,7 +280,7 @@ Available for all subcommands.
 | `--max-concurrent-uploads INT`  | `4`     | Maximum number of parallel file uploads |
 | `--skip-on-error`               | `false` | Continue processing if a file fails to upload |
 | `--file-expires-after-seconds INT` | —    | TTL for uploaded files (in seconds) |
-| `--file-expires-after-anchor TEXT` | `created_at` | Start time for file TTL: `created_at` or `last_active_at` |
+| `--file-expires-after-anchor TEXT` | —       | Start time for file TTL: `created_at` or `last_active_at` |
 
 ### Output settings
 
