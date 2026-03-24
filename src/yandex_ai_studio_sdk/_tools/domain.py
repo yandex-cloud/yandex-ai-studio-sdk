@@ -130,7 +130,7 @@ class BaseTools(BaseDomain, Generic[FunctionToolsTypeT]):
         search_filters: UndefinedOr[SmartFilterSequence] = UNDEFINED,
     ) -> GenerativeSearchTool:
         """Creates GeberativeSearch tool which provide access to
-        generative search by `Search API <https://yandex.cloud/docs/search-api>`_ for LLMs.
+        generative search by `Search API <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_ for LLMs.
 
         Not to be confused with ``sdk.search_api.generative``.
         Tools domain is for creating tools for using in LLMs/Assistants and search_api domain
@@ -138,7 +138,7 @@ class BaseTools(BaseDomain, Generic[FunctionToolsTypeT]):
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `generative search documentation <https://yandex.cloud/docs/search-api/concepts/generative-response#body>`_
+        `generative search documentation <https://aistudio.yandex.ru/docs/search-api/concepts/generative-response#body>`_
 
         NB: All of the ``site``, ``host``, ``url`` parameters are mutually exclusive.
 

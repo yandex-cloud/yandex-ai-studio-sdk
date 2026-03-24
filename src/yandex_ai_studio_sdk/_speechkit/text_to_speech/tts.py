@@ -29,7 +29,7 @@ class BaseTextToSpeech(
     ModelSyncStreamMixin[TextToSpeechConfig, TextToSpeechResult],
 ):
     """Text to Speech class which provides concrete methods for working with SpeechKit TTS API
-    and incapsulates sintesis setting.
+    and encapsulates synthesis setting.
     """
 
     AudioFormat = AudioFormat_
@@ -64,7 +64,7 @@ class BaseTextToSpeech(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `TTS documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        `TTS documentation <https://aistudio.yandex.ru/docs/speechkit/stt>`_
 
         :param loudness_normalization: Specifies type of loudness normalization.
             Default: `LUFS`.
@@ -214,9 +214,9 @@ class BaseTextToSpeech(
 
     def create_bistream(self, *, timeout: float = 10 * 60) -> TTSBidirectionalStreamTypeT:
         """Creates a bidirectional stream object for using
-        `Yandex SpeechKit Streaming synthesis <https://yandex.cloud/en/docs/speechkit/tts/api/tts-streaming>`_.
+        `Yandex SpeechKit Streaming synthesis <https://yandex.cloud/docs/speechkit/tts/api/tts-streaming>`_.
 
-        :param timeout: GRPC timeout in seconds that defines the maximum lifetime of the entire stream.
+        :param timeout: gRPC timeout in seconds that defines the maximum lifetime of the entire stream.
             The timeout countdown begins from the moment of the first stream interaction.
         """
 

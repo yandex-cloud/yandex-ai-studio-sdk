@@ -1,7 +1,12 @@
-yandex-ai-studio-sdk documentation
+Yandex AI Studio SDK documentation
 ==================================
 
 Current package version: |version|
+
+.. toctree::
+   :maxdepth: 1
+
+   auth
 
 .. toctree::
    :maxdepth: 2
@@ -14,7 +19,6 @@ Current package version: |version|
 .. toctree::
    :maxdepth: 1
 
-   auth
    types/index
    retry
 

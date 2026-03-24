@@ -38,7 +38,7 @@ class BaseTextToSpeechFunction(BaseModelFunction[TextToSpeechTypeT]):
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `TTS documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        `TTS documentation <https://aistudio.yandex.ru/docs/speechkit/stt>`_
 
         :param loudness_normalization: Specifies type of loudness normalization.
             Default: `LUFS`.

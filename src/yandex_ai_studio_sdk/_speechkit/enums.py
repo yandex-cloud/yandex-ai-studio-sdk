@@ -73,7 +73,7 @@ class AudioFormat(ProtoBasedEnum):
 
     #: Data is encoded using MPEG-1/2 Layer III and compressed using the MP3 container format
     MP3 = ContainerAudio.ContainerAudioType.MP3
-    #: Audio bit depth 16-bit signed little-endian (Linear PCM) paked into WAV container format
+    #: Audio bit depth 16-bit signed little-endian (Linear PCM) packed into WAV container format
     WAV = ContainerAudio.ContainerAudioType.WAV
     #: Data is encoded using the OPUS audio codec and compressed using the OGG container format
     OGG_OPUS = ContainerAudio.ContainerAudioType.OGG_OPUS
@@ -148,7 +148,7 @@ class EouSensitivity(ProtoBasedEnum):
 class LanguageCode(str, Enum):
     __language_code_re__ = re.compile(r'([a-zA-Z]+)[-_]([a-zA-Z]+)$')
 
-    #: `Automatic language detection <https://yandex.cloud/docs/speechkit/stt/models#language-labels>`_
+    #: `Automatic language detection <https://aistudio.yandex.ru/docs/speechkit/stt/models#language-labels>`_
     auto = 'auto'
     #: German
     de_DE = "de-DE"

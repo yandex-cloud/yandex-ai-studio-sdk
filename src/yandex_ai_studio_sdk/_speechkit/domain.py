@@ -8,10 +8,10 @@ from .text_to_speech.function import AsyncTextToSpeechFunction, BaseTextToSpeech
 
 class BaseSpeechKitDomain(DomainWithFunctions):
     """
-    Domain for working with `Yandex SpeechKit services <https://yandex.cloud/docs/speechkit/>`_.
+    Domain for working with `Yandex SpeechKit services <https://aistudio.yandex.ru/docs/speechkit/overview>`_.
     """
 
-    #: API for `text to speech <https://yandex.cloud/docs/speechkit/tts/>`_ service
+    #: API for `text to speech <https://aistudio.yandex.ru/docs//speechkit/tts/>`_ service
     text_to_speech: BaseTextToSpeechFunction
     #: Synonym for `text_to_speech` function
     tts: BaseTextToSpeechFunction
