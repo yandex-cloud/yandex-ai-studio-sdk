@@ -6,23 +6,23 @@ This Python library provides a simple and efficient software development kit (SD
 
 Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions that map directly to the capabilities exposed by Yandex Cloud. The current feature set includes:
 
-- [**Completions**](https://aistudio.yandex.ru/docs/en/ai-studio/operations/generation/create-prompt)
+- [**Completions**](https://aistudio.yandex.ru/docs/ai-studio/operations/generation/create-prompt)
   - Text generation (completion) models with streaming support.
   - Chat usage tracking, tool calls (function calling for example).
-- [**Chat**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/openai-compatibility)
+- [**Chat**](https://aistudio.yandex.ru/docs/ai-studio/concepts/api#openai)
   - OpenAI‑compatible chat API (`sdk.chat`) designed to work seamlessly with the rest of the Yandex AI Studio SDK.
   - Send and receive messages, stream responses, and work with tool calls in a unified way.
-- [**Files**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/assistant/files)
+- [**Files**](https://aistudio.yandex.ru/docs/ai-studio/concepts/assistant/files)
   - Upload, download, list and delete files stored in Yandex Cloud AI Studio.
-- [**Image generation**](https://aistudio.yandex.ru/docs/en/ai-studio/operations/generation/yandexart-request)
+- [**Image generation**](https://aistudio.yandex.ru/docs/ai-studio/operations/generation/yandexart-request)
   - Generate images via YandexART models.
-- [**Text embeddings**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/embeddings)
+- [**Text embeddings**](https://aistudio.yandex.ru/docs/ai-studio/concepts/embeddings)
   - Compute dense vector embeddings for arbitrary text.
-- [**Text classifiers**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/classifier/)
+- [**Text classifiers**](https://aistudio.yandex.ru/docs/ai-studio/concepts/classifier/)
   - Run multi‑class, multi‑label and binary classifiers.
-- [**Search API**](https://aistudio.yandex.ru/docs/en/search-api/)
+- [**Search API**](https://aistudio.yandex.ru/docs/search-api/)
   - Generative, web, image and by image search.
-- [**Search indexes**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/assistant/search-index)
+- [**Search indexes**](https://aistudio.yandex.ru/docs/ai-studio/concepts/assistant/search-index)
   - Create, update, delete and query text, vector and hybrid search indexes.
 - **DEPRECATED Assistants**
   - Create, list, update and delete AI assistants.
@@ -31,17 +31,17 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
   - Create and track execution of assistant runs, retrieve logs and results.
 
 Also there is some cross-domain functionality for features above:
-- [**Batch processing**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/generation/batch-processing)
+- [**Batch processing**](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/batch-processing)
   - Run long‑running batch tasks with automatic polling.
 - **Tools**
-  - Built‑in tools such as Generative Search Tool, [Function Tool](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/generation/function-call) and Search Index Tool that can be used in Assistants, Completions, and Chat, providing a unified way to extend functionality across the SDK.
-- [**Tuning**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/tuning/)
+  - Built‑in tools such as Generative Search Tool, [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) and Search Index Tool that can be used in Assistants, Completions, and Chat, providing a unified way to extend functionality across the SDK.
+- [**Tuning**](https://aistudio.yandex.ru/docs/ai-studio/concepts/tuning/)
   - Fine‑tune models with configurable optimizers, schedulers and other hyper‑parameters.
-- [**Datasets**](https://aistudio.yandex.ru/docs/en/ai-studio/concepts/resources/dataset)
+- [**Datasets**](https://aistudio.yandex.ru/docs/ai-studio/concepts/resources/dataset)
   - Manage dataset lifecycle, upload data, validate schemas, and perform task‑type specific operations.
 
 Additionally, Yandex AI Studio SDK offers:
-- [**Authentication**](https://aistudio.yandex.ru/docs/en/ai-studio/sdk/#authentication)
+- [**Authentication**](https://aistudio.yandex.ru/docs/ai-studio/sdk/#authentication)
   - Automatic selection of authentication method (API key, IAM token, OAuth token, CLI, metadata service, etc.).
 - **Error handling & retries**
   - Rich exception hierarchy, retry policies, and configurable gRPC interceptors.
@@ -60,7 +60,7 @@ pip install yandex-ai-studio-sdk
 
 ## SDK Reference
 
-[https://aistudio.yandex.ru/docs/en/ai-studio/sdk-ref/](https://aistudio.yandex.ru/docs/en/ai-studio/sdk-ref/)
+[https://aistudio.yandex.ru/docs/ai-studio/sdk-ref/](https://aistudio.yandex.ru/docs/ai-studio/sdk-ref/)
 
 ## Usage
 
