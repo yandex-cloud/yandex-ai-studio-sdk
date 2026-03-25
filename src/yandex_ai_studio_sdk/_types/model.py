@@ -10,13 +10,14 @@ from .._client import AsyncCloudClient
 from .._utils.parse_uri import parse_uri
 from .misc import Undefined, UndefinedOr, get_defined_value
 from .model_config import ConfigTypeT
-from .operation import OperationTypeT
+from .operation import OperationTypeT, ResultTransformerType
 from .result import BaseResult, ProtoMessage
 from .tuning.datasets import TuningDatasetsType
 from .tuning.params import BaseTuningParams
 
 if TYPE_CHECKING:
     from typing_extensions import Self
+
     from yandex_ai_studio_sdk._sdk import BaseSDK
 
 
@@ -122,6 +123,10 @@ class ModelAsyncMixin(
     _operation_type: type[OperationTypeT]
     _proto_result_type: type[ProtoMessage]
 
+    @property
+    def _operation_transformer(self) -> ResultTransformerType | None:
+        return None
+
     @abc.abstractmethod
     async def _run_deferred(self, *args, **kwargs) -> OperationTypeT:
         pass
@@ -140,6 +145,7 @@ class ModelAsyncMixin(
             sdk=self._sdk,
             result_type=self._result_type,
             proto_result_type=self._proto_result_type,
+            transformer=self._operation_transformer
         )
 
 

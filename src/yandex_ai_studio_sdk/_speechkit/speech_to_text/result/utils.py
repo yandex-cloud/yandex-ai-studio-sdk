@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True, eq=True)
 class TimeSpan:
     #: Audio segment start time.
     start_time_ms: int

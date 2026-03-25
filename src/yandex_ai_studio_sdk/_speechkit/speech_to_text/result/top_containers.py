@@ -95,14 +95,14 @@ class Utterance:
     @property
     def final_text(self) -> str:
         """Joined text of all final events in this utterance`"""
-        return ' '.join(final.text for final in self.finals)
+        return ' '.join(final.text or '' for final in self.finals)
 
     @property
     def final_refinement_text(self) -> str | None:
         """Joined text of all final_refinement events if there are any"""
         if not self.final_refinements:
             return None
-        return ' '.join(final.text for final in self.final_refinements)
+        return ' '.join(final.text or '' for final in self.final_refinements)
 
     @property
     def text(self) -> str:
@@ -158,13 +158,28 @@ class Utterance:
 
 
 @dataclass(frozen=True)
-class ChannelResult:
+class ChannelResult(Sequence):
     """A class representing result of speech recognition request for one audio channel
     """
+    tag: str
     #: All utterances from this channel
     utterances: tuple[Utterance, ...]
     #: Speech statistics for this channel with window_type=TOTAL
     speaker_analysis: SpeakerAnalysis | None
+
+    def __len__(self):
+        return len(self.utterances)
+
+    @overload
+    def __getitem__(self, index: int, /) -> Utterance:
+        pass
+
+    @overload
+    def __getitem__(self, slice_: slice, /) -> tuple[Utterance, ...]:
+        pass
+
+    def __getitem__(self, index, /):
+        return self.utterances[index]
 
     @property
     def final_text(self) -> str:
@@ -199,6 +214,7 @@ class ChannelResult:
         utterance_events: list[SpeechToTextStreamingEvent] = []
         eou = False
         speaker_analysis: SpeakerAnalysis | None = None
+        tag: str | None = None
 
         def flush() -> None:
             nonlocal eou
@@ -212,6 +228,7 @@ class ChannelResult:
             utterances.append(utterance)
 
         for event in events:
+            tag = event.channel_tag
             # all events:
             # 1) Events, relevant to Utterance we are saving into local vars.
             # 2) All other events we are saving into utterance event list.
@@ -245,7 +262,9 @@ class ChannelResult:
         if utterance_events:
             flush()
 
+        assert tag, "It is not None by design"
         return cls(
+            tag=tag,
             utterances=tuple(utterances),
             speaker_analysis=speaker_analysis,
         )
@@ -262,7 +281,7 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
     It doesn't matter how I creating it in this example, but I need to do it for doctesting
     purposes.
 
-    >>> first_result = ChannelResult(utterances=(), speaker_analysis=None)
+    >>> first_result = ChannelResult(utterances=(), speaker_analysis=None, tag="222_first")
     >>> result = SpeechToTextResult(
     ...    _sdk=None,
     ...    uuid='123',
@@ -283,7 +302,7 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
 
     Let's add another channel result:
 
-    >>> second_result = ChannelResult(utterances=(), speaker_analysis=1)
+    >>> second_result = ChannelResult(utterances=(), speaker_analysis=1, tag="111_second")
     >>> result.channels['111_second'] = second_result
 
     >>> text = result.text
