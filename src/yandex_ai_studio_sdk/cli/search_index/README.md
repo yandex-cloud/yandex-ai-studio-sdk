@@ -1,238 +1,145 @@
-# vector-stores CLI
+# Vector Stores CLI
 
-Command-line tool for creating Yandex AI Studio search indexes from various
-file sources. Files are uploaded to Yandex Cloud and a vector search index
-is built from them.
+Command-line tool for creating Yandex AI Studio search indexes from various file sources. Files are uploaded to Yandex Cloud, processed, and used to build a vector search index. The following types of source data are supported:
+
+- Local files
+- Atlassian Confluence
+- Amazon S3-compatible object storages such as Yandex Object Storage
+- MediaWiki instances
 
 ## Installation
 
-```bash
-# Base installation (local files and Confluence sources)
-pip install yandex-ai-studio-sdk
+Install the base package and optional extras based on required data sources.
 
-# With Wikipedia / MediaWiki support
-pip install "yandex-ai-studio-sdk[cli-wiki]"
+```bash
+# Base installation with local files and Confluence support
+pip install yandex-ai-studio-sdk
 
 # With Amazon S3 / Yandex Object Storage support
 pip install "yandex-ai-studio-sdk[cli-s3]"
+
+# With Wikipedia / MediaWiki support
+pip install "yandex-ai-studio-sdk[cli-wiki]"
 
 # All extras
 pip install "yandex-ai-studio-sdk[cli-wiki,cli-s3]"
 ```
 
+> **Note**: Features are split into optional extras to reduce dependencies.
+
 ## Authentication
 
-Every command requires a Yandex Cloud folder ID. Authentication is resolved
-automatically in the following order — no `--auth` flag is required if any of
-these is available:
+Authentication is resolved automatically in the following order. The `--auth` flag is not required if any method below is available.
 
-1. `--auth` flag / `YC_API_KEY` / `YC_IAM_TOKEN` environment variable
-2. `yc` CLI — if the [Yandex Cloud CLI](https://yandex.cloud/docs/cli/) is
-   installed and configured, its credentials are used automatically
-3. Compute metadata service — on Yandex Compute Cloud VMs authentication works
-   out of the box with no configuration
+1. Explicit credentials via `--auth`, `YC_API_KEY`, or `YC_IAM_TOKEN`.
+2. Yandex Cloud CLI (`yc`) — if installed and configured.
+3. Compute Metadata Service — on Yandex Compute Cloud VMs (automatic).
 
-| Option | Environment variable | Description |
-|--------|----------------------|-------------|
-| `--folder-id` | `YC_FOLDER_ID` | Yandex Cloud folder ID |
-| `--auth` | `YC_API_KEY` | API key for explicit authentication |
-| `--auth` | `YC_IAM_TOKEN` | IAM token for explicit authentication |
+| Option        | Environment Variable     | Description                         |
+|---------------|--------------------------|-------------------------------------|
+| `--folder-id` | `YC_FOLDER_ID`           | Yandex Cloud folder ID (required)   |
+| `--auth`      | `YC_API_KEY` or `YC_IAM_TOKEN` | API key or IAM token for authentication |
 
 ```bash
-export YC_FOLDER_ID=b1g...
-export YC_API_KEY=AQVN...
+export YC_FOLDER_ID=b1gxxxxxxxxxxxxx
+export YC_API_KEY=AQVNxxxxxxxxxxxxxx
 # or
-export YC_IAM_TOKEN=t1.9euelZ...
+export YC_IAM_TOKEN=t1.9euelZxxxxxxxxxxxxxx
 ```
+
+> **Note**: `YC_API_KEY` takes precedence over `YC_IAM_TOKEN` if both are set.
 
 ## Usage
 
-```
+```bash
 yandex-ai-studio vector-stores <subcommand> [OPTIONS] [ARGS]
 ```
 
 ### Subcommands
 
-| Subcommand | Source |
-|------------|--------|
-| `local` | Local filesystem files |
-| `s3` | Amazon S3 or S3-compatible object storage |
-| `wiki` | MediaWiki instances (Wikipedia, etc.) |
-| `confluence` | Atlassian Confluence (Cloud and on-premise) |
+| Subcommand   | Source                                                  |
+|--------------|---------------------------------------------------------|
+| `local`      | Local filesystem files                                  |
+| `confluence` | Atlassian Confluence (Cloud or On-premise installation) |
+| `s3`         | S3 or S3-compatible object storage                      |
+| `wiki`       | MediaWiki instances (e.g., Wikipedia)                   |
 
----
+## Local files
 
-## local
+The `local` subcommand creates a search index from local files.
 
-Create a search index from local files.
-
-```
+```bash
 yandex-ai-studio vector-stores local [OPTIONS] PATHS...
 ```
 
-`PATHS` must be individual files. Directories are not accepted. Use shell
-glob expansion to pass multiple files at once.
+`PATHS` must be individual files. Directories are not supported. Use shell globbing to include multiple files.
 
-**Options**
+### Options
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--max-file-size INT` | — | Skip files larger than this many bytes |
+| Option                | Default | Description                                   |
+|-----------------------|---------|-----------------------------------------------|
+| `--max-file-size INT` | —       | Skip files larger than specified size (bytes) |
 
-**Examples**
+### Examples
 
 ```bash
-# Single file
+# Index a single file
 yandex-ai-studio vector-stores local report.pdf
 
-# Multiple files
+# Index multiple files
 yandex-ai-studio vector-stores local docs/intro.txt docs/guide.md
 
-# All .txt and .md files via shell glob
+# Use shell glob to include all .txt and .md files
 yandex-ai-studio vector-stores local sample_docs/*.txt sample_docs/*.md
 
-# Name the resulting index
+# Specify a custom name for the index
 yandex-ai-studio vector-stores local report.pdf --name "Q4 Report"
 ```
 
----
+## Atlassian Confluence
 
-## s3
-
-Create a search index from an S3 or S3-compatible bucket.
-
-Requires the `cli-s3` extra (`pip install "yandex-ai-studio-sdk[cli-s3]"`).
-
-```
-yandex-ai-studio vector-stores s3 [OPTIONS] BUCKET
-```
-
-**Options**
-
-| Option | Env var | Default | Description |
-|--------|---------|---------|-------------|
-| `--prefix TEXT` | — | `""` | Path prefix (folder) inside the bucket |
-| `--endpoint-url URL` | — | — | Custom endpoint for S3-compatible storage |
-| `--aws-access-key-id TEXT` | `AWS_ACCESS_KEY_ID` | — | Access key |
-| `--aws-secret-access-key TEXT` | `AWS_SECRET_ACCESS_KEY` | — | Secret key |
-| `--region-name TEXT` | `AWS_DEFAULT_REGION` | — | Region |
-| `--include-pattern GLOB` | — | — | Include only matching keys (repeatable) |
-| `--exclude-pattern GLOB` | — | — | Exclude matching keys (repeatable) |
-| `--max-file-size INT` | — | — | Skip files larger than this many bytes |
-
-**Examples**
+The `confluence` subcommand creates a search index from Atlassian Confluence pages.
 
 ```bash
-# Entire bucket
-yandex-ai-studio vector-stores s3 my-bucket
-
-# Specific prefix
-yandex-ai-studio vector-stores s3 my-bucket --prefix docs/
-
-# Only PDF files
-yandex-ai-studio vector-stores s3 my-bucket --include-pattern "*.pdf"
-
-# Yandex Object Storage
-yandex-ai-studio vector-stores s3 my-bucket \
-  --endpoint-url https://storage.yandexcloud.net \
-  --region-name ru-central1
-```
-
----
-
-## wiki
-
-Create a search index from MediaWiki pages (Wikipedia and other wikis).
-
-Requires the `cli-wiki` extra (`pip install "yandex-ai-studio-sdk[cli-wiki]"`).
-
-```
-yandex-ai-studio vector-stores wiki [OPTIONS] PAGE_URLS...
-```
-
-`PAGE_URLS` are standard MediaWiki page URLs containing `/wiki/` in the
-path. Pass multiple URLs to include several pages in one index.
-
-Authentication is optional for public wikis.
-
-**Options**
-
-| Option | Env var | Default | Description |
-|--------|---------|---------|-------------|
-| `--username TEXT` | `WIKI_USERNAME` | — | Wiki login (optional for public wikis) |
-| `--password TEXT` | `WIKI_PASSWORD` | — | Wiki password (optional for public wikis) |
-| `--export-format` | — | `text` | Page content format: `text`, `html`, or `markdown` |
-
-**Examples**
-
-```bash
-# Single Wikipedia page
-yandex-ai-studio vector-stores wiki \
-  https://en.wikipedia.org/wiki/Machine_learning
-
-# Multiple pages
-yandex-ai-studio vector-stores wiki \
-  https://en.wikipedia.org/wiki/Machine_learning \
-  https://en.wikipedia.org/wiki/Neural_network \
-  https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
-
-# Export as Markdown
-yandex-ai-studio vector-stores wiki \
-  "https://en.wikipedia.org/wiki/Python_(programming_language)" \
-  --export-format markdown
-
-# Private wiki with credentials
-yandex-ai-studio vector-stores wiki \
-  https://wiki.example.com/wiki/Internal_docs \
-  --username alice \
-  --password secret
-```
-
----
-
-## confluence
-
-Create a search index from Atlassian Confluence pages.
-
-```
 yandex-ai-studio vector-stores confluence [OPTIONS]
 ```
 
-Authentication is optional for public Confluence instances.
+### URL Requirements
 
-**URL requirements.** The page URL must contain a numeric page ID in one
-of the following positions:
+The page URL must contain a numeric page ID:
 
-```
-# Confluence Cloud
-https://your-domain.atlassian.net/wiki/spaces/SPACE/pages/123456/Page+Title
+- **Confluence Cloud**:
+  ```
+  https://your-domain.atlassian.net/wiki/spaces/SPACE/pages/123456/Page+Title
+  ```
+- **On-premise**:
+  ```
+  https://confluence.example.com/pages/viewpage.action?pageId=123456
+  ```
 
-# On-premise viewpage URL
-https://confluence.example.com/pages/viewpage.action?pageId=123456
-```
+> **Unsupported**: URLs in `/display/SPACE/Page+Title` format.
 
-URLs in the `/display/SPACE/Page+Title` format are **not** supported.
+To find the page ID:
+- **Cloud**: Extract from URL after `/pages/`.
+- **On-premise**: Open page → click `...` → *Page Information* → check URL for `?pageId=NNNNNN`.
 
-To find the numeric ID of a page:
-- **Confluence Cloud**: the ID appears in the URL after `/pages/`.
-- **On-premise**: open the page, click `...` (ellipsis) → *Page Information*.
-  The URL in your browser will contain `?pageId=NNNNNN`.
+### Options
 
-**Options**
+| Option                     | Environment Variable       | Default | Description |
+|----------------------------|----------------------------|---------|-------------|
+| `--page-url URL`           | —                          | —       | Page URL (required, repeatable) |
+| `--base-url URL`           | —                          | auto    | Confluence base URL (auto-detected from first `--page-url`) |
+| `--username TEXT`          | `CONFLUENCE_USERNAME`      | —       | Email address (required for private instances) |
+| `--api-token TEXT`         | `CONFLUENCE_API_TOKEN`     | —       | API token (required for private instances) |
+| `--export-format TEXT`     | —                          | `pdf`   | Export format: `pdf`, `html`, or `markdown` |
+| `--no-verify`              | —                          | `false` | Disable SSL certificate verification |
 
-| Option | Env var | Default | Description |
-|--------|---------|---------|-------------|
-| `--page-url URL` | — | — | Page URL (required, repeatable) |
-| `--base-url URL` | — | auto | Confluence root URL. Extracted from the first `--page-url` if omitted. |
-| `--username TEXT` | `CONFLUENCE_USERNAME` | — | Email address (optional for public instances) |
-| `--api-token TEXT` | `CONFLUENCE_API_TOKEN` | — | API token (optional for public instances) |
-| `--export-format` | — | `pdf` | Page format: `pdf`, `html`, or `markdown` |
-| `--no-verify` | — | false | Disable SSL certificate verification |
+> **Note**: For Confluence Cloud, use email and API token. For on-premise, use local credentials unless otherwise configured.
 
-**Examples**
+### Examples
 
 ```bash
-# Public Confluence page (no auth required)
+# Public Confluence page (no auth)
 yandex-ai-studio vector-stores confluence \
   --page-url "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=34840000"
 
@@ -241,74 +148,171 @@ yandex-ai-studio vector-stores confluence \
   --page-url "https://your-domain.atlassian.net/wiki/spaces/ENG/pages/111/Overview" \
   --page-url "https://your-domain.atlassian.net/wiki/spaces/ENG/pages/222/Architecture"
 
-# Private instance with credentials
+# Private instance with environment variables
 export CONFLUENCE_USERNAME=alice@example.com
-export CONFLUENCE_API_TOKEN=ATATTxxx...
+export CONFLUENCE_API_TOKEN=ATATT3xFf...xxx
 yandex-ai-studio vector-stores confluence \
   --page-url "https://your-domain.atlassian.net/wiki/spaces/ENG/pages/123456/Design"
 
-# Export as HTML instead of PDF
+# Export as HTML
 yandex-ai-studio vector-stores confluence \
   --page-url "https://your-domain.atlassian.net/wiki/spaces/ENG/pages/123456/Design" \
   --export-format html
 ```
 
----
+## Amazon S3-compatible object storages
+
+The `s3` subcommand creates a search index from an S3-compatible bucket.
+
+> **Requirement**: Install with `cli-s3` extra.
+
+```bash
+yandex-ai-studio vector-stores s3 [OPTIONS] BUCKET
+```
+
+### Options
+
+| Option                      | Environment Variable         | Default | Description |
+|-----------------------------|------------------------------|---------|-------------|
+| `--prefix TEXT`             | —                            | `""`    | Filter objects by prefix (folder path) |
+| `--endpoint-url URL`        | —                            | —       | Custom S3 endpoint (e.g., for Yandex Object Storage) |
+| `--aws-access-key-id TEXT`  | `AWS_ACCESS_KEY_ID`          | —       | AWS/S3 access key ID |
+| `--aws-secret-access-key TEXT` | `AWS_SECRET_ACCESS_KEY`   | —       | AWS/S3 secret access key |
+| `--region-name TEXT`        | `AWS_DEFAULT_REGION`         | —       | AWS region name |
+| `--include-pattern GLOB`    | —                            | —       | Include only keys matching glob pattern (can be repeated) |
+| `--exclude-pattern GLOB`    | —                            | —       | Exclude keys matching glob pattern (can be repeated) |
+| `--max-file-size INT`       | —                            | —       | Skip files larger than specified size (bytes) |
+
+> **Note**: If credentials are not provided, the tool attempts to use AWS CLI configuration or IAM roles (on EC2/Yandex VMs).
+
+### Examples
+
+```bash
+# Index entire bucket
+yandex-ai-studio vector-stores s3 my-bucket
+
+# Index only a specific prefix
+yandex-ai-studio vector-stores s3 my-bucket --prefix docs/
+
+# Include only PDF files
+yandex-ai-studio vector-stores s3 my-bucket --include-pattern "*.pdf"
+
+# Use Yandex Object Storage
+yandex-ai-studio vector-stores s3 my-bucket \
+  --endpoint-url https://storage.yandexcloud.net \
+  --region-name ru-central1
+```
+
+## `wiki`
+
+The `wiki` subcommand creates a search index from MediaWiki pages (e.g., Wikipedia).
+
+> **Requirement**: Install with `cli-wiki` extra.
+
+```bash
+yandex-ai-studio vector-stores wiki [OPTIONS] PAGE_URLS...
+```
+
+`PAGE_URLS` must be valid MediaWiki URLs containing `/wiki/` in the path. Multiple URLs can be provided.
+
+Authentication is optional for public wikis.
+
+### Options
+
+| Option               | Environment Variable | Default | Description |
+|----------------------|----------------------|---------|-------------|
+| `--username TEXT`    | `WIKI_USERNAME`      | —       | Wiki account username (required for private wikis) |
+| `--password TEXT`    | `WIKI_PASSWORD`      | —       | Wiki account password |
+| `--export-format TEXT` | —                  | `text`  | Output format: `text`, `html`, or `markdown` |
+
+### Examples
+
+```bash
+# Index a single Wikipedia page
+yandex-ai-studio vector-stores wiki https://en.wikipedia.org/wiki/Machine_learning
+
+# Index multiple pages
+yandex-ai-studio vector-stores wiki \
+  https://en.wikipedia.org/wiki/Machine_learning \
+  https://en.wikipedia.org/wiki/Neural_network \
+  https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
+
+# Export content as Markdown
+yandex-ai-studio vector-stores wiki \
+  "https://en.wikipedia.org/wiki/Python_(programming_language)" \
+  --export-format markdown
+
+# Access a private wiki with credentials
+yandex-ai-studio vector-stores wiki \
+  https://wiki.example.com/wiki/Internal_docs \
+  --username alice \
+  --password secret
+```
 
 ## Common options
 
-All subcommands accept the following options.
+Available for all subcommands.
 
 ### Connection
 
-| Option | Env var | Description |
-|--------|---------|-------------|
-| `--folder-id TEXT` | `YC_FOLDER_ID` | Yandex Cloud folder ID |
-| `--auth TEXT` | `YC_API_KEY` or `YC_IAM_TOKEN` | Authentication credential (optional, see [Authentication](#authentication)) |
-| `--endpoint URL` | — | Custom API endpoint |
+| Option             | Environment Variable | Description |
+|--------------------|----------------------|-------------|
+| `--folder-id TEXT` | `YC_FOLDER_ID`       | Yandex Cloud folder ID (required) |
+| `--auth TEXT`      | `YC_API_KEY` or `YC_IAM_TOKEN` | Explicit authentication token |
+| `--endpoint URL`   | —                    | Override default API endpoint |
 
 ### Index settings
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--name TEXT` | — | Name for the created search index |
-| `--metadata KEY=VALUE` | — | Metadata key-value pair (repeatable, max 16) |
-| `--expires-after-days INT` | — | Index TTL in days |
-| `--expires-after-anchor` | — | TTL start: `created_at` or `last_active_at` |
-| `--max-chunk-size-tokens INT` | `800` | Maximum tokens per chunk |
-| `--chunk-overlap-tokens INT` | `400` | Token overlap between adjacent chunks |
-| `--poll-timeout INT` | `3600` | Seconds to wait for index creation to complete |
+| Option                         | Default | Description |
+|--------------------------------|---------|-------------|
+| `--name TEXT`                  | —       | Name of the created search index |
+| `--metadata KEY=VALUE`         | —       | Add metadata (up to 16 key-value pairs, repeatable) |
+| `--expires-after-days INT`     | —       | Time-to-live (TTL) for the index in days |
+| `--expires-after-anchor TEXT`  | —       | Start time for TTL: `created_at` or `last_active_at` |
+| `--max-chunk-size-tokens INT`  | `800`   | Maximum number of tokens per text chunk |
+| `--chunk-overlap-tokens INT`   | `400`   | Number of overlapping tokens between adjacent chunks |
+| `--poll-timeout INT`           | `3600`  | Maximum time (seconds) to wait for index creation to complete |
 
 ### Upload settings
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--max-concurrent-uploads INT` | `4` | Parallel upload tasks |
-| `--skip-on-error` | false | Skip failed files instead of aborting |
-| `--file-expires-after-seconds INT` | — | Uploaded file TTL in seconds |
-| `--file-expires-after-anchor` | — | File TTL start: `created_at` or `last_active_at` |
+| Option                          | Default | Description |
+|---------------------------------|---------|-------------|
+| `--max-concurrent-uploads INT`  | `4`     | Maximum number of parallel file uploads |
+| `--skip-on-error`               | `false` | Continue processing if a file fails to upload |
+| `--file-expires-after-seconds INT` | —    | TTL for uploaded files (in seconds) |
+| `--file-expires-after-anchor TEXT` | —       | Start time for file TTL: `created_at` or `last_active_at` |
 
-### Output
+### Output settings
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-v / -vv` | — | Increase log verbosity (INFO / DEBUG) |
-| `--format` | `text` | Output format: `text` or `json` |
-
----
+| Option         | Default | Description |
+|----------------|---------|-------------|
+| `-v`           | —       | Log level: INFO |
+| `-vv`          | —       | Log level: DEBUG |
+| `--format TEXT`| `text`  | Output format: `text` or `json` |
 
 ## Output
 
-On success the command prints the search index ID and name:
+On success, the command outputs the index ID and name.
+
+### Text Output (default)
 
 ```
 Search index created successfully!
-Search Index ID: fvt...
+Search Index ID: fvt-xxxxxxxxxxxxxxxx
 Name: my-index
 ```
 
-With `--format json`:
+### JSON Output (`--format json`)
 
 ```json
-{"status": "success", "folder_id": "b1g...", "search_index": {"id": "fvt...", "name": "my-index"}}
+{
+  "status": "success",
+  "folder_id": "b1gxxxxxxxxxxxxx",
+  "search_index": {
+    "id": "fvt-xxxxxxxxxxxxxxxx",
+    "name": "my-index"
+  }
+}
 ```
+
+> **Error Handling**: On failure, an error message is printed to stderr. With `--format json`, errors are returned in structured JSON format.
