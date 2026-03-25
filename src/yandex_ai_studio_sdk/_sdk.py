@@ -49,7 +49,7 @@ class BaseSDK:
     assistants: BaseAssistants
     #: DEPRECATED Domain for working with assistants' runs (a part of the Assistants API)
     runs: BaseRuns
-    #: Domain for working with `Search API <https://aistudio.yandex.ru/docs/search-api>`_
+    #: Domain for working with `Yandex Search API <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_
     search_api: BaseSearchAPIDomain
     #: Domain for working with search indexes (a part of the Assistants API)
     search_indexes: BaseSearchIndexes
@@ -63,7 +63,7 @@ class BaseSDK:
     #: `Yandex Cloud OpenAI Compatible API <https://aistudio.yandex.ru/docs//ai-studio/concepts/api#openai>`_.
     chat: BaseChat
     #: Domain for working with
-    #: `Yandex SpeechKit <https://aistudio.yandex.ru/docs/speechkit>`_ services.
+    #: `Yandex SpeechKit <https://aistudio.yandex.ru/docs/speechkit/overview>`_ services.
     speechkit: BaseSpeechKitDomain
 
     _messages: BaseMessages

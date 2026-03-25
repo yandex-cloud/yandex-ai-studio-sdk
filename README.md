@@ -20,7 +20,7 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
   - Compute dense vector embeddings for arbitrary text.
 - [**Text classifiers**](https://aistudio.yandex.ru/docs/ai-studio/concepts/classifier/)
   - Run multi‑class, multi‑label and binary classifiers.
-- [**Search API**](https://aistudio.yandex.ru/docs/search-api/)
+- [**Yandex Search API**](https://aistudio.yandex.ru/docs/search-api/concepts/index)
   - Generative, web, image and by image search.
 - [**Search indexes**](https://aistudio.yandex.ru/docs/ai-studio/concepts/assistant/search-index)
   - Create, update, delete and query text, vector and hybrid search indexes.

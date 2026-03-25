@@ -11,7 +11,7 @@ from .web.function import AsyncWebSearchFunction, BaseWebSearchFunction, WebSear
 
 class BaseSearchAPIDomain(DomainWithFunctions):
     """
-    Domain for working with `Yandex Search API <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_ services.
+    Domain for working with `Yandex Search API service <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_.
     """
 
     #: API for `generative response <https://aistudio.yandex.ru/docs/search-api/concepts/generative-response>`_ service

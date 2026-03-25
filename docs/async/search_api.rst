@@ -1,5 +1,5 @@
-Search API domain
-=================
+Yandex Search API domain
+========================
 
 .. autoclass:: yandex_ai_studio_sdk._search_api.domain.AsyncSearchAPIDomain
    :undoc-members:

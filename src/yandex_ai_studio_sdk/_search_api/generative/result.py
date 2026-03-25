@@ -55,7 +55,7 @@ class SearchQuery(ProtoBased[GenSearchResponse.SearchQuery]):
 class GenerativeSearchResult(BaseProtoResult[GenSearchResponse], TextMessage):
     """A class representing the result of a generative search request."""
     #: Generative answer itself.
-    #: Note that footnootes like ``[N]`` in the text refers to ``GenerativeSearchResult.sources[N]``
+    #: Note that footnotes like ``[N]`` in the text refers to ``GenerativeSearchResult.sources[N]``
     #: source.
     text: str
     #: Message sender role; in case of the generative search, model always answers with the
@@ -93,7 +93,7 @@ class GenerativeSearchResult(BaseProtoResult[GenSearchResponse], TextMessage):
     def content(self) -> str:
         """Alias to ``GenerativeSearchResult.text``.
 
-        Only to add some compatibility with raw Search API answer which have "content" field
+        Only to add some compatibility with raw Yandex Search API answer which have "content" field
         in protobufs and REST answers unlike other parts of this SDK.
         """
 

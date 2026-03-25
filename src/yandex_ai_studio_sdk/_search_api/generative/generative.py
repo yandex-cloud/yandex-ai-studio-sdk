@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 
 
 class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSearchResult]):
-    """Generative search class which provides concrete methods for working with Search API
+    """Generative search class which provides concrete methods for working with Yandex Search API
     and encapsulates search setting.
     """
 
@@ -104,7 +104,7 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
 
             * ``MessageObject`` -- you could also pass any object which have a
               ``text: str`` and ``role: str`` attributes, allowing to reuse various
-              result object, for example object you getting from compltions model run
+              result object, for example object you getting from completions model run
               or result object from generative search itself;
 
             * ``["string"/dict/object]`` -- list or any other sequence of any above described
