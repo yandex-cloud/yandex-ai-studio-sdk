@@ -12,7 +12,6 @@ import pprint
 
 import numpy as np
 from pydantic import BaseModel, Field
-
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 SAMPLERATE = 44100

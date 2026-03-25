@@ -11,7 +11,6 @@ from google.protobuf.empty_pb2 import Empty
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import DeleteRecognitionRequest, StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
-
 from yandex_ai_studio_sdk._types.proto import ProtoBased
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, BaseResult, SDKType
 from yandex_ai_studio_sdk._utils.doc import doc_from

@@ -9,7 +9,6 @@ from __future__ import annotations
 import asyncio
 
 import numpy as np
-
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 SAMPLERATE = 44100
