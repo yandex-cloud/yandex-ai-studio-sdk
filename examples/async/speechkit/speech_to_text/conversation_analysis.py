@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This example shows a way to configure conversation/speaker analysis
+and ways to get its results.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +10,7 @@ import asyncio
 import pprint
 
 import numpy as np
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 SAMPLERATE = 44100
@@ -78,12 +83,12 @@ async def main() -> None:
     audio_data = await get_audio_data(sdk)
 
     stt = sdk.speechkit.speech_to_text(
-        # audio_format='wav',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE, channels=2),
         language_codes='ru_RU',
     )
 
     stt = stt.configure(
+        # short synonym for sdk.speechkit.speech_to_text.SpeechAnalysis
         speech_analysis=stt.SpeechAnalysis(
             speaker_analysis=True,
             conversation_analysis=True,
@@ -91,10 +96,8 @@ async def main() -> None:
         ),
     )
 
+    # First of all, example on how to get analysis results for stream events:
     async for event in stt.run_stream(audio_data):
-        if final := event.final:
-            print(f'[channel {event.channel_tag}] New final: {final.text!r}')
-
         if speaker_analysis := event.speaker_analysis:
             print(f'[channel {event.channel_tag}] New speaker analysis:')
             pprint.pprint(speaker_analysis)
@@ -102,6 +105,12 @@ async def main() -> None:
         if conversation_analysis := event.conversation_analysis:
             print('New conversation analysis:')
             pprint.pprint(conversation_analysis)
+
+    # And example on how to access analysis result from synchronous call
+    result = await stt.run(audio_data)
+    print(f'{result.conversation_analysis=}')
+    for channel in result:
+        print(f'{channel.tag=} {channel.speaker_analysis=}')
 
 
 if __name__ == '__main__':

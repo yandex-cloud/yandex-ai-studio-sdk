@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 
+"""
+This example shows a way to configure llm_post_process (summarize)
+and ways to get its results.
+"""
+
 from __future__ import annotations
 
 import asyncio
+import pprint
 
 import numpy as np
 from pydantic import BaseModel, Field
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 SAMPLERATE = 44100
@@ -65,26 +72,28 @@ async def main() -> None:
 
     stt = stt.configure(
         llm_post_process=stt.LLMPostProcessing('aliceai-llm').with_instruction(
-            'Краткое резюме разговора, ответь без json, просто текстом, без markdown'
+            'Краткое резюме разговора'
+        ).with_instruction(
+            'Краткое резюме разговора, опиши акторов, ответь в json',
+            response_format='json',
+        ).with_instruction(
+            'Краткое резюме разговора, ответь, используя предоставленную схему',
+            # More on the response_format topic you can find at
+            # examples/<sync/async>/chat/structured_output.py example
+            response_format=get_pydantic_model(),
         )
-        #).with_instruction(
-        #    'Краткое резюме разговора, опиши акторов',
-        #    response_format='json',
-        #).with_instruction(
-        #    'Краткое резюме разговора',
-        #    response_format=get_pydantic_model(),
-        #)
     )
 
+    # First of all, example on how to get analysis results for stream events:
     async for event in stt.run_stream(audio_data):
-        if final := event.final:
-            print(f'[channel {event.channel_tag}] New final: {final.text!r}')
-
         if llm_post_process_result := event.llm_post_process_result:
             print('New llm post process result:')
             for instruction, result_text in llm_post_process_result.by_instructions.items():
-                print(f'    {instruction}: {result_text}')
+                print(f'>>> {instruction}: {result_text}')
 
+    # And example on how to access analysis result from synchronous call
+    result = await stt.run(audio_data)
+    pprint.pprint(result.llm_post_process_result)
 
 if __name__ == '__main__':
     asyncio.run(main())

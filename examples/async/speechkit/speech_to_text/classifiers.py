@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This example shows a way to configure classifiers
+and ways to get its results.
+"""
 
 from __future__ import annotations
 
@@ -90,23 +94,40 @@ async def main() -> None:
         recognition_classifiers=(
             # you could also use the shortcuts for all of the data structures
             stt.RecognitionClassifier.on_utterance('informal_greeting'),
-            stt.RecognitionClassifier.on_utterance(
+            stt.RecognitionClassifier.on_partial(
                 stt.RecognitionClassifier.WellKnown.informal_farewell,
             ),
+            stt.RecognitionClassifier.on_final('gender'),
+            stt.RecognitionClassifier('formal_farewell', ['on_partial', 'on_final'])
         )
     )
 
+    # First of all, example on how to get analysis results for stream events:
     async for event in stt.run_stream(audio_data):
-        if final := event.final:
-            print(f'[channel {event.channel_tag}] New final: {final.text!r}')
+        if classifier_update := event.classifier_update:
+            for label, value in classifier_update.labels.items():
+                if value > 0.3:
+                    print(
+                        f'[channel {event.channel_tag}] '
+                        f'Classifier {classifier_update.name} triggered with label {label} and value {value} '
+                        f'for the {classifier_update.window_type.name} '
+                        f'on words {classifier_update.highlights}'
+                    )
 
-        if speaker_analysis := event.speaker_analysis:
-            print(f'[channel {event.channel_tag}] New speaker analysis:')
-            pprint.pprint(speaker_analysis)
+    # And example on how to access analysis result from synchronous call
+    result = await stt.run(audio_data)
+    for channel in result:
+        for utterance in channel:
+            # here is only on_utterance classifier results
+            for classifier_name, classifier_result in utterance.classifiers.items():
+                pprint.pprint((classifier_name, classifier_result))
 
-        if conversation_analysis := event.conversation_analysis:
-            print('New conversation analysis:')
-            pprint.pprint(conversation_analysis)
+            # it is very unconvinient to get non-on_utterance classifier results
+            pprint.pprint(tuple(
+                event.classifier_update
+                for event in utterance.events
+                if event.classifier_update
+            ))
 
 
 if __name__ == '__main__':

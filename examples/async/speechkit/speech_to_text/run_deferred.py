@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+This example shows how to work with deferred operations, returned by .run_deferred method.
+
+It shows nothing special about Speech to Text itself.
+"""
 
 from __future__ import annotations
 
@@ -10,15 +15,14 @@ SAMPLERATE = 44100
 
 
 async def get_voice_data(sdk: AsyncAIStudio) -> bytes:
-    """TTS here is just random source of voice data
-    and it's not related in any way to this example topic.
-    """
+    """TTS is just a random source of voice data and it is not related to this example in any way."""
 
     tts = sdk.speechkit.text_to_speech(
         voice='kirill',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE),
     )
     # * 15 for proper length to make model work more than 1 second
+    # for this example needs
     tts_result = await tts.run('Hello! How are you? How are the weather? ' * 15)
     return tts_result.data
 
@@ -41,25 +45,24 @@ async def main() -> None:
     # most simple deferred pipeline:
     operation = await stt.run_deferred(voice_data)
     result = await operation.wait()
-    print(result)
     await result.delete()
 
     # showcase on operation restore
     operation = await stt.run_deferred(voice_data)
     try:
-        # NB: we are not assigning this call to a variable
-        # to showcase result fetching later
-        await operation.wait(poll_timeout=1, poll_interval=0.01)
+        result = await operation.wait(poll_timeout=1, poll_interval=0.01)
     except TimeoutError:
         print('operation wait timeout')
 
-        # let's assume you created the operation, saved its id
+        # let's assume you created the operation, saved its id in some DB
         # and want to restore operation object
         restored_operation = await stt.attach_deferred(operation.id)
-        await restored_operation.wait(poll_timeout=100)
+        result = await restored_operation.wait(poll_timeout=100)
 
     # also you can get result at any time
-    result = await sdk.speechkit.speech_to_text.get_recognition_result(operation.id)
+    result2 = await sdk.speechkit.speech_to_text.get_recognition_result(operation.id)
+    assert result == result2
+    print(f"{result.text=}")
     # and not forget to clean it
     await result.delete()
 
