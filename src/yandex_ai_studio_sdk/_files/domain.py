@@ -51,7 +51,7 @@ class BaseFiles(BaseDomain, Generic[FileTypeT]):
         :param labels: Labels associated with the file.
         :param ttl_days: Time-to-live in days for the file.
         :param expiration_policy: Expiration policy for the file.
-            Assepts for passing ``static`` or :``since_last_active`` strings.
+            Accepts ``static`` or :``since_last_active`` strings.
             Should be defined if ``ttl_days`` has been defined, otherwise both parameters should be undefined.
         :param timeout: Timeout for the operation in seconds.
             Defaults to 60 seconds.
@@ -103,7 +103,7 @@ class BaseFiles(BaseDomain, Generic[FileTypeT]):
         :param labels: Labels associated with the file.
         :param ttl_days: Time-to-live in days for the file.
         :param expiration_policy: Expiration policy for the file.
-            Assepts for passing ``static`` or ``since_last_active`` strings.
+            Accepts ``static`` or ``since_last_active`` strings.
         :param timeout: Timeout for the operation in seconds.
             Defaults to 60.
         """
