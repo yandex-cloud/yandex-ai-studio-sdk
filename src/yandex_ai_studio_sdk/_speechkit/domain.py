@@ -10,18 +10,18 @@ from .text_to_speech.function import AsyncTextToSpeechFunction, BaseTextToSpeech
 
 class BaseSpeechKitDomain(DomainWithFunctions):
     """
-    Domain for working with `Yandex SpeechKit services <https://yandex.cloud/docs/speechkit/>`_.
+    Domain for working with `Yandex SpeechKit services <https://aistudio.yandex.ru/docs/speechkit/overview>`_.
     """
 
     #: Synonym for :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat`
     AudioFormat = AudioFormat_
 
-    #: API for `text to speech <https://yandex.cloud/docs/speechkit/tts/>`_ service
+    #: API for `text to speech <https://aistudio.yandex.ru/docs/speechkit/tts/>`_ service
     text_to_speech: BaseTextToSpeechFunction
     #: Synonym for `text_to_speech` function
     tts: BaseTextToSpeechFunction
 
-    #: API for `speech to text <https://yandex.cloud/docs/speechkit/stt/>`_ service
+    #: API for `speech to text <https://aistudio.yandex.ru/docs/speechkit/stt/>`_ service
     speech_to_text: BaseSpeechToTextFunction
     #: Synonym for `speech_to_text` function
     stt: BaseSpeechToTextFunction

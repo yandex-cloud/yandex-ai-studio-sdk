@@ -28,7 +28,7 @@ async def main() -> None:
         ]
     )
 
-    search_result = await search.run("Yandex cloud cenerative search api params")
+    search_result = await search.run("Yandex cloud generative search api params")
     print(search_result)
     # search result will be empty because of there is no pdf documents at yandex.cloud site
     print(f'Found {len(search_result.sources)} sources')

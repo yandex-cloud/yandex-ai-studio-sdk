@@ -107,10 +107,10 @@ class BaseGPTModel(
         :param max_tokens: a maximum number of tokens to generate in the response.
         :param reasoning_mode: the mode of reasoning to apply during generation, allowing the model to perform internal reasoning before responding.
             Read more about possible modes in the
-            `reasoning documentation <https://yandex.cloud/docs/foundation-models/text-generation/api-ref/TextGeneration/completion#yandex.cloud.ai.foundation_models.v1.ReasoningOptions>`_.
+            `reasoning documentation <https://aistudio.yandex.ru/docs/ai-studio/text-generation/api-ref/TextGeneration/completion#yandex.cloud.ai.foundation_models.v1.ReasoningOptions>`_.
         :param response_format: a format of the response returned by the model. Could be a JsonSchema, a JSON string, or a pydantic model.
             Read more about possible response formats in the
-            `structured output documentation_BaseGPTModel_URL <https://yandex.cloud/docs/ai-studio/concepts/generation/structured-output>`_.
+            `structured output documentation_BaseGPTModel_URL <https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/structured-output>`_.
         :param tools: tools to use for completion. Can be a sequence or a single tool.
         :param parallel_tool_calls: whether to allow parallel calls to tools during completion.
             Defaults to ``true``.
@@ -331,7 +331,7 @@ class AsyncGPTModel(
 
         :param messages: the input messages to process. Could be a string, a dictionary, or a result object.
             Read more about other possible message types in the
-            `corresponding documentation <https://yandex.cloud/docs/foundation-models/sdk/#usage>`_.
+            `corresponding documentation <https://aistudio.yandex.ru/docs/ai-studio/sdk/#usage>`_.
         :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
             Defaults to 60 seconds.
         """

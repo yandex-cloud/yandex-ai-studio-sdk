@@ -31,8 +31,8 @@ class BaseImageSearch(
     Generic[ImageSearchResultTypeT],
     ModelSyncMixin[ImageSearchConfig, ImageSearchResultTypeT],
 ):
-    """Image search class which provides concrete methods for working with Image Search API
-    and incapsulates search setting.
+    """Image search class which provides concrete methods for working with image search
+    and encapsulates search setting.
     """
 
     _config_type = ImageSearchConfig

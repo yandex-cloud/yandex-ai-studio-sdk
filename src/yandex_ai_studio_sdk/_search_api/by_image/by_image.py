@@ -25,8 +25,8 @@ class BaseByImageSearch(
     Generic[ByImageSearchResultTypeT],
     ModelSyncMixin[ByImageSearchConfig, ByImageSearchResultTypeT],
 ):
-    """ByImage search class which provides concrete methods for working with ByImage Search API
-    and incapsulates search setting.
+    """ByImage search class which provides concrete methods for working with ByImage Yandex Search API
+    and encapsulates search setting.
     """
 
     _config_type = ByImageSearchConfig

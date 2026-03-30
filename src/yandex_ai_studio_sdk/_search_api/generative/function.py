@@ -35,7 +35,7 @@ class BaseGenerativeSearchFunction(BaseModelFunction[GenerativeSearchTypeT]):
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `generative search documentation <https://yandex.cloud/docs/search-api/concepts/generative-response#body>`_
+        `generative search documentation <https://aistudio.yandex.ru/docs/search-api/concepts/generative-response#body>`_
 
         NB: All of the ``site``, ``host``, ``url`` parameters are mutually exclusive.
 

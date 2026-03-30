@@ -18,7 +18,7 @@ class GenerativeSearchTool(BaseTool[ProtoGenSearchTool], GenerativeSearchConfig)
     A generative search tool that can be called by LLMs/Assistants models.
 
     To learn more about generative search itself, refer to
-    `generative search documentation <https://yandex.cloud/docs/search-api/concepts/generative-response#body>`_
+    `generative search documentation <https://aistudio.yandex.ru/docs/search-api/concepts/generative-response#body>`_
 
     Objects of this class could be used in any place which requires :py:class:`~.BaseTool` instance,
     but not every place/feature supports all of the tool types.

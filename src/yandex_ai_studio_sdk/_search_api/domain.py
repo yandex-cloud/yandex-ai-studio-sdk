@@ -11,16 +11,16 @@ from .web.function import AsyncWebSearchFunction, BaseWebSearchFunction, WebSear
 
 class BaseSearchAPIDomain(DomainWithFunctions):
     """
-    Domain for working with `Yandex Search API <https://yandex.cloud/docs/search-api>`_ services.
+    Domain for working with `Yandex Search API service <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_.
     """
 
-    #: API for `generative response <https://yandex.cloud/docs/search-api/concepts/generative-response>`_ service
+    #: API for `generative response <https://aistudio.yandex.ru/docs/search-api/concepts/generative-response>`_ service
     generative: BaseGenerativeSearchFunction
-    #: API for `web search <https://yandex.cloud/ru/docs/search-api/concepts/web-search>`_ service
+    #: API for `web search <https://aistudio.yandex.ru/docs/search-api/concepts/web-search>`_ service
     web: BaseWebSearchFunction
-    #: API for `text image search <https://yandex.cloud/ru/docs/search-api/concepts/image-search#search-by-text-query>`_ service
+    #: API for `text image search <https://aistudio.yandex.ru/docs/search-api/concepts/image-search#search-by-text-query>`_ service
     image: BaseImageSearchFunction
-    #: API for `search by image <https://yandex.cloud/ru/docs/search-api/concepts/image-search#search-by-image>`_ service
+    #: API for `search by image <https://aistudio.yandex.ru/docs/search-api/concepts/image-search#search-by-image>`_ service
     by_image: BaseByImageSearchFunction
 
 

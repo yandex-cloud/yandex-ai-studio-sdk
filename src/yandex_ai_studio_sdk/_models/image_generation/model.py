@@ -50,7 +50,7 @@ class BaseImageGenerationModel(
         :param width_ratio: the width ratio for the generated image.
         :param height_ratio: the height ratio for the generated image.
         :param mime_type: the MIME type of the generated image.
-            Read more on what MIME types exist in `the documentation <https://yandex.cloud/docs/foundation-models/image-generation/api-ref/ImageGenerationAsync/generate>`_.
+            Read more on what MIME types exist in `the documentation <https://aistudio.yandex.ru/docs/ai-studio/image-generation/api-ref/ImageGenerationAsync/generate>`_.
         """
         return super().configure(
             seed=seed,

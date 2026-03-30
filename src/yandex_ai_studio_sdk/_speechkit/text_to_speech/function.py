@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing_extensions import override
+
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat, LoudnessNormalization
 from yandex_ai_studio_sdk._types.enum import UndefinedOrEnumWithUnknownInput
 from yandex_ai_studio_sdk._types.function import BaseModelFunction
@@ -38,7 +39,7 @@ class BaseTextToSpeechFunction(BaseModelFunction[TextToSpeechTypeT]):
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `TTS documentation <https://yandex.cloud/docs/speechkit/tts>`_
+        `TTS documentation <https://aistudio.yandex.ru/docs/speechkit/stt>`_
 
         :param loudness_normalization: Specifies type of loudness normalization.
             Default: `LUFS`.

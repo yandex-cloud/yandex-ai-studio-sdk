@@ -9,6 +9,7 @@ from yandex.cloud.ai.tts.v3.tts_pb2 import (
     AudioFormatOptions, DurationHint, Hints, UtteranceSynthesisRequest, UtteranceSynthesisResponse
 )
 from yandex.cloud.ai.tts.v3.tts_service_pb2_grpc import SynthesizerStub
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LoudnessNormalization as LoudnessNormalization_
@@ -31,7 +32,7 @@ class BaseTextToSpeech(
     ModelSyncStreamMixin[TextToSpeechConfig, TextToSpeechResult],
 ):
     """Text to Speech class which provides concrete methods for working with SpeechKit TTS API
-    and incapsulates synthesis setting.
+    and encapsulates synthesis setting.
     """
 
     #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat` for more convenient access.
@@ -68,7 +69,7 @@ class BaseTextToSpeech(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        TTS `documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        `TTS documentation <https://aistudio.yandex.ru/docs/speechkit/stt>`_
 
         :param loudness_normalization: Specifies type of loudness normalization.
             Default: `LUFS`.
@@ -218,9 +219,9 @@ class BaseTextToSpeech(
 
     def create_bistream(self, *, timeout: float = 10 * 60) -> TTSBidirectionalStreamTypeT:
         """Creates a bidirectional stream object for using
-        `Yandex SpeechKit Streaming synthesis <https://yandex.cloud/en/docs/speechkit/tts/api/tts-streaming>`_.
+        `Yandex SpeechKit Streaming synthesis <https://aistudio.yandex.ru/docs/speechkit/tts/api/tts-streaming>`_.
 
-        :param timeout: GRPC timeout in seconds that defines the maximum lifetime of the entire stream.
+        :param timeout: gRPC timeout in seconds that defines the maximum lifetime of the entire stream.
             The timeout countdown begins from the moment of the first stream interaction.
         """
 
