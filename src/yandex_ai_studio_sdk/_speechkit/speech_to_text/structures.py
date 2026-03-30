@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -46,7 +47,7 @@ class ProtoBasedWithBoolDefault(ProtoSerializable[ProtoMessageTypeT]):
 
 @dataclass(frozen=True)
 class TextNormalization(ProtoBasedWithBoolDefault[ProtoTextNormalizationOptions]):
-    """Class which encapsulates `text normaliztion options <https://yandex.cloud/docs/speechkit/stt/normalization>`_.
+    """Class which encapsulates `text normaliztion options <https://aistudio.yandex.ru/docs/speechkit/stt/normalization>`_.
 
     Usage of object of this class itself in speech to text configuration is turning on normalization.
     Options of this class have different defaults at backend, i.e. some options could turn on the feature
@@ -105,7 +106,7 @@ class EndOfUtteranceSensitivity(ProtoBasedEnum):
 @dataclass(frozen=True)
 class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifier]):
     """Class which encapsulates settings
-    `end of utterance classifier <https://yandex.cloud/docs/speechkit/stt/eou>`_.
+    `end of utterance classifier <https://aistudio.yandex.ru/docs/speechkit/stt/eou>`_.
 
     Usage this class object in speech to text configuration turning on
     default end-of-utterance classification.
@@ -182,7 +183,7 @@ RecognitionTriggerTypeInput = EnumWithUnknownInput[RecognitionTriggerType]
 class WellKnownRecognitionClassifiers(str, Enum):
     """Well known names of recognition classifier triggers.
 
-    More on the topic in `article <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
+    More on the topic in `article <https://aistudio.yandex.ru/docs/speechkit/stt/analysis#classifier>`_.
     """
 
     formal_greeting = 'formal_greeting'
@@ -201,7 +202,7 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
     """Classifier to use in speech recognition.
 
     For detailed information refer to `classification documentation
-    <https://yandex.cloud/docs/speechkit/stt/analysis>`_.
+    <https://aistudio.yandex.ru/docs/speechkit/stt/analysis>`_.
 
     You can pass a string as a trigger:
 
@@ -289,7 +290,7 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
 @dataclass(frozen=True)
 class SpeechAnalysis(ProtoSerializable[ProtoSpeechAnalysisOptions]):
     """Class which encapsulates
-    `speech analysis settings <https://yandex.cloud/docs/speechkit/stt/analysis>`_"""
+    `speech analysis settings <https://aistudio.yandex.ru/docs/speechkit/stt/analysis>`_"""
 
     #: Analyse speech for every speaker
     speaker_analysis: UndefinedOr[bool] = UNDEFINED
@@ -345,7 +346,7 @@ class LLMPostProcessingInstruction(ProtoSerializable[SummarizationProperty]):
 class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
     """Class for encapsulating
     `transcription llm post processing settings
-    <https://yandex.cloud/docs/speechkit/stt/llm-results>`_
+    <https://aistudio.yandex.ru/docs/speechkit/stt/llm-results>`_
 
     You could pass a full model uri:
 
@@ -379,7 +380,7 @@ class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
 
     """
 
-    #: The `ID of the model <https://yandex.cloud/docs/foundation-models/concepts/yandexgpt/models>`_
+    #: The `ID of the model <https://aistudio.yandex.ru/docs/foundation-models/concepts/yandexgpt/models>`_
     #: Model name to be used for completion generation;
     #: If the name contains '://', it is treated as a full URI.
     #: Otherwise constructs a URI in the form 'gpt://<folder_id>/<model_name>/<model_version>'
