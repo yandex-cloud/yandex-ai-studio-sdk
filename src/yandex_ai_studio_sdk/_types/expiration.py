@@ -19,9 +19,8 @@ from .misc import UndefinedOr, get_defined_value
 ExpirationProtoType = Union[Assistant, SearchIndex, Thread, File]
 
 
-ExpirationProtoTypeT_contra = TypeVar(
-    'ExpirationProtoTypeT_contra',
-    contravariant=True,
+ExpirationProtoTypeT = TypeVar(
+    'ExpirationProtoTypeT',
     bound=ExpirationProtoType
 )
 

@@ -34,15 +34,10 @@ class BaseCompletions(BaseModelFunction[ModelTypeT]):
         :param model_version: the version of the model to use.
             Defaults to 'latest'.
         """
-        if '://' in model_name:
-            uri = model_name
-        else:
-            folder_id = self._sdk._folder_id
-            uri = f'gpt://{folder_id}/{model_name}/{model_version}'
 
         return self._model_type(
             sdk=self._sdk,
-            uri=uri,
+            uri=self._sdk._get_model_uri('gpt', model_name, model_version),
         )
 
 

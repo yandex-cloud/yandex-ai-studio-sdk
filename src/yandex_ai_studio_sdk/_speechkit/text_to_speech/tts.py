@@ -5,7 +5,9 @@ from collections.abc import AsyncIterator, Iterator
 from typing import Generic, TypeVar
 
 from typing_extensions import Self, override
-from yandex.cloud.ai.tts.v3.tts_pb2 import DurationHint, Hints, UtteranceSynthesisRequest, UtteranceSynthesisResponse
+from yandex.cloud.ai.tts.v3.tts_pb2 import (
+    AudioFormatOptions, DurationHint, Hints, UtteranceSynthesisRequest, UtteranceSynthesisResponse
+)
 from yandex.cloud.ai.tts.v3.tts_service_pb2_grpc import SynthesizerStub
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
@@ -32,7 +34,9 @@ class BaseTextToSpeech(
     and encapsulates synthesis setting.
     """
 
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat` for more convenient access.
     AudioFormat = AudioFormat_
+    #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.LoudnessNormalization` for more convenient access.
     LoudnessNormalization = LoudnessNormalization_
 
     _config_type = TextToSpeechConfig
@@ -104,7 +108,7 @@ class BaseTextToSpeech(
 
     @override
     def __repr__(self) -> str:
-        # Web Search doesn't have an uri value, but I'm lazy to refactor
+        # TTS doesn't have an uri value, but I'm lazy to refactor
         # to make an additional ancestor without an uri
         return f'{self.__class__.__name__}(config={self._config})'
 
@@ -115,14 +119,14 @@ class BaseTextToSpeech(
         *,
         timeout: float = 60,
     ) -> TextToSpeechResult:
-        """Run a speech synthesis for given `text` and return joined result.
+        """Run a speech synthesis for given `input` and return joined result.
 
-        To change initial search settings use ``.configure`` method:
+        To change initial tts settings use ``.configure`` method:
 
-        >>> search = sdk.speechkit.text_to_speech(audio_format='mp3')
-        >>> search = search.configure(audio_format='WAV')
+        >>> tts = sdk.speechkit.text_to_speech(audio_format='mp3')
+        >>> tts = tts.configure(audio_format='WAV')
 
-        :param text: Text to vocalize.
+        :param input: Text to vocalize.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: synthesis result; joined in case of >1 chunks in synthesis response.
         """
@@ -144,14 +148,14 @@ class BaseTextToSpeech(
     ) -> AsyncIterator[TextToSpeechResult]:
         """Run a speech synthesis for given text at `input`; method have an iterator return.
 
-        To change initial search settings use ``.configure`` method:
+        To change initial tts settings use ``.configure`` method:
 
-        >>> search = sdk.speechkit.text_to_speech(audio_format='mp3')
-        >>> search = search.configure(audio_format='WAV')
+        >>> tts = sdk.speechkit.text_to_speech(audio_format='mp3')
+        >>> tts = tts.configure(audio_format='WAV')
 
-        :param text: Text to vocalize.
+        :param input: Text to vocalize.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
-        :returns: synthesis result; joined in case of >1 chunks in synthesis response.
+        :returns: synthesis result chunks.
         """
 
         async for proto in self._run_impl(input=input, timeout=timeout):
@@ -170,7 +174,7 @@ class BaseTextToSpeech(
         c = self._config
         c._validate_run()
 
-        output_audio_spec =  AudioFormat_._to_proto(c.audio_format)
+        output_audio_spec =  AudioFormat_._to_proto(AudioFormatOptions, c.audio_format)
 
         hints: list[Hints] = []
         _p = DurationHint.DurationHintPolicy
@@ -214,7 +218,7 @@ class BaseTextToSpeech(
 
     def create_bistream(self, *, timeout: float = 10 * 60) -> TTSBidirectionalStreamTypeT:
         """Creates a bidirectional stream object for using
-        `Yandex SpeechKit Streaming synthesis <https://yandex.cloud/docs/speechkit/tts/api/tts-streaming>`_.
+        `Yandex SpeechKit Streaming synthesis <https://aistudio.yandex.ru/docs/speechkit/tts/api/tts-streaming>`_.
 
         :param timeout: gRPC timeout in seconds that defines the maximum lifetime of the entire stream.
             The timeout countdown begins from the moment of the first stream interaction.
@@ -264,7 +268,7 @@ class TextToSpeech(BaseTextToSpeech[TTSBidirectionalStream]):
         input: str,
         *,
         timeout: float = 60
-    ):
+    ) -> TextToSpeechResult:
         return self.__run(input=input, timeout=timeout)
 
     @doc_from(BaseTextToSpeech._run_stream)

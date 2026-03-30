@@ -87,6 +87,18 @@ Generic types
 .. py:class:: yandex_ai_studio_sdk._speechkit.text_to_speech.bistream.TTSBidirectionalStreamTypeT
 
 
+.. py:class:: yandex_ai_studio_sdk._speechkit.speech_to_text.stt.SpeechToTextTypeT
+
+
+.. py:class:: yandex_ai_studio_sdk._speechkit.speech_to_text.bistream.STTBidirectionalStreamTypeT
+
+
+.. py:class:: yandex_ai_studio_sdk._speechkit.bistream.InputTypeT
+
+
+.. py:class:: yandex_ai_studio_sdk._types.result.ProtoModelResultTypeT
+
+
 Miscellaneous types
 ~~~~~~~~~~~~~~~~~~~
 
@@ -109,6 +121,8 @@ Miscellaneous types
 .. py:class:: yandex_ai_studio_sdk._tools.tool_call_list.HttpToolCallList
 
 .. py:class:: yandex_ai_studio_sdk._types.enum.UnknownEnumValue
+
+.. py:class:: yandex_ai_studio_sdk._types.enum.EnumWithUnknownAlias
 
 .. py:class:: yandex_ai_studio_sdk._search_api.utils.NestedDict
 

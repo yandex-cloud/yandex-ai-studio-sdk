@@ -95,6 +95,7 @@ Base classes
 .. autoclass:: yandex_ai_studio_sdk._search_api.by_image.function.BaseByImageSearchFunction
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.domain.BaseSpeechKitDomain
+   :exclude-members: to_bytes,from_bytes
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.text_to_speech.function.BaseTextToSpeechFunction
 
@@ -102,3 +103,11 @@ Base classes
    :exclude-members: to_bytes,from_bytes
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.text_to_speech.bistream.BaseTTSBidirectionalStream
+
+.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.function.BaseSpeechToTextFunction
+   :exclude-members: to_bytes,from_bytes
+
+.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.stt.BaseSpeechToText
+   :exclude-members: to_bytes,from_bytes
+
+.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.bistream.BaseSTTBidirectionalStream

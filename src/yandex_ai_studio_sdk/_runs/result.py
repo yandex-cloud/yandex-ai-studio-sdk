@@ -12,7 +12,7 @@ from yandex_ai_studio_sdk._messages.message import BaseMessage, Message, Partial
 from yandex_ai_studio_sdk._models.completions.result import Usage
 from yandex_ai_studio_sdk._tools.tool_call import HaveToolCalls, ToolCallTypeT
 from yandex_ai_studio_sdk._tools.tool_call_list import ProtoAssistantToolCallList, ToolCallList
-from yandex_ai_studio_sdk._types.result import BaseProtoResult, ProtoMessageTypeT_contra
+from yandex_ai_studio_sdk._types.result import BaseProtoResult, ProtoMessageTypeT
 
 from .status import BaseRunStatus, RunStatus, StreamEvent
 
@@ -26,9 +26,9 @@ MessageTypeT = TypeVar('MessageTypeT', bound=BaseMessage)
 @dataclasses.dataclass(frozen=True)
 class BaseRunResult(
     BaseRunStatus,
-    BaseProtoResult[ProtoMessageTypeT_contra],
+    BaseProtoResult[ProtoMessageTypeT],
     HaveToolCalls[ToolCallTypeT],
-    Generic[StatusTypeT, MessageTypeT, ToolCallTypeT, ProtoMessageTypeT_contra],
+    Generic[StatusTypeT, MessageTypeT, ToolCallTypeT, ProtoMessageTypeT],
 ):
     #: Run status
     status: StatusTypeT
@@ -40,7 +40,7 @@ class BaseRunResult(
 
     @classmethod
     @abc.abstractmethod
-    def _from_proto(cls, *, proto: ProtoMessageTypeT_contra, sdk: BaseSDK) -> BaseRunResult:
+    def _from_proto(cls, *, proto: ProtoMessageTypeT, sdk: BaseSDK) -> BaseRunResult:
         pass
 
     @property

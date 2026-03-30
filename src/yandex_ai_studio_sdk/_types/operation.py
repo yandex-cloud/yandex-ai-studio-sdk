@@ -18,7 +18,7 @@ from yandex_ai_studio_sdk._logging import TRACE, get_logger
 from yandex_ai_studio_sdk._utils.sync import run_sync_impl
 from yandex_ai_studio_sdk.exceptions import RunError, WrongAsyncOperationStatusError
 
-from .proto import ProtoBasedType
+from .proto import ProtoBased
 
 if TYPE_CHECKING:
     from yandex_ai_studio_sdk._sdk import BaseSDK
@@ -27,6 +27,12 @@ logger = get_logger(__name__)
 
 AnyResultTypeT_co = TypeVar('AnyResultTypeT_co', covariant=True)
 ResultTypeT_co = TypeVar('ResultTypeT_co', covariant=True)
+
+@dataclass
+class OperationContext:
+    id: str
+
+ResultTransformerType = Callable[[Any, float, OperationContext], Awaitable[ResultTypeT_co]]
 
 
 # NB: it couldn't be ABC because it descendants can't inherit from ABC and Enum at the same time
@@ -202,6 +208,8 @@ class OperationInterface(abc.ABC, Generic[AnyResultTypeT_co, OperationStatusType
 class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, OperationStatus]):
     _last_known_status: OperationStatus | None
 
+    Context = OperationContext
+
     def __init__(
         self,
         *,
@@ -212,7 +220,7 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         proto_metadata_type: type[Message] | None = None,
         initial_operation: ProtoOperation | None = None,
         service_name: str | None = None,
-        transformer: None | Callable[[Any, float], Awaitable[ResultTypeT_co]] = None,
+        transformer: None | ResultTransformerType = None,
         custom_default_poll_timeout: int = 3600,
     ):  # pylint: disable=redefined-builtin
         self._id = id
@@ -241,7 +249,12 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         return f'{self.__class__.__name__}<{args}>'
 
     # pylint: disable=unused-argument
-    async def _default_result_transofrmer(self, proto: Any, timeout: float) -> ResultTypeT_co:
+    async def _default_result_transofrmer(
+        self,
+        proto: Any,
+        timeout: float,
+        ctx: OperationContext,  # pylint: disable=unused-argument
+    ) -> ResultTypeT_co:
         # NB: default_result_transformer should be used only with _result_type
         # which are BaseProtoResult-compatible, but I don't know how to express it with typing,
         # maybe we need special operation class, which support transforming (probably a base one)
@@ -249,7 +262,7 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         # because we use _result_type also for a generic typing reasons, sometimes it requires
         # unwrapping for issubclass check
         result_type = get_origin(self._result_type) or self._result_type
-        assert issubclass(result_type, ProtoBasedType), f'{self._result_type} is not ProtoBasedType'
+        assert issubclass(result_type, ProtoBased), f'{self._result_type} is not ProtoBased'
 
         # NB: mypy can't figure out that self._result_type._from_proto is
         # returning instance of self._result_type which is also is a ResultTypeT_co
@@ -318,7 +331,13 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
             proto_result = self._proto_result_type()
             status.response.Unpack(proto_result)
 
-            return await self._transformer(proto_result, timeout)
+            return await self._transformer(
+                proto_result,
+                timeout,
+                self.Context(
+                    id=self.id
+                )
+            )
 
         if status.is_failed:
             assert status.error is not None

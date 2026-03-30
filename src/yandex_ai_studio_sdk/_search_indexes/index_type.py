@@ -3,26 +3,24 @@ from __future__ import annotations
 
 import abc
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar, Union
+from typing import ClassVar, TypeVar, Union
 
 from typing_extensions import Self
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import HybridSearchIndex
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import SearchIndex as ProtoSearchIndex
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import TextSearchIndex, VectorSearchIndex
+from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
 
 from .chunking_strategy import BaseIndexChunkingStrategy
 from .combination_strategy import BaseIndexCombinationStrategy
 from .normalization_strategy import IndexNormalizationStrategy
 
-if TYPE_CHECKING:
-    from yandex_ai_studio_sdk._sdk import BaseSDK
-
-
 ProtoSearchIndexType = Union[TextSearchIndex, VectorSearchIndex, HybridSearchIndex]
+ProtoSearchIndexTypeTypeT = TypeVar('ProtoSearchIndexTypeTypeT', bound=ProtoSearchIndexType)
 
 
 @dataclass(frozen=True)
-class BaseSearchIndexType(abc.ABC):
+class BaseSearchIndexType(ProtoBased[ProtoSearchIndexTypeTypeT]):
     """A class for search index types."""
     _proto_field_name: ClassVar[str]
     #: the strategy used for chunking the index
@@ -30,21 +28,21 @@ class BaseSearchIndexType(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _from_proto(cls, proto, sdk: BaseSDK) -> Self:
+    def _from_proto(cls, proto: ProtoSearchIndexTypeTypeT, sdk: SDKType) -> Self:
         pass
 
     @abc.abstractmethod
-    def _to_proto(self) -> ProtoSearchIndexType:
+    def _to_proto(self) -> ProtoSearchIndexTypeTypeT:
         pass
 
     @classmethod
-    def _parse_chunking_strategy(cls, proto: ProtoSearchIndexType, sdk: BaseSDK) -> BaseIndexChunkingStrategy | None:
+    def _parse_chunking_strategy(cls, proto: ProtoSearchIndexTypeTypeT, sdk: SDKType) -> BaseIndexChunkingStrategy | None:
         if proto.HasField('chunking_strategy'):
             return BaseIndexChunkingStrategy._from_upper_proto(proto=proto.chunking_strategy, sdk=sdk)
         return None
 
     @classmethod
-    def _from_upper_proto(cls, proto: ProtoSearchIndex, sdk: BaseSDK) -> BaseSearchIndexType:
+    def _from_upper_proto(cls, proto: ProtoSearchIndex, sdk: SDKType) -> BaseSearchIndexType:
         klasses = (
             TextSearchIndexType,
             VectorSearchIndexType,
@@ -65,12 +63,14 @@ class BaseSearchIndexType(abc.ABC):
 
 
 @dataclass(frozen=True)
-class TextSearchIndexType(BaseSearchIndexType):
+class TextSearchIndexType(BaseSearchIndexType[TextSearchIndex]):
     """A class which represents a text search index type."""
     _proto_field_name: ClassVar[str] = 'text_search_index'
 
     @classmethod
-    def _from_proto(cls, proto: TextSearchIndex, sdk: BaseSDK) -> TextSearchIndexType:
+    def _from_proto(cls, proto: TextSearchIndex, sdk: SDKType) -> TextSearchIndexType:
+        # I can't figure out why pylint thinks there is no chunking_strategy argument
+        # pylint: disable-next=unexpected-keyword-arg
         return cls(
             chunking_strategy=cls._parse_chunking_strategy(proto, sdk),
         )
@@ -83,7 +83,7 @@ class TextSearchIndexType(BaseSearchIndexType):
 
 
 @dataclass(frozen=True)
-class VectorSearchIndexType(BaseSearchIndexType):
+class VectorSearchIndexType(BaseSearchIndexType[VectorSearchIndex]):
     """A class which represents a vector search index type."""
 
     _proto_field_name: ClassVar[str] = 'vector_search_index'
@@ -93,7 +93,9 @@ class VectorSearchIndexType(BaseSearchIndexType):
     query_embedder_uri: str | None = None
 
     @classmethod
-    def _from_proto(cls, proto: VectorSearchIndex, sdk: BaseSDK) -> VectorSearchIndexType:
+    def _from_proto(cls, proto: VectorSearchIndex, sdk: SDKType) -> VectorSearchIndexType:
+        # I can't figure out why pylint thinks there is no chunking_strategy argument
+        # pylint: disable-next=unexpected-keyword-arg
         return cls(
             doc_embedder_uri=proto.doc_embedder_uri,
             query_embedder_uri=proto.query_embedder_uri,
@@ -110,7 +112,7 @@ class VectorSearchIndexType(BaseSearchIndexType):
 
 
 @dataclass(frozen=True)
-class HybridSearchIndexType(BaseSearchIndexType):
+class HybridSearchIndexType(BaseSearchIndexType[HybridSearchIndex]):
     """A class which represents a hybrid search index type combining text and vector search indices."""
 
     _proto_field_name: ClassVar[str] = 'hybrid_search_index'
@@ -124,7 +126,9 @@ class HybridSearchIndexType(BaseSearchIndexType):
     combination_strategy: BaseIndexCombinationStrategy | None = None
 
     @classmethod
-    def _from_proto(cls, proto: HybridSearchIndex, sdk: BaseSDK) -> HybridSearchIndexType:
+    def _from_proto(cls, proto: HybridSearchIndex, sdk: SDKType) -> HybridSearchIndexType:
+        # I can't figure out why pylint thinks there is no chunking_strategy argument
+        # pylint: disable-next=unexpected-keyword-arg
         return cls(
             chunking_strategy=cls._parse_chunking_strategy(proto, sdk),
             text_search_index=TextSearchIndexType._from_proto(

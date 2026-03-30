@@ -10,7 +10,7 @@ from .._client import AsyncCloudClient
 from .._utils.parse_uri import parse_uri
 from .misc import Undefined, UndefinedOr, get_defined_value
 from .model_config import ConfigTypeT
-from .operation import OperationTypeT
+from .operation import OperationTypeT, ResultTransformerType
 from .result import BaseResult, ProtoMessage
 from .tuning.datasets import TuningDatasetsType
 from .tuning.params import BaseTuningParams
@@ -122,17 +122,29 @@ class ModelAsyncMixin(
     _operation_type: type[OperationTypeT]
     _proto_result_type: type[ProtoMessage]
 
+    @property
+    def _operation_transformer(self) -> ResultTransformerType | None:
+        return None
+
     @abc.abstractmethod
     async def _run_deferred(self, *args, **kwargs) -> OperationTypeT:
         pass
 
     # pylint: disable=unused-argument
     async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
+        """
+        Attaches to an ongoing deferred operation using its operation id.
+
+        :param operation_id: the id of the deferred operation to attach to.
+        :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
+            Defaults to 60 seconds.
+        """
         return self._operation_type(
             id=operation_id,
             sdk=self._sdk,
             result_type=self._result_type,
             proto_result_type=self._proto_result_type,
+            transformer=self._operation_transformer
         )
 
 

@@ -16,16 +16,15 @@ from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchResponse
 from yandex.cloud.searchapi.v2.search_service_pb2 import WebSearchResponse
 from yandex_ai_studio_sdk._types.model import BaseModel, ConfigTypeT
 from yandex_ai_studio_sdk._types.request import RequestDetails
-from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, ProtoMessageTypeT_contra, SDKType
+from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, ProtoMessageTypeT, SDKType
 from yandex_ai_studio_sdk._types.xml import XMLBased
 
 from .utils import get_subelement_text
 
 XMLSearchProtoMessage: TypeAlias = Union[WebSearchResponse, ImageSearchResponse]
-XMLSearchProtoMessageTypeT_contra = TypeVar(
-    'XMLSearchProtoMessageTypeT_contra',
+XMLSearchProtoMessageTypeT = TypeVar(
+    'XMLSearchProtoMessageTypeT',
     bound=XMLSearchProtoMessage,
-    contravariant=True
 )
 
 
@@ -103,8 +102,8 @@ class SearchGroup(XMLBased, Sequence, Generic[XMLSearchDocumentTypeT]):
 
 @dataclass(frozen=True)
 class BaseSearchResult(
-    Generic[ProtoMessageTypeT_contra, SearchDocumentTypeT, ConfigTypeT],
-    BaseProtoModelResult[ProtoMessageTypeT_contra, SearchRequestDetails[ConfigTypeT]],
+    Generic[ProtoMessageTypeT, SearchDocumentTypeT, ConfigTypeT],
+    BaseProtoModelResult[ProtoMessageTypeT, SearchRequestDetails[ConfigTypeT]],
     Sequence[SearchDocumentTypeT],
     ABC
 ):
@@ -147,7 +146,7 @@ class BaseSearchResult(
 
 @dataclass(frozen=True)
 class XMLBaseSearchResult(
-    BaseSearchResult[XMLSearchProtoMessageTypeT_contra, XMLSearchDocumentTypeT, ConfigTypeT]
+    BaseSearchResult[XMLSearchProtoMessageTypeT, XMLSearchDocumentTypeT, ConfigTypeT]
 ):
     #: Non-parsed XML result of search request.
     xml: bytes = field(repr=False)
@@ -160,7 +159,7 @@ class XMLBaseSearchResult(
     def _from_proto(
         cls,
         *,
-        proto: XMLSearchProtoMessageTypeT_contra,
+        proto: XMLSearchProtoMessageTypeT,
         sdk: SDKType,
         ctx: SearchRequestDetails[ConfigTypeT],
     ) -> Self:

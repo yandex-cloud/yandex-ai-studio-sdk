@@ -31,15 +31,10 @@ class BaseTextClassifiers(BaseModelFunction[ModelTypeT]):
         :param model_version: the version of the model to be used.
             Defaults to 'latest'.
         """
-        if '://' in model_name:
-            uri = model_name
-        else:
-            folder_id = self._sdk._folder_id
-            uri = f'cls://{folder_id}/{model_name}/{model_version}'
 
         return self._model_type(
             sdk=self._sdk,
-            uri=uri,
+            uri=self._sdk._get_model_uri('cls', model_name, model_version)
         )
 
 

@@ -166,8 +166,11 @@ class BaseSearchIndex(
 
         return SearchIndexFile._from_proto(proto=response, sdk=self._sdk)
 
-    # pylint: disable=unused-argument
-    async def _transform_add_files(self, proto: BatchCreateSearchIndexFileResponse, timeout: float) -> SearchIndexFileTuple:
+    async def _transform_add_files(
+        self,
+        proto: BatchCreateSearchIndexFileResponse,
+        *_,
+    ) -> SearchIndexFileTuple:
         return tuple(
             SearchIndexFile._from_proto(proto=f, sdk=self._sdk)
             for f in proto.files

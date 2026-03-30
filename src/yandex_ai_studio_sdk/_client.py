@@ -353,20 +353,25 @@ class AsyncCloudClient:
         metadata = await self._get_metadata(auth_required=auth, timeout=timeout)
         call = service(requests, metadata=metadata, timeout=timeout)
 
-        async for response in call:
-            yield cast(_D, response)
+        try:
+            async for response in call:
+                yield cast(_D, response)
+        finally:
+            call.cancel()
 
     async def stream_stream_call(
         self,
-        service: grpc.aio.StreamStreamMultiCallable,
+        service: grpc.aio.StreamStreamMultiCallable | grpc.StreamStreamMultiCallable,
         timeout: float,
     ) -> grpc.aio.StreamStreamCall:
         metadata = await self._get_metadata(auth_required=True, timeout=timeout)
-        call = service(
+
+        # NB: here a lot of mypy errors due to bad external grpc type stubs
+        call = service(  # type: ignore[call-arg]
             metadata=metadata,
             timeout=timeout,
         )
-        return call
+        return call  # type: ignore[return-value]
 
     @asynccontextmanager
     async def httpx(
