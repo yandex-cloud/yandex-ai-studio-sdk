@@ -23,7 +23,7 @@ from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
 
 @dataclasses.dataclass(frozen=True)
 class BaseThread(ExpirableResource[ProtoThread]):
-    """A class for a thread resource.
+    """DEPRECATED A class for a thread resource.
 
     It provides methods for working with messages that the thread contains (e.g. updating, deleting, writing to, and reading from).
     """
@@ -127,7 +127,7 @@ class BaseThread(ExpirableResource[ProtoThread]):
         This method allows sending a message to the thread with optional labels.
 
         :param message: the message to be sent to the thread. Could be a string, a dictionary, or a result object.
-            Read more about other possible message types in the `documentation <https://yandex.cloud/docs/foundation-models/sdk/#usage>`_.
+            Read more about other possible message types in the `documentation <https://aistudio.yandex.ru/docs/ai-studio/sdk/#usage>`_.
         :param labels: optional labels for the message.
         :param timeout: timeout for the operation.
             Defaults to 60 seconds.

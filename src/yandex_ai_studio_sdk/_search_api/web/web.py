@@ -37,8 +37,8 @@ class BaseWebSearch(
     ModelSyncMixin[WebSearchConfig, WebSearchResultTypeT],
     ModelAsyncMixin[WebSearchConfig, WebSearchResultTypeT, OperationTypeT],
 ):
-    """Web search class which provides concrete methods for working with Web Search API
-    and incapsulates search setting.
+    """Web search class which provides concrete methods for working with web search
+    and encapsulates search setting.
     """
 
     _config_type = WebSearchConfig

@@ -10,6 +10,7 @@ from typing import Literal
 from get_annotations import get_annotations
 from grpc import aio
 from typing_extensions import Self
+
 from yandex_ai_studio_sdk._utils.doc import doc_from
 
 from ._assistants.domain import Assistants, AsyncAssistants, BaseAssistants
@@ -42,15 +43,15 @@ class BaseSDK:
     tools: BaseTools
     #: Domain for working with models (inference and tuning)
     models: BaseModels
-    #: Domain for working with threads (a part of the Assistants API)
+    #: DEPRECATED Domain for working with threads (a part of the Assistants API)
     threads: BaseThreads
-    #: Domain for working with files (a part of the Asssistants API)
+    #: DEPRECATED Domain for working with files (a part of the Asssistants API)
     files: BaseFiles
     #: Domain for working with assistants (a part of the Assistants API)
     assistants: BaseAssistants
-    #: Domain for working with assistants' runs (a part of the Assistants API)
+    #: DEPRECATED Domain for working with assistants' runs (a part of the Assistants API)
     runs: BaseRuns
-    #: Domain for working with `Search API <https://yandex.cloud/docs/search-api>`_
+    #: Domain for working with `Yandex Search API <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_
     search_api: BaseSearchAPIDomain
     #: Domain for working with search indexes (a part of the Assistants API)
     search_indexes: BaseSearchIndexes
@@ -61,10 +62,10 @@ class BaseSDK:
     #: Domain for working with batch tasks
     batch: BaseBatch
     #: Domain for working with
-    #: `Yandex Cloud OpenAI Compatible API_BaseSDK_URL <https://yandex.cloud/docs/ai-studio/concepts/openai-compatibility>`_.
+    #: `Yandex Cloud OpenAI Compatible API <https://aistudio.yandex.ru/docs//ai-studio/concepts/api#openai>`_.
     chat: BaseChat
     #: Domain for working with
-    #: `Yandex SpeechKit <https://yandex.cloud/docs/speechkit>`_ services.
+    #: `Yandex SpeechKit <https://aistudio.yandex.ru/docs/speechkit/overview>`_ services.
     speechkit: BaseSpeechKitDomain
 
     _messages: BaseMessages

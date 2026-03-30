@@ -48,7 +48,7 @@ class LangFilterType(TypedDict):
 
     lang: str
 
-#: Generative search filter type which describes dict formats eligible to use with generative search API.
+#: Generative search filter type which describes dict formats eligible to use with generative search.
 FilterType: TypeAlias = Union[DateFilterType, FormatFilterType, LangFilterType]
 SmartFilterSequence: TypeAlias = Union[Sequence[FilterType], FilterType]
 

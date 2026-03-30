@@ -26,13 +26,13 @@ async def main() -> None:
     )
 
     # You could pass a string as a query
-    search_result = await search.run("Yandex cloud cenerative search api params")
-    # You could exam search_result structure via pprint to know how to work with it
+    search_result = await search.run("Yandex cloud generative search api params")
+    # You could exam search_result structure via print to know how to work with it
     pprint.pprint(search_result)
     print()
 
     queries = [
-        # Also you could pass a {'text', 'role'} dict like in comletions models
+        # Also you could pass a {'text', 'role'} dict like in completion models
         {"text": 'Gen search api params', "role": "user"},
         'With examples',
     ]

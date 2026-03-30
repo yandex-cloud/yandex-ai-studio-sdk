@@ -128,7 +128,7 @@ class BaseAssistant(ExpirableResource[ProtoAssistant], Generic[RunTypeT, ThreadT
         :param expiration_policy: Policy for handling expiration
         :param response_format: A format of the response returned by the model. Could be a JsonSchema, a JSON string, or a pydantic model.
             Read more about possible response formats in the
-            `structured output documentation_BaseAssistant_URL <https://yandex.cloud/docs/ai-studio/concepts/generation/structured-output>`_.
+            `structured output documentation_BaseAssistant_URL <https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/structured-output>`_.
         :param timeout: The timeout, or the maximum time to wait for the request to complete in seconds.
             Defaults to 60 seconds.
         """

@@ -57,7 +57,7 @@ class BaseChatModel(
         :param max_tokens: Maximum number of tokens to generate in the response.
         :param reasoning_mode: Reasoning mode for internal processing before responding.
         :param response_format: Format of the response (JsonSchema, JSON string, or pydantic model).
-            See `structured output documentation_BaseChatModel_URL <https://yandex.cloud/docs/ai-studio/concepts/generation/structured-output>`_.
+            See `structured output documentation_BaseChatModel_URL <https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/structured-output>`_.
         :param tools: Tools available for completion. Can be a sequence or single tool.
         :param parallel_tool_calls: Whether to allow parallel tool calls.
             Defaults to 'true'.
@@ -132,7 +132,7 @@ class BaseChatModel(
 
         :param messages: The input messages to process. Could be a string, a dictionary, or a result object.
             Read more about other possible message types in the
-            `corresponding documentation <https://yandex.cloud/docs/ai-studio/sdk/#usage>`_.
+            `corresponding documentation <https://aistudio.yandex.ru/docs/ai-studio/sdk/#usage>`_.
         :param timeout: The timeout, or the maximum time to wait for the request to complete in seconds.
             Defaults to 180 seconds.
         """

@@ -56,7 +56,7 @@ class BaseSearchIndexes(BaseDomain, Generic[SearchIndexTypeT, OperationTypeT]):
         :param labels: a set of labels for the search index.
         :param ttl_days: time-to-live in days for the search index.
         :param expiration_policy: expiration policy for the file.
-            Assepts for passing ``static`` or ``since_last_active`` strings. Should be defined if ``ttl_days`` has been defined, otherwise both parameters should be undefined.
+            Accepts ``static`` or ``since_last_active`` strings. Should be defined if ``ttl_days`` has been defined, otherwise both parameters should be undefined.
         :param timeout: the time to wait for the operation to complete.
             Defaults to 60 seconds.
         """

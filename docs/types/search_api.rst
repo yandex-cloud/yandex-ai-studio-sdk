@@ -1,5 +1,5 @@
-Search API
-==========
+Yandex Search API
+=================
 
 Generative serch
 ----------------

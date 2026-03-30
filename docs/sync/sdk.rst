@@ -9,15 +9,15 @@
 .. toctree::
 
    models/domain
-   assistants
-   tools
-   files
-   threads
+   chat/domain
+   batch
    runs
-   search_indexes
-   search_api
    datasets
    tuning
-   batch
-   chat/domain
+   files
+   search_indexes
+   search_api
    speechkit/domain
+   threads
+   assistants
+   tools

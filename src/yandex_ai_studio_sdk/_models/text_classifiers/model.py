@@ -156,7 +156,7 @@ class AsyncTextClassifiersModel(BaseTextClassifiersModel[AsyncTuningTask['AsyncT
         If samples are also specified - it is a case of the few-shot classifier.
         If nothing is specified, use the classify method, but it is only available for pre-trained models.
 
-        Read more about the classifiers in `the documentation <https://yandex.cloud/docs/foundation-models/concepts/classifier/>`_.
+        Read more about the classifiers in `the documentation <https://aistudio.yandex.ru/docs/ai-studio/concepts/classifier/>`_.
 
         :param text: the input text to classify.
         :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
