@@ -18,6 +18,9 @@ Speech to text
 .. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.top_containers
    :undoc-members:
 
+.. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.event
+   :undoc-members:
+
 .. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.alternatives
    :undoc-members:
 
@@ -32,13 +35,11 @@ Speech to text
 .. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.status_code.CodeType
    :exclude-members: to_bytes,from_bytes
 
-.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier.ClassifierUpdate
+.. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier
    :exclude-members: to_bytes,from_bytes
 
-.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier.ClassifierResult
+.. automodule:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier_final
    :exclude-members: to_bytes,from_bytes
-
-.. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.classifier.PhraseHighlight
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.result.descriptive_statistics.DescriptiveStatistics
 
