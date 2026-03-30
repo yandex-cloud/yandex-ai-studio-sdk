@@ -25,14 +25,15 @@ class SpeechToTextConfig(BaseModelConfig):
     audio_format: EnumWithUnknownInput[AudioFormat]
 
     #: The name of the STT model to use for recognition.
-    #: Look for available model and versions `in documentation <https://yandex.cloud/docs/speechkit/stt/models>`_.
+    #: Look for available model and versions
+    #: `in documentation <https://aistudio.yandex.ru/docs/speechkit/stt/models>`_.
     model: str | None = None
 
-    #: The list of `language codes <https://yandex.cloud/docs/speechkit/stt/models>`_
+    #: The list of `language codes <https://aistudio.yandex.ru/docs/speechkit/stt/models>`_
     #: to restrict recognition in the case of an auto model (or just one language code).
     language_codes: LanguageCodesInputType | None = None
 
-    #: `Text normalization options <https://yandex.cloud/docs/speechkit/stt/normalization>`_:
+    #: `Text normalization options <https://aistudio.yandex.ru/docs/speechkit/stt/normalization>`_:
     #:
     #: * ``True`` for turning on text normalization with default parameters;
     #: * ``False`` for turning text normalization off;
@@ -40,7 +41,7 @@ class SpeechToTextConfig(BaseModelConfig):
     #: * Nothing for server default.
     text_normalization: TextNormalization | bool | None = None
 
-    #: Configuration for an `end of utterance detection model <https://yandex.cloud/docs/speechkit/stt/eou>`_:
+    #: Configuration for an `end of utterance detection model <https://aistudio.yandex.ru/docs/speechkit/stt/eou>`_:
     #:
     #: * ``True`` for default eou classifier;
     #: * ``False`` for no eou classifier (documentation describes it as "external eou classifier";
@@ -49,18 +50,18 @@ class SpeechToTextConfig(BaseModelConfig):
     eou_classifier: EndOfUtteranceClassifier | bool | None = None
 
     #: Classifier or list of
-    #: `classifiers over speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
+    #: `classifiers over speech recognition <https://aistudio.yandex.ru/docs/speechkit/stt/analysis#classifier>`_.
     recognition_classifiers: RecognitionClassifiersInputType | None = None
 
     #: Configuration for
-    #: `speech analysis over speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#statistics>`_.
+    #: `speech analysis over speech recognition <https://aistudio.yandex.ru/docs/speechkit/stt/analysis#statistics>`_.
     speech_analysis: SpeechAnalysis | None = None
 
-    #: Configuration for `speaker labeling <https://yandex.cloud/docs/speechkit/stt/speaker-labeling>`_.
+    #: Configuration for `speaker labeling <https://aistudio.yandex.ru/docs/speechkit/stt/speaker-labeling>`_.
     speaker_labeling: bool | None = None
 
     #: Configuration for
-    #: `LLM recognition results processing <https://yandex.cloud/docs/speechkit/stt/llm-results>`_.
+    #: `LLM recognition results processing <https://aistudio.yandex.ru/docs/speechkit/stt/llm-results>`_.
     #: At some point in history also known as ``Summarization``.
     llm_post_process: LLMPostProcessing | None = None
 

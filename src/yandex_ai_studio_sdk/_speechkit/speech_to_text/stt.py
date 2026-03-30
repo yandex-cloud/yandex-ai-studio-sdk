@@ -86,16 +86,16 @@ class BaseSpeechToText(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `STT documentation <https://yandex.cloud/docs/speechkit/stt>`_
+        `STT documentation <https://aistudio.yandex.ru/docs/speechkit/stt>`_
 
         :param audio_format: Specifies the input audio format.
         :param model: The name of the STT model to use for recognition.
             See the list of available models and versions
-            `in the documentation <https://yandex.cloud/docs/speechkit/stt/models>`_.
-        :param language_codes: The list of `language codes <https://yandex.cloud/docs/speechkit/stt/models>`_
+            `in the documentation <https://aistudio.yandex.ru/docs/speechkit/stt/models>`_.
+        :param language_codes: The list of `language codes <https://aistudio.yandex.ru/docs/speechkit/stt/models>`_
             to restrict recognition in the case of an automatic model, or a single language code.
         :param text_normalization:
-            `Text normalization options <https://yandex.cloud/docs/speechkit/stt/normalization>`_:
+            `Text normalization options <https://aistudio.yandex.ru/docs/speechkit/stt/normalization>`_:
 
             * ``True`` — turn on text normalization with default parameters;
             * ``False`` — turn text normalization off;
@@ -103,7 +103,7 @@ class BaseSpeechToText(
               instance — text normalization with custom parameters;
             * ``None`` — for server default.
         :param eou_classifier:
-            Configuration for `end of utterance detection model <https://yandex.cloud/docs/speechkit/stt/eou>`_:
+            Configuration for `end of utterance detection model <https://aistudio.yandex.ru/docs/speechkit/stt/eou>`_:
 
             * ``True`` — use default EOU classifier;
             * ``False`` — disable EOU classifier ("external EOU classifier" in documentation);
@@ -111,13 +111,13 @@ class BaseSpeechToText(
               instance — use custom EOU classifier settings;
             * ``None`` — for server default.
         :param recognition_classifiers: Classifier or list of
-            `classifiers for speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#classifier>`_.
+            `classifiers for speech recognition <https://aistudio.yandex.ru/docs/speechkit/stt/analysis#classifier>`_.
         :param speech_analysis: Configuration for
-            `speech analysis over speech recognition <https://yandex.cloud/docs/speechkit/stt/analysis#statistics>`_.
+            `speech analysis over speech recognition <https://aistudio.yandex.ru/docs/speechkit/stt/analysis#statistics>`_.
         :param speaker_labeling: Configuration for
-            `speaker labeling <https://yandex.cloud/docs/speechkit/stt/speaker-labeling>`_.
+            `speaker labeling <https://aistudio.yandex.ru/docs/speechkit/stt/speaker-labeling>`_.
         :param llm_post_process: Configuration for
-            `LLM recognition results processing <https://yandex.cloud/docs/speechkit/stt/llm-results>`_.
+            `LLM recognition results processing <https://aistudio.yandex.ru/docs/speechkit/stt/llm-results>`_.
             (Also known as Summarization in earlier documentation.)
 
         """
@@ -338,7 +338,7 @@ class BaseSpeechToText(
 
     def create_bistream(self, *, timeout: float = 10 * 60) -> STTBidirectionalStreamTypeT:
         """Creates a bidirectional stream object for using
-        `Yandex SpeechKit Streaming speech recognition <https://yandex.cloud/docs/speechkit/stt/streaming>`_.
+        `Yandex SpeechKit Streaming speech recognition <https://aistudio.yandex.ru/docs/speechkit/stt/streaming>`_.
 
         :param timeout: GRPC timeout in seconds that defines the maximum lifetime of the entire stream.
             The timeout countdown begins from the moment of the first stream interaction.
