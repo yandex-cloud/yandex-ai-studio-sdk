@@ -9,7 +9,6 @@ from __future__ import annotations
 import pprint
 
 import numpy as np
-
 from yandex_ai_studio_sdk import AIStudio
 
 SAMPLERATE = 44100

@@ -7,7 +7,6 @@ from typing import Any
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
-
 from yandex_ai_studio_sdk._types.proto import ProtoBased
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, SDKType
 
