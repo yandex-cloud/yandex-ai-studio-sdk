@@ -38,12 +38,22 @@ async def main() -> None:
     )
 
     # with phone normalization (default)
-    request_text = 'Мой телефон - +7 999 500 60 70'
+    request_text = 'Мой телефон - +7 499 646-00-32'
     voice_data = await get_voice_data(sdk, request_text)
     result = await stt.run(voice_data)
     print(f"{result.final_text=} {result.final_refinement_text=}")
     # note that .text helper will return final_refiniment text if it exists
     assert result.text == result.final_refinement_text
+
+    # without phone normalization
+    stt = stt.configure(
+        text_normalization=stt.TextNormalization(phone_formatting=False)
+    )
+    result = await stt.run(voice_data)
+    request_text = 'Мой телефон - +7 499 646-00-32'
+    voice_data = await get_voice_data(sdk, request_text)
+    result = await stt.run(voice_data)
+    print(f"{result.final_text=} {result.final_refinement_text=}")
 
     # profanity filter:
     request_text = 'Сударь, вы - мудак!'

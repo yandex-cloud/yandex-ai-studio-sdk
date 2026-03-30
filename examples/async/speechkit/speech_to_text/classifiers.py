@@ -10,6 +10,7 @@ import asyncio
 import pprint
 
 import numpy as np
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 SAMPLERATE = 44100
@@ -121,12 +122,8 @@ async def main() -> None:
             for classifier_name, classifier_result in utterance.classifiers.items():
                 pprint.pprint((classifier_name, classifier_result))
 
-            # it is very unconvinient to get non-on_utterance classifier results
-            pprint.pprint(tuple(
-                event.classifier_update
-                for event in utterance.events
-                if event.classifier_update
-            ))
+            for classifier_final_result in utterance.final_classifiers:
+                pprint.pprint(classifier_final_result)
 
 
 if __name__ == '__main__':

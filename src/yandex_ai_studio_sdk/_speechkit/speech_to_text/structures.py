@@ -16,6 +16,7 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import SpeechAnalysisOptions as ProtoSpeechA
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationOptions as ProtoSummarizationOptions
 from yandex.cloud.ai.stt.v3.stt_pb2 import SummarizationProperty
 from yandex.cloud.ai.stt.v3.stt_pb2 import TextNormalizationOptions as ProtoTextNormalizationOptions
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UndefinedOrEnumWithUnknownInput
 )
@@ -31,7 +32,7 @@ class ProtoBasedWithBoolDefault(ProtoSerializable[ProtoMessageTypeT]):
 
     @classmethod
     def _coerce(cls, value: Self | bool | None) -> Self | None:
-        if value is None:
+        if value is None or value is False:
             return None
 
         if isinstance(value, cls):

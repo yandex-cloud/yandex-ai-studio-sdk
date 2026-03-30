@@ -40,6 +40,11 @@ async def main() -> None:
     stt = sdk.speechkit.speech_to_text(
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE),
         language_codes='en_EN',
+        # NB: The deferred-general model is a special model
+        # that makes deferred runs even more deferred, at a lower price.
+        # You can still use the default or any other model for your deferred runs.
+        # More at https://aistudio.yandex.ru/docs/speechkit/stt/transcribation.html#modes
+        model='deferred-general'
     )
 
     # most simple deferred pipeline:
