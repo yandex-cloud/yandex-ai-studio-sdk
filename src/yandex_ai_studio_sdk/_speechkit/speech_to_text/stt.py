@@ -16,7 +16,7 @@ from yandex_ai_studio_sdk._types.enum import UndefinedOrEnumWithUnknownInput
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
 from yandex_ai_studio_sdk._types.model import ModelAsyncMixin, ModelSyncMixin, ModelSyncStreamMixin
 from yandex_ai_studio_sdk._types.operation import (
-    AsyncOperation, BaseOperation, Operation, OperationTypeT, ProtoOperation
+    AsyncOperation, Operation, OperationContext, OperationTypeT, ProtoOperation, ResultTransformerType
 )
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
@@ -24,9 +24,10 @@ from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
 from .bistream import AsyncSTTBidirectionalStream, STTBidirectionalStream, STTBidirectionalStreamTypeT
 from .config import LanguageCodesInputType, RecognitionClassifiersInputType, SpeechToTextConfig
 from .result import (
-    AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, RequestDetails,
-    SpeechToTextResult, SpeechToTextStreamingEvent
+    AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT, SpeechToTextResult,
+    SpeechToTextStreamingEvent
 )
+from .result.context import RequestDetails
 from .structures import EndOfUtteranceClassifier, LLMPostProcessing, SpeechAnalysis, TextNormalization
 from .synonyms import SynonymsMixin
 from .utils import create_recognize_file_request, create_streaming_options
@@ -52,9 +53,14 @@ class BaseSpeechToText(
     _config_type = SpeechToTextConfig
     _result_type = SpeechToTextResult
     _bistream_type: type[STTBidirectionalStreamTypeT]
-    _operation_impl: type[OperationTypeT]
+    _operation_type: type[OperationTypeT]
     _deferred_result_impl: type[DeferredSpeechToTextResultTypeT]
     _proto_result_type = StreamingResponse
+
+    @override
+    @property
+    def _operation_transformer(self) -> ResultTransformerType:
+        return self._deferred_result_transformer
 
     # pylint: disable=useless-parent-delegation,arguments-differ
     @override
@@ -221,16 +227,21 @@ class BaseSpeechToText(
         ):
             result.append(proto)
 
+        ctx = RequestDetails(
+            model_config=self._config,
+        )
+
         return self._result_type._from_proto_iterable(
             proto=result,
             sdk=self._sdk,
+            ctx=ctx,
         )
 
     async def _deferred_result_transformer(
         self,
         proto_result: Empty,  # pylint: disable=unused-argument
         timeout: float,
-        ctx: BaseOperation.Context
+        ctx: OperationContext
     ) -> DeferredSpeechToTextResultTypeT:
         result = cast(
             DeferredSpeechToTextResultTypeT,
@@ -283,7 +294,7 @@ class BaseSpeechToText(
                 expected_type=ProtoOperation,
             )
 
-        return self._operation_impl(
+        return self._operation_type(
             sdk=self._sdk,
             id=response.id ,
             proto_result_type=self._proto_result_type,
@@ -322,7 +333,6 @@ class BaseSpeechToText(
                 sdk=self._sdk,
                 ctx=RequestDetails(
                     model_config=self._config,
-                    timeout=timeout
                 )
             )
 
@@ -349,7 +359,7 @@ class AsyncSpeechToText(
     ]
 ):
     _bistream_type = AsyncSTTBidirectionalStream
-    _operation_impl = AsyncOperation[AsyncDeferredSpeechToTextResult]
+    _operation_type = AsyncOperation[AsyncDeferredSpeechToTextResult]
     _deferred_result_impl = AsyncDeferredSpeechToTextResult
 
     @doc_from(BaseSpeechToText._run)
@@ -398,7 +408,7 @@ class SpeechToText(
     ]
 ):
     _bistream_type = STTBidirectionalStream
-    _operation_impl = Operation[DeferredSpeechToTextResult]
+    _operation_type = Operation[DeferredSpeechToTextResult]
     _deferred_result_impl = DeferredSpeechToTextResult
     __run = run_sync(BaseSpeechToText._run)
     __run_stream = run_sync_generator(BaseSpeechToText._run_stream)

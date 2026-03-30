@@ -34,7 +34,7 @@ class Word(ProtoBased[ProtoWord]):
         )
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(frozen=True)
 class Alternative(ProtoMirrored[ProtoAlternative]):
     """Recognition of specific time frame."""
 
@@ -128,8 +128,8 @@ class Alternatives(BaseAlternatives, ProtoBased[AlternativeUpdate]):
         )
 
     def __repr__(self) -> str:
-        alternatives = tuple(repr(a) for a in self.alternatives)
-        return f'Alternatives({alternatives})'
+        alternatives = ', '.join(str(a) for a in self.alternatives)
+        return f'Alternatives(({alternatives},))'
 
 
 @dataclass(frozen=True)
@@ -150,5 +150,5 @@ class FinalRefinement(BaseAlternatives, ProtoBased[ProtoFinalRefinement]):
         )
 
     def __repr__(self) -> str:
-        alternatives = tuple(repr(a) for a in self.alternatives)
-        return f'FinalRefinement({alternatives}, final_index={self.final_index!r})'
+        alternatives = ', '.join(str(a) for a in self.alternatives)
+        return f'FinalRefinement(({alternatives},), final_index={self.final_index!r})'

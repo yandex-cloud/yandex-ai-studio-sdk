@@ -27,7 +27,6 @@ class SpeakerAnalysis(ProtoMirrored[ProtoSpeakerAnalysis]):
         #: Stats for all received audio
         TOTAL = ProtoSpeakerAnalysis.WindowType.TOTAL
 
-
     #: Audio segment boundaries
     timespan: TimeSpan
 

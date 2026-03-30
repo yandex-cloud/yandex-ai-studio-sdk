@@ -31,7 +31,7 @@ class ProtoBasedWithBoolDefault(ProtoSerializable[ProtoMessageTypeT]):
 
     @classmethod
     def _coerce(cls, value: Self | bool | None) -> Self | None:
-        if value is None:
+        if value is None or value is False:
             return None
 
         if isinstance(value, cls):
@@ -435,5 +435,4 @@ class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
             model_uri=uri,
             properties=[i._to_proto(sdk) for i in self.instructions],
         )
-        print(result)
         return result

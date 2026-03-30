@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-This example shows a way to configure conversation/speaker analysis
+This example shows a way to configure classifiers
 and ways to get its results.
 """
 
@@ -82,34 +82,47 @@ async def main() -> None:
     audio_data = await get_audio_data(sdk)
 
     stt = sdk.speechkit.speech_to_text(
+        # audio_format='wav',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE, channels=2),
         language_codes='ru_RU',
-    )
-
-    stt = stt.configure(
-        # short synonym for sdk.speechkit.speech_to_text.SpeechAnalysis
-        speech_analysis=stt.SpeechAnalysis(
-            speaker_analysis=True,
-            conversation_analysis=True,
-            descriptive_statistics_quantiles=[0.1, 0.5, 0.9],
+        recognition_classifiers=(
+            sdk.speechkit.speech_to_text.RecognitionClassifier.on_utterance('informal_greeting'),
         ),
+    )
+    stt = stt.configure(
+        recognition_classifiers=(
+            # you could also use the shortcuts for all of the data structures
+            stt.RecognitionClassifier.on_utterance('informal_greeting'),
+            stt.RecognitionClassifier.on_partial(
+                stt.RecognitionClassifier.WellKnown.informal_farewell,
+            ),
+            stt.RecognitionClassifier.on_final('gender'),
+            stt.RecognitionClassifier('formal_farewell', ['on_partial', 'on_final'])
+        )
     )
 
     # First of all, example on how to get analysis results for stream events:
     async for event in stt.run_stream(audio_data):
-        if speaker_analysis := event.speaker_analysis:
-            print(f'[channel {event.channel_tag}] New speaker analysis:')
-            pprint.pprint(speaker_analysis)
-
-        if conversation_analysis := event.conversation_analysis:
-            print('New conversation analysis:')
-            pprint.pprint(conversation_analysis)
+        if classifier_update := event.classifier_update:
+            for label, value in classifier_update.labels.items():
+                if value > 0.3:
+                    print(
+                        f'[channel {event.channel_tag}] '
+                        f'Classifier {classifier_update.name} triggered with label {label} and value {value} '
+                        f'for the {classifier_update.window_type.name} '
+                        f'on words {classifier_update.highlights}'
+                    )
 
     # And example on how to access analysis result from synchronous call
     result = await stt.run(audio_data)
-    print(f'{result.conversation_analysis=}')
     for channel in result:
-        print(f'{channel.tag=} {channel.speaker_analysis=}')
+        for utterance in channel:
+            # here is only on_utterance classifier results
+            for classifier_name, classifier_result in utterance.classifiers.items():
+                pprint.pprint((classifier_name, classifier_result))
+
+            for classifier_final_result in utterance.final_classifiers:
+                pprint.pprint(classifier_final_result)
 
 
 if __name__ == '__main__':

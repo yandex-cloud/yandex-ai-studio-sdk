@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This example is showing method to work with bidirectional recognition stream,
+which is allows to process big inputs in realtime.
+"""
 
 from __future__ import annotations
 
@@ -25,47 +29,50 @@ async def main() -> None:
     stt = sdk.speechkit.speech_to_text(
         model='general',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE),
-        # Classifiers working only with russian language, so in purpose of this
-        # example we use russian
         language_codes='ru_RU',
-        recognition_classifiers=(
-            sdk.speechkit.speech_to_text.RecognitionClassifier.on_utterance('informal_greeting'),
-        ),
     )
-    stt = stt.configure(
-        recognition_classifiers=(
-            # you could also use the shortcuts for all of the data structures
-            stt.RecognitionClassifier.on_utterance('informal_greeting'),
-            stt.RecognitionClassifier.on_utterance(
-                stt.RecognitionClassifier.WellKnown.informal_farewell,
-            ),
-        )
-    )
+
     bistream = stt.create_bistream()
 
     async def producer():
         async for input_chunk in tts.run_stream('Привет! Как дела?'):
-            print(f'>>> Sending {len(input_chunk.data)=} bytes')
+            seconds = len(input_chunk.data) / SAMPLERATE
+            print(f'>>> Sending {seconds} seconds of data')
+
+            # here we are asynchronously writing audio data into bistream
             await bistream.write(input_chunk.data)
 
         await asyncio.sleep(1)
 
-        print('>>> Sending 1 second of silence')
-        await bistream.write_silence(1000)
+        silence = 2
+        print(f'>>> Sending {silence} seconds of silence')
+        # here we are writing silince to trigger EOU at recognition
+        await bistream.write_silence(1000 * silence)
 
         await asyncio.sleep(1)
 
         input_chunk = await tts.run('Хорошего вечера, пока!')
-        print(f'>>> Sending {len(input_chunk.data)=} bytes')
+        seconds = len(input_chunk.data) / SAMPLERATE
+        print(f'>>> Sending {seconds} seconds data')
+        # new chunk of audio data after a silence
         await bistream.write(input_chunk.data)
 
+        # we must explicitly tell to stream that we are done
+        # to make it release reading iterator
         await bistream.done_writing()
 
+    # we are creating asyncio task here for writing data into the bistream,
+    # but it could be any way around
     task = asyncio.create_task(producer())
 
-    async for recognition_result in bistream:
-        print(f'<<< got new {recognition_result=}')
+    # iterating and processing stream events is nothing different from .run_stream method
+    # and this topic have more coverage at run_stream.py example
+    async for recognition_event in bistream:
+        if recognition_event.event_type == 'status_code':
+            continue
+        print(f'<<< got new {recognition_event=}')
 
+    # asyncio wants you to finalize task objects
     await task
 
 

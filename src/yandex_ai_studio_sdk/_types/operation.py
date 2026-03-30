@@ -28,6 +28,12 @@ logger = get_logger(__name__)
 AnyResultTypeT_co = TypeVar('AnyResultTypeT_co', covariant=True)
 ResultTypeT_co = TypeVar('ResultTypeT_co', covariant=True)
 
+@dataclass
+class OperationContext:
+    id: str
+
+ResultTransformerType = Callable[[Any, float, OperationContext], Awaitable[ResultTypeT_co]]
+
 
 # NB: it couldn't be ABC because it descendants can't inherit from ABC and Enum at the same time
 class BaseOperationStatus:
@@ -202,9 +208,7 @@ class OperationInterface(abc.ABC, Generic[AnyResultTypeT_co, OperationStatusType
 class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, OperationStatus]):
     _last_known_status: OperationStatus | None
 
-    @dataclass
-    class Context:
-        id: str
+    Context = OperationContext
 
     def __init__(
         self,
@@ -216,7 +220,7 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         proto_metadata_type: type[Message] | None = None,
         initial_operation: ProtoOperation | None = None,
         service_name: str | None = None,
-        transformer: None | Callable[[Any, float, BaseOperation.Context], Awaitable[ResultTypeT_co]] = None,
+        transformer: None | ResultTransformerType = None,
         custom_default_poll_timeout: int = 3600,
     ):  # pylint: disable=redefined-builtin
         self._id = id
@@ -249,7 +253,7 @@ class BaseOperation(Generic[ResultTypeT_co], OperationInterface[ResultTypeT_co, 
         self,
         proto: Any,
         timeout: float,
-        ctx: BaseOperation.Context,  # pylint: disable=unused-argument
+        ctx: OperationContext,  # pylint: disable=unused-argument
     ) -> ResultTypeT_co:
         # NB: default_result_transformer should be used only with _result_type
         # which are BaseProtoResult-compatible, but I don't know how to express it with typing,

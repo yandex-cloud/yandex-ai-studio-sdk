@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 """
-This example shows a way to configure conversation/speaker analysis
+This example shows a way to configure classifiers
 and ways to get its results.
 """
 
 from __future__ import annotations
 
-import asyncio
 import pprint
 
 import numpy as np
-from yandex_ai_studio_sdk import AsyncAIStudio
+from yandex_ai_studio_sdk import AIStudio
 
 SAMPLERATE = 44100
 
 # pylint: disable=too-many-locals
-async def get_audio_data(sdk: AsyncAIStudio) -> bytes:
+def get_audio_data(sdk: AIStudio) -> bytes:
     """This function is just a source of two-channel conversation
     for an example purposes.
     """
@@ -26,10 +25,10 @@ async def get_audio_data(sdk: AsyncAIStudio) -> bytes:
         voice='kirill',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE),
     )
-    voice_data_first = await tts.run('Привет! Как дела?')
-    voice_data_third = await tts.run('Все, нет времени, пока')
+    voice_data_first = tts.run('Привет! Как дела?')
+    voice_data_third = tts.run('Все, нет времени, пока')
     tts = tts.configure(voice='jane')
-    voice_data_second = await tts.run("Привет-привет! Хорошо! А твои?")
+    voice_data_second = tts.run("Привет-привет! Хорошо! А твои?")
 
     left = np.frombuffer(voice_data_first.data, dtype=dtype)
     left2 = np.frombuffer(voice_data_third.data, dtype=dtype)
@@ -70,47 +69,60 @@ async def get_audio_data(sdk: AsyncAIStudio) -> bytes:
     return stereo.tobytes()
 
 
-async def main() -> None:
+def main() -> None:
     # You can set authentication using environment variables instead of the 'auth' argument:
     # YC_OAUTH_TOKEN, YC_TOKEN, YC_IAM_TOKEN, or YC_API_KEY
     # You can also set 'folder_id' using the YC_FOLDER_ID environment variable
-    sdk = AsyncAIStudio(
+    sdk = AIStudio(
         # folder_id="<YC_FOLDER_ID>",
         # auth="<YC_API_KEY/YC_IAM_TOKEN>",
     ).setup_default_logging()
 
-    audio_data = await get_audio_data(sdk)
+    audio_data = get_audio_data(sdk)
 
     stt = sdk.speechkit.speech_to_text(
+        # audio_format='wav',
         audio_format=sdk.speechkit.AudioFormat.PCM16(SAMPLERATE, channels=2),
         language_codes='ru_RU',
-    )
-
-    stt = stt.configure(
-        # short synonym for sdk.speechkit.speech_to_text.SpeechAnalysis
-        speech_analysis=stt.SpeechAnalysis(
-            speaker_analysis=True,
-            conversation_analysis=True,
-            descriptive_statistics_quantiles=[0.1, 0.5, 0.9],
+        recognition_classifiers=(
+            sdk.speechkit.speech_to_text.RecognitionClassifier.on_utterance('informal_greeting'),
         ),
+    )
+    stt = stt.configure(
+        recognition_classifiers=(
+            # you could also use the shortcuts for all of the data structures
+            stt.RecognitionClassifier.on_utterance('informal_greeting'),
+            stt.RecognitionClassifier.on_partial(
+                stt.RecognitionClassifier.WellKnown.informal_farewell,
+            ),
+            stt.RecognitionClassifier.on_final('gender'),
+            stt.RecognitionClassifier('formal_farewell', ['on_partial', 'on_final'])
+        )
     )
 
     # First of all, example on how to get analysis results for stream events:
-    async for event in stt.run_stream(audio_data):
-        if speaker_analysis := event.speaker_analysis:
-            print(f'[channel {event.channel_tag}] New speaker analysis:')
-            pprint.pprint(speaker_analysis)
-
-        if conversation_analysis := event.conversation_analysis:
-            print('New conversation analysis:')
-            pprint.pprint(conversation_analysis)
+    for event in stt.run_stream(audio_data):
+        if classifier_update := event.classifier_update:
+            for label, value in classifier_update.labels.items():
+                if value > 0.3:
+                    print(
+                        f'[channel {event.channel_tag}] '
+                        f'Classifier {classifier_update.name} triggered with label {label} and value {value} '
+                        f'for the {classifier_update.window_type.name} '
+                        f'on words {classifier_update.highlights}'
+                    )
 
     # And example on how to access analysis result from synchronous call
-    result = await stt.run(audio_data)
-    print(f'{result.conversation_analysis=}')
+    result = stt.run(audio_data)
     for channel in result:
-        print(f'{channel.tag=} {channel.speaker_analysis=}')
+        for utterance in channel:
+            # here is only on_utterance classifier results
+            for classifier_name, classifier_result in utterance.classifiers.items():
+                pprint.pprint((classifier_name, classifier_result))
+
+            for classifier_final_result in utterance.final_classifiers:
+                pprint.pprint(classifier_final_result)
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()

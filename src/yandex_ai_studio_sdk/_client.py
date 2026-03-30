@@ -353,8 +353,11 @@ class AsyncCloudClient:
         metadata = await self._get_metadata(auth_required=auth, timeout=timeout)
         call = service(requests, metadata=metadata, timeout=timeout)
 
-        async for response in call:
-            yield cast(_D, response)
+        try:
+            async for response in call:
+                yield cast(_D, response)
+        finally:
+            call.cancel()
 
     async def stream_stream_call(
         self,

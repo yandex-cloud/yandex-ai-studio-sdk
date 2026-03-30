@@ -9,7 +9,6 @@ from yandex.cloud.ai.tts.v3.tts_pb2 import (
     AudioFormatOptions, DurationHint, Hints, UtteranceSynthesisRequest, UtteranceSynthesisResponse
 )
 from yandex.cloud.ai.tts.v3.tts_service_pb2_grpc import SynthesizerStub
-
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat as AudioFormat_
 from yandex_ai_studio_sdk._speechkit.enums import LoudnessNormalization as LoudnessNormalization_

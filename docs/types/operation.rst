@@ -16,3 +16,6 @@ Operation
 
 .. autoclass:: OperationErrorInfo
    :undoc-members:
+
+.. autoclass:: OperationContext
+   :undoc-members:

@@ -97,6 +97,8 @@ class AsyncSTTBidirectionalStream(
     async def write_end_of_utterance(self) -> None:
         await self._write_end_of_utterance()
 
+    eou = write_end_of_utterance
+
 
 class STTBidirectionalStream(
     BaseSTTBidirectionalStream,
@@ -120,6 +122,8 @@ class STTBidirectionalStream(
     @doc_from(BaseSTTBidirectionalStream._write_end_of_utterance)
     def write_end_of_utterance(self) -> None:
         self.__write_end_of_utterance()
+
+    eou = write_end_of_utterance
 
 
 STTBidirectionalStreamTypeT = TypeVar('STTBidirectionalStreamTypeT', bound=BaseSTTBidirectionalStream)

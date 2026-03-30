@@ -16,6 +16,7 @@ from yandex_ai_studio_sdk._utils.sync import run_sync
 
 from .config import LanguageCodesInputType, RecognitionClassifiersInputType, SpeechToTextConfig
 from .result import AsyncDeferredSpeechToTextResult, DeferredSpeechToTextResult, DeferredSpeechToTextResultTypeT
+from .result.context import RequestDetails
 from .structures import EndOfUtteranceClassifier, LLMPostProcessing, SpeechAnalysis, TextNormalization
 from .stt import AsyncSpeechToText, SpeechToText, SpeechToTextTypeT
 from .synonyms import SynonymsMixin
@@ -121,10 +122,11 @@ class BaseSpeechToTextFunction(
             ):
                 result.append(proto)
 
-        return self._deferred_result_impl._from_proto_iterable(
+        return self._deferred_result_impl._from_proto_iterable_operation(
             proto=result,
             sdk=self._sdk,
             operation_id=operation_id,
+            ctx=RequestDetails(model_config=None),
         )
 
 
