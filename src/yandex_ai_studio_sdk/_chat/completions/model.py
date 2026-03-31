@@ -79,6 +79,17 @@ class BaseChatModel(
             extra_query=extra_query,
         )
 
+    def langchain(self, timeout: int = 60):
+        """Initialize a LangChain chat model adapter.
+
+        Requires ``langchain_core`` to be installed.
+
+        :param timeout: Default timeout in seconds. Defaults to 60.
+        """
+        from .langchain import ChatYandexGPT  # pylint: disable=import-outside-toplevel
+
+        return ChatYandexGPT(ycmlsdk_model=self, timeout=timeout)
+
     def _build_request_json(self, messages: ChatMessageInputType, stream: bool) -> dict[str, Any]:
         result = {
             'model': self._uri,
