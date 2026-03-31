@@ -28,7 +28,7 @@ async def test_ainvoke(model, chat_history):
 
     assert result.content
     assert result.usage_metadata is not None
-    assert result.usage_metadata.total_tokens > 0
+    assert result.usage_metadata["total_tokens"] > 0
     assert "finish_reason" in result.response_metadata
     assert "model" in result.response_metadata
 
