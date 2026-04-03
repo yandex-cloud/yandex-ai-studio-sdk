@@ -1,6 +1,6 @@
 certifi
 data-science-types
-mypy
+mypy!=1.20
 psutil
 pyarrow-stubs
 pydantic>2.10
