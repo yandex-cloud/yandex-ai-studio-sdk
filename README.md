@@ -6,7 +6,7 @@ This Python library provides a simple and efficient software development kit (SD
 
 Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions that map directly to the capabilities exposed by Yandex Cloud. The current feature set includes:
 
-- [**SpechKit**](https://aistudio.yandex.ru/docs/speechkit/overview.html)
+- [**SpeechKit**](https://aistudio.yandex.ru/docs/speechkit/overview.html)
   - [Speech To Text](https://aistudio.yandex.ru/docs/speechkit/stt) (speech recognition)
   - [Text To Speech](https://aistudio.yandex.ru/docs/speechkit/tts) (speech synthesis)
 - [**Completions**](https://aistudio.yandex.ru/docs/ai-studio/operations/generation/create-prompt)
