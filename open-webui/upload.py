@@ -6,6 +6,7 @@ import argparse
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 import requests
@@ -19,6 +20,7 @@ def parse_args() -> argparse.Namespace:
         "--url",
         default='http://localhost:8000'
     )
+    parser.add_argument("--watch", action="store_true")
     return parser.parse_args()
 
 
@@ -139,18 +141,12 @@ def upload_function(base_url: str, headers: dict, info: dict) -> bool:
     return False
 
 
-def main() -> None:
-    args = parse_args()
-    token = get_token()
-    base_url = args.url.rstrip("/")
-    headers = api_headers(token)
-    script_dir = Path(__file__).parent.resolve()
-
+def upload_all(base_url: str, headers: dict, script_dir: Path) -> tuple[int, int]:
     functions = discover_functions(script_dir)
 
     if not functions:
         print("No functions found.")
-        sys.exit(0)
+        return 0, 0
 
     print(f"Found {len(functions)} function(s)\n")
 
@@ -165,10 +161,58 @@ def main() -> None:
             err_count += 1
         print()
 
-    print(f"Done: {ok_count} succeeded, {err_count} failed")
+    return ok_count, err_count
 
-    if err_count:
-        sys.exit(1)
+
+def watch_functions(base_url: str, headers: dict, script_dir: Path) -> None:
+    mtimes: dict[Path, float] = {}
+
+    ok_count, err_count = upload_all(base_url, headers, script_dir)
+    print(f"Done: {ok_count} succeeded, {err_count} failed\n")
+
+    for info in discover_functions(script_dir):
+        try:
+            mtimes[info["file"]] = info["file"].stat().st_mtime
+        except OSError:
+            pass
+
+    print("Watching for changes... (Ctrl+C to stop)\n")
+
+    try:
+        while True:
+            time.sleep(0.5)
+            for info in discover_functions(script_dir):
+                py_file = info["file"]
+                try:
+                    mtime = py_file.stat().st_mtime
+                except OSError:
+                    continue
+
+                last_mtime = mtimes.get(py_file)
+                if last_mtime is None or mtime != last_mtime:
+                    mtimes[py_file] = mtime
+                    label = "new" if last_mtime is None else "changed"
+                    print(f"[{info['folder_name']}] {label}")
+                    upload_function(base_url, headers, info)
+                    print()
+    except KeyboardInterrupt:
+        print("\nStopped.")
+
+
+def main() -> None:
+    args = parse_args()
+    token = get_token()
+    base_url = args.url.rstrip("/")
+    headers = api_headers(token)
+    script_dir = Path(__file__).parent.resolve()
+
+    if args.watch:
+        watch_functions(base_url, headers, script_dir)
+    else:
+        ok_count, err_count = upload_all(base_url, headers, script_dir)
+        print(f"Done: {ok_count} succeeded, {err_count} failed")
+        if err_count:
+            sys.exit(1)
 
 
 if __name__ == "__main__":
