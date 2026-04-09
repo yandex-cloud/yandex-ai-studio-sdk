@@ -33,6 +33,7 @@ FILES_LINK = "https://aistudio.yandex.ru/platform/folders/{folder_id}/files"
 LAST_TESTED_WEBUI_VERSION = "0.8.12"
 
 STATUS_NAMES = {
+    "follow_up_generation": "Generating follow up...",
     # Web Search
     "response.web_search_call.in_progress": "Searching the web...",
     "response.web_search_call.searching": "Searching the web...",
@@ -249,10 +250,26 @@ class Pipe:
                 }
             })
 
+    def _fixup_input(self, body: dict) -> None:
+        input_ = body.get('input')
+        if not self._assert_not_none(input, "input field"):
+            return
+
+        for message in input_:
+            assert isinstance(message, dict)
+            content = message.get('content', [])
+            for submessage in content:
+                assert isinstance(submessage, dict)
+                if submessage.get('type') == 'input_image':
+                    submessage['detail'] = submessage.get('detail', 'auto')
+
     async def pipe(
         self,
         body: dict,
+        __files__ = None,
+        __metadata__: dict | None = None,
         __event_emitter__: EventEmitterType | None = None,
+        __task__: str | None = None
     ) -> AsyncGenerator[str]:
         event_emitter = __event_emitter__ or self._emit_event_stub
 
@@ -260,11 +277,13 @@ class Pipe:
         # but convert_to_responses_payload modifies it
         body = copy.deepcopy(body)
         responses_kwargs = convert_to_responses_payload(body)
+        self._fixup_input(responses_kwargs)
         responses_kwargs.pop("stream", None)
 
         raw_model_id = body.get("model")
         if not self._assert_not_none(raw_model_id, "model_id not None"):
             return
+
         model_id = raw_model_id.split(".", 1)[-1]
         assistant_id = model_id.rsplit("/", 1)[-1]
 
@@ -290,7 +309,8 @@ class Pipe:
                     if event.type in SILENT_STATUSES:
                         continue
 
-                    status_name = STATUS_NAMES.get(event.type, event.type)
+                    event_type = __task__ or event.type
+                    status_name = STATUS_NAMES.get(event_type, event_type)
                     if status_name != last_status_name:
                         last_status_name = status_name
                         await self._emit_status(event_emitter, status_name)
