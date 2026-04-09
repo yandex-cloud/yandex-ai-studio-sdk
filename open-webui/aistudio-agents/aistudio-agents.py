@@ -15,7 +15,7 @@ from typing import TypeGuard, TypeVar
 from open_webui.env import VERSION as OPEN_WEBUI_VERSION
 from open_webui.routers.openai import convert_to_responses_payload
 from openai import AsyncOpenAI
-from openai.types.realtime.response_text_delta_event import ResponseTextDeltaEvent
+from openai.types.responses.response_text_delta_event import ResponseTextDeltaEvent
 from pydantic import BaseModel, Field
 
 EventEmitterType = Callable[[dict], Awaitable[None]]
@@ -82,6 +82,15 @@ STATUS_NAMES = {
     "response.refusal.done": "Refusal complete",
     # Errors
     "error": "Error occurred",
+}
+
+SILENT_STATUSES = {
+    'response.output_item.added',
+    'response.output_item.done',
+    'response.content_part.added',
+    'response.content_part.done',
+    'response.created',
+    'response.output_text.done',
 }
 
 
@@ -222,7 +231,7 @@ class Pipe:
 
         responses_kwargs["model"] = model_id
 
-        last_event_type: str | None = None
+        last_status_name: str | None = None
 
         client = self._get_client()
 
@@ -235,14 +244,15 @@ class Pipe:
                         assert isinstance(event, ResponseTextDeltaEvent)
                         yield event.delta
 
-                    if event.type != last_event_type:
-                        last_event_type = event.type
-                        status_name = STATUS_NAMES.get(event.type, event.type)
-                        await self._emit_status(
-                            event_emitter,
-                            status_name,
-                            event.type == "response.completed",
-                        )
+                    if event.type in SILENT_STATUSES:
+                        continue
+
+                    status_name = STATUS_NAMES.get(event.type, event.type)
+                    if status_name != last_status_name:
+                        last_status_name = status_name
+                        await self._emit_status(event_emitter, status_name)
+
+        await self._emit_status(event_emitter, 'Done', done=True)
 
         return
 
