@@ -15,6 +15,9 @@ from typing import TypeGuard, TypeVar
 from open_webui.env import VERSION as OPEN_WEBUI_VERSION
 from open_webui.routers.openai import convert_to_responses_payload
 from openai import AsyncOpenAI
+from openai.types.responses.response_output_item_done_event import ResponseOutputItemDoneEvent
+from openai.types.responses.response_output_message import ResponseOutputMessage
+from openai.types.responses.response_output_text import AnnotationFileCitation, AnnotationURLCitation
 from openai.types.responses.response_text_delta_event import ResponseTextDeltaEvent
 from pydantic import BaseModel, Field
 
@@ -26,11 +29,12 @@ PIPE_ORIGIN = (
     "https://github.com/yandex-cloud/yandex-ai-studio-sdk/tree/master/open-webui"
 )
 TICKETS_URL = "https://github.com/yandex-cloud/yandex-ai-studio-sdk/issues"
+FILES_LINK = "https://aistudio.yandex.ru/platform/folders/{folder_id}/files"
 LAST_TESTED_WEBUI_VERSION = "0.8.12"
 
 STATUS_NAMES = {
     # Web Search
-    "response.web_search_call.in_progress": "Searching the web..",
+    "response.web_search_call.in_progress": "Searching the web...",
     "response.web_search_call.searching": "Searching the web...",
     "response.web_search_call.completed": "Search complete, analyzing results...",
     # MCP
@@ -144,6 +148,7 @@ class Pipe:
 
     def __init__(self):
         self.valves = self.Valves()
+        self.citation = False
 
     def _get_client(self) -> AsyncOpenAI:
         return AsyncOpenAI(
@@ -210,6 +215,40 @@ class Pipe:
     async def _emit_event_stub(self, data: dict) -> None:
         pass
 
+    async def _process_annotations(self, event_emitter: EventEmitterType, event: ResponseOutputItemDoneEvent) -> None:
+        item = event.item
+        citations: set[tuple[str, str]] = set()
+        files_link = FILES_LINK.format(folder_id=self.valves.YANDEX_CLOUD_FOLDER_ID)
+
+        if isinstance(item, ResponseOutputMessage):
+            content = item.content
+            for message in content:
+                annotations = getattr(message, 'annotations', [])
+                for annotation in annotations:
+                    if isinstance(annotation, AnnotationFileCitation):
+                        citations.add((annotation.filename, files_link))
+                    elif isinstance(annotation, AnnotationURLCitation):
+                        citations.add((annotation.title, annotation.url))
+
+        for title, url in citations:
+            source = {
+                "name": title,
+                'url': url
+            }
+            metadata = {
+                'source': url,
+                'name': title,
+            }
+
+            await event_emitter({
+                "type": "citation",
+                "data": {
+                    "document": [title],
+                    "metadata": [metadata],
+                    "source": source,
+                }
+            })
+
     async def pipe(
         self,
         body: dict,
@@ -244,6 +283,10 @@ class Pipe:
                         assert isinstance(event, ResponseTextDeltaEvent)
                         yield event.delta
 
+                    if event.type == 'response.output_item.done':
+                        assert isinstance(event, ResponseOutputItemDoneEvent)
+                        await self._process_annotations(event_emitter, event)
+
                     if event.type in SILENT_STATUSES:
                         continue
 
@@ -257,9 +300,11 @@ class Pipe:
         return
 
     def _validate_configuration(self) -> None:
+        # pylint: disable-next=no-member
         if not self.valves.YANDEX_CLOUD_API_KEY.strip():
             raise ValueError("Yandex Cloud API Key is required")
 
+        # pylint: disable-next=no-member
         if not self.valves.YANDEX_CLOUD_FOLDER_ID.strip():
             raise ValueError("Yandex Cloud Folder ID is required")
 
