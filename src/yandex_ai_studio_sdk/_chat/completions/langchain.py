@@ -95,6 +95,26 @@ def _lc_tool_to_function_tool(tool: Any) -> FunctionTool:
     )
 
 
+_TOOL_CHOICE_MODE_STRINGS = frozenset(("auto", "none", "required"))
+
+
+def _coerce_tool_choice(
+    tool_choice: str | dict[str, Any] | bool,
+) -> str | dict[str, Any]:
+    """Map LangChain tool_choice conventions to Yandex ToolChoiceType."""
+    if isinstance(tool_choice, bool):
+        return "required" if tool_choice else "none"
+    if isinstance(tool_choice, dict):
+        return tool_choice
+    # str branch
+    if tool_choice == "any":
+        return "required"
+    if tool_choice in _TOOL_CHOICE_MODE_STRINGS:
+        return tool_choice
+    # LangChain convention: tool name string → specific function dict
+    return {"type": "function", "function": {"name": tool_choice}}
+
+
 # =========================================================================
 # Response parsing: Chat API → LangChain
 # =========================================================================
@@ -284,22 +304,17 @@ class ChatYandexGPT(BaseYandexLanguageModel[ChatAPIModel], LCBaseChatModel):
         :param tools: LangChain-compatible tools: dicts (OpenAI schema),
             Pydantic models, callables, or BaseTool instances.
         :param tool_choice: Strategy for tool selection.
-            ``True`` / ``"any"`` → ``"required"``.
-            ``False`` → ``"none"``.
-            A tool name string selects a specific tool.
+            ``True`` / ``"any"`` → ``"required"`` (must call a tool).
+            ``False`` → ``"none"`` (must not call tools).
+            ``"auto"`` → model decides.
+            A tool name string → ``{"type": "function", "function": {"name": ...}}``.
+            A dict is passed through as-is.
         :returns: New :class:`ChatYandexGPT` with the tools configured.
         """
         yandex_tools = [_lc_tool_to_function_tool(t) for t in tools]
-
-        if tool_choice is None:
-            yandex_tool_choice = UNDEFINED
-        elif isinstance(tool_choice, bool):
-            yandex_tool_choice = "required" if tool_choice else "none"
-        elif tool_choice == "any":
-            yandex_tool_choice = "required"
-        else:
-            yandex_tool_choice = tool_choice
-
+        yandex_tool_choice = (
+            _coerce_tool_choice(tool_choice) if tool_choice is not None else UNDEFINED
+        )
         configured = self.ycmlsdk_model.configure(
             tools=yandex_tools,
             tool_choice=yandex_tool_choice,

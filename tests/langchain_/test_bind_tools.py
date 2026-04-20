@@ -58,3 +58,11 @@ def test_bind_tools_tool_choice_any_maps_to_required(model):
 def test_bind_tools_tool_choice_false_maps_to_none(model):
     bound = model.bind_tools([_WEATHER_TOOL], tool_choice=False)
     assert bound.ycmlsdk_model._config.tool_choice == "none"
+
+
+def test_bind_tools_tool_choice_name_converts_to_dict(model):
+    bound = model.bind_tools([_WEATHER_TOOL], tool_choice="get_weather")
+    assert bound.ycmlsdk_model._config.tool_choice == {
+        "type": "function",
+        "function": {"name": "get_weather"},
+    }
