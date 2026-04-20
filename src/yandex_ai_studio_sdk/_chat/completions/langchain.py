@@ -8,7 +8,7 @@ that uses the Chat API backend.
 from __future__ import annotations
 
 import json
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Callable, Iterator, Sequence
 from typing import Any
 
 from langchain_core.callbacks import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
@@ -16,7 +16,10 @@ from langchain_core.language_models.chat_models import BaseChatModel as LCBaseCh
 from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.messages.ai import UsageMetadata
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
+from langchain_core.utils.function_calling import convert_to_openai_tool
+from yandex_ai_studio_sdk._tools.tool import FunctionTool
 from yandex_ai_studio_sdk._types.langchain import BaseYandexLanguageModel
+from yandex_ai_studio_sdk._types.misc import UNDEFINED
 from yandex_ai_studio_sdk._utils.langchain import make_async_run_manager
 from yandex_ai_studio_sdk._utils.sync import run_sync_generator_impl, run_sync_impl
 
@@ -73,6 +76,23 @@ def _transform_messages(messages: list[BaseMessage]) -> list[dict[str, Any]]:
             result.append({"role": "system", "content": str(message.content)})
 
     return result
+
+
+# =========================================================================
+# Tool conversion: LangChain → Yandex FunctionTool
+# =========================================================================
+
+
+def _lc_tool_to_function_tool(tool: Any) -> FunctionTool:
+    """Convert a LangChain-compatible tool to a Yandex FunctionTool."""
+    openai_tool = convert_to_openai_tool(tool)
+    fn = openai_tool["function"]
+    return FunctionTool(
+        name=fn["name"],
+        description=fn.get("description"),
+        parameters=fn.get("parameters", {}),
+        strict=fn.get("strict"),
+    )
 
 
 # =========================================================================
@@ -247,6 +267,44 @@ class ChatYandexGPT(BaseYandexLanguageModel[ChatAPIModel], LCBaseChatModel):
                 },
             )
             yield ChatGenerationChunk(message=chunk)
+
+    # -----------------------------------------------------------------
+    # Tool binding
+    # -----------------------------------------------------------------
+
+    def bind_tools(
+        self,
+        tools: Sequence[dict[str, Any] | type | Callable[..., Any] | Any],
+        *,
+        tool_choice: str | dict[str, Any] | bool | None = None,
+        **kwargs: Any,
+    ) -> "ChatYandexGPT":
+        """Bind tools to this model, returning a new configured instance.
+
+        :param tools: LangChain-compatible tools: dicts (OpenAI schema),
+            Pydantic models, callables, or BaseTool instances.
+        :param tool_choice: Strategy for tool selection.
+            ``True`` / ``"any"`` → ``"required"``.
+            ``False`` → ``"none"``.
+            A tool name string selects a specific tool.
+        :returns: New :class:`ChatYandexGPT` with the tools configured.
+        """
+        yandex_tools = [_lc_tool_to_function_tool(t) for t in tools]
+
+        if tool_choice is None:
+            yandex_tool_choice = UNDEFINED
+        elif isinstance(tool_choice, bool):
+            yandex_tool_choice = "required" if tool_choice else "none"
+        elif tool_choice == "any":
+            yandex_tool_choice = "required"
+        else:
+            yandex_tool_choice = tool_choice
+
+        configured = self.ycmlsdk_model.configure(
+            tools=yandex_tools,
+            tool_choice=yandex_tool_choice,
+        )
+        return self.__class__(ycmlsdk_model=configured, timeout=self.timeout)
 
 
 ChatYandexGPT.model_rebuild()
