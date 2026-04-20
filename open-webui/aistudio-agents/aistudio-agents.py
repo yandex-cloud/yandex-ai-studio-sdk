@@ -14,6 +14,7 @@ import io
 from collections.abc import AsyncGenerator, Awaitable, Callable
 from typing import TypeVar
 
+import openai
 from fastapi import Request, UploadFile
 from open_webui.env import VERSION as OPEN_WEBUI_VERSION
 from open_webui.models.chats import Chats
@@ -31,6 +32,7 @@ from openai.types.responses.response_output_text import (
     AnnotationContainerFileCitation, AnnotationFileCitation, AnnotationURLCitation
 )
 from openai.types.responses.response_text_delta_event import ResponseTextDeltaEvent
+from openai.version import VERSION as OPENAI_VERSION
 from pydantic import BaseModel, Field
 
 EventEmitterType = Callable[[dict], Awaitable[None]]
@@ -43,6 +45,7 @@ PIPE_ORIGIN = (
 TICKETS_URL = "https://github.com/yandex-cloud/yandex-ai-studio-sdk/issues"
 FILES_LINK = "https://aistudio.yandex.ru/platform/folders/{folder_id}/files"
 LAST_TESTED_WEBUI_VERSION = "0.8.12"
+USER_AGENT = f"AsyncOpenAI/Python {OPENAI_VERSION}/OpenWebUI Agents Pipe {THIS_PIPE_VERSION}"
 
 STATUS_NAMES = {
     # Open WebUI task names, we are using it instead of responses event.type
@@ -182,11 +185,13 @@ class Pipe:
         self._files_lock = asyncio.Lock()
 
     def _get_client(self) -> AsyncOpenAI:
+
         return AsyncOpenAI(
             api_key=self.valves.YANDEX_CLOUD_API_KEY,
             base_url=self.valves.AI_STUDIO_BASE_URL,
             project=self.valves.YANDEX_CLOUD_FOLDER_ID,
             timeout=self.valves.REQUEST_TIMEOUT,
+            default_headers={"User-Agent": USER_AGENT},
         )
 
     def get_agent_name(self, agent_id: str) -> str:
@@ -227,6 +232,7 @@ class Pipe:
         return (
             f"{LAST_TESTED_WEBUI_VERSION=}, "
             f"{OPEN_WEBUI_VERSION=}, {THIS_PIPE_VERSION=}, "
+            f"{OPENAI_VERSION=}, "
             f"please, try to update plugin from {PIPE_ORIGIN} "
             f"or create a ticket at {TICKETS_URL}"
         )
@@ -635,48 +641,55 @@ class Pipe:
         code_generated_index = 0
 
         async with client:
-            async with client.responses.stream(
-                prompt={"id": assistant_id}, **responses_kwargs
-            ) as stream:
-                async for event in stream:
-                    if event.type == "response.output_text.delta":
-                        assert isinstance(event, ResponseTextDeltaEvent)
-                        yield event.delta
+            try:
+                async with client.responses.stream(
+                    prompt={"id": assistant_id}, **responses_kwargs
+                ) as stream:
+                    async for event in stream:
+                        if event.type == "response.output_text.delta":
+                            assert isinstance(event, ResponseTextDeltaEvent)
+                            yield event.delta
 
-                    if event.type == 'response.output_item.done':
-                        assert isinstance(event, ResponseOutputItemDoneEvent)
-                        await self._process_annotations(
-                            client=client,
-                            event_emitter=event_emitter,
-                            event=event,
-                            request=request,
-                            user=user,
-                            metadata=metadata,
-                        )
-                    if event.type == 'response.code_interpreter_call_code.done':
-                        assert isinstance(event, ResponseCodeInterpreterCallCodeDoneEvent)
-
-                        if not __task__:
-                            code = event.code
-                            await self._attach_files_to_webui(
+                        if event.type == 'response.output_item.done':
+                            assert isinstance(event, ResponseOutputItemDoneEvent)
+                            await self._process_annotations(
+                                client=client,
                                 event_emitter=event_emitter,
+                                event=event,
                                 request=request,
                                 user=user,
                                 metadata=metadata,
-                                files=[
-                                    (f'generated_code{code_generated_index}.py', code.encode('utf-8'))
-                                ]
                             )
-                            code_generated_index += 1
+                        if event.type == 'response.code_interpreter_call_code.done':
+                            assert isinstance(event, ResponseCodeInterpreterCallCodeDoneEvent)
 
-                    if event.type in SILENT_STATUSES:
-                        continue
+                            if not __task__:
+                                code = event.code
+                                await self._attach_files_to_webui(
+                                    event_emitter=event_emitter,
+                                    request=request,
+                                    user=user,
+                                    metadata=metadata,
+                                    files=[
+                                        (f'generated_code{code_generated_index}.py', code.encode('utf-8'))
+                                    ]
+                                )
+                                code_generated_index += 1
 
-                    event_type = __task__ or event.type
-                    status_name = STATUS_NAMES.get(event_type, event_type)
-                    if status_name != last_status_name:
-                        last_status_name = status_name
-                        await self._emit_status(event_emitter, status_name)
+                        if event.type in SILENT_STATUSES:
+                            continue
+
+                        event_type = __task__ or event.type
+                        status_name = STATUS_NAMES.get(event_type, event_type)
+                        if status_name != last_status_name:
+                            last_status_name = status_name
+                            await self._emit_status(event_emitter, status_name)
+            except openai.BadRequestError as e:
+                raise openai.BadRequestError(
+                    message=f'{e.message};\n Responses kwargs: {responses_kwargs}',
+                    response=e.response,
+                    body=e.body
+                ) from e
 
         await self._emit_status(event_emitter, 'Done', done=True)
 
