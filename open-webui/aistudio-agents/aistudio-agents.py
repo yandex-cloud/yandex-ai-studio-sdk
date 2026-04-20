@@ -1,7 +1,7 @@
 """
-title: Yandex Cloud AI Assistant Integration for OpenWebUI
+title: Yandex AI Studio Agents Integration for Open WebUI
 version: 0.1.0
-description: Integration with Yandex Cloud AI Agents using Conversations API with real-time status and streaming
+description: Integration with Yandex AI Studio Agents using Responses API with real-time status and streaming
 author: https://github.com/vhaldemar
 license: MIT
 """
