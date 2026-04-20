@@ -550,7 +550,6 @@ class Pipe:
     ) -> None:
         uploaded_files: list[FileModel] = []
         urls: list[str] = []
-        file_infos: list[dict] = []
 
         for filename, content in files:
             uploaded_file = await self._upload_file_to_webui(
@@ -565,26 +564,6 @@ class Pipe:
 
             url = str(request.app.url_path_for('get_file_content_by_id', id=uploaded_file.id))
             urls.append(url)
-
-            file_info = {
-                'type': 'file',
-                'id': uploaded_file.id,
-                'url': url,
-                'name': filename,
-                'collection_name': None,
-                'status': 'processed',
-                'size': len(content),
-                'error': '',
-                'file': uploaded_file.model_dump(),
-            }
-            file_infos.append(file_info)
-
-        await event_emitter({
-            "type": "files",
-            "data": {
-                'files': file_infos,
-            }
-        })
 
         for uploaded_file, file_url, (filename, content) in zip(
             uploaded_files, urls, files
@@ -676,17 +655,19 @@ class Pipe:
                         )
                     if event.type == 'response.code_interpreter_call_code.done':
                         assert isinstance(event, ResponseCodeInterpreterCallCodeDoneEvent)
-                        code = event.code
-                        await self._attach_files_to_webui(
-                            event_emitter=event_emitter,
-                            request=request,
-                            user=user,
-                            metadata=metadata,
-                            files=[
-                                (f'generated_code{code_generated_index}.py', code.encode('utf-8'))
-                            ]
-                        )
-                        code_generated_index += 1
+
+                        if not __task__:
+                            code = event.code
+                            await self._attach_files_to_webui(
+                                event_emitter=event_emitter,
+                                request=request,
+                                user=user,
+                                metadata=metadata,
+                                files=[
+                                    (f'generated_code{code_generated_index}.py', code.encode('utf-8'))
+                                ]
+                            )
+                            code_generated_index += 1
 
                     if event.type in SILENT_STATUSES:
                         continue
