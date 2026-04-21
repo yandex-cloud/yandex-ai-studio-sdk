@@ -38,13 +38,13 @@ from pydantic import BaseModel, Field
 EventEmitterType = Callable[[dict], Awaitable[None]]
 T = TypeVar("T")
 
-THIS_PIPE_VERSION = "0.1.0"
+THIS_PIPE_VERSION = "0.1.1"
 PIPE_ORIGIN = (
     "https://github.com/yandex-cloud/yandex-ai-studio-sdk/tree/master/open-webui"
 )
 TICKETS_URL = "https://github.com/yandex-cloud/yandex-ai-studio-sdk/issues"
 FILES_LINK = "https://aistudio.yandex.ru/platform/folders/{folder_id}/files"
-LAST_TESTED_WEBUI_VERSION = "0.8.12"
+LAST_TESTED_WEBUI_VERSION = "0.9.1"
 USER_AGENT = f"AsyncOpenAI/Python {OPENAI_VERSION}/OpenWebUI Agents Pipe {THIS_PIPE_VERSION}"
 
 STATUS_NAMES = {
@@ -337,7 +337,7 @@ class Pipe:
                 if submessage.get('type') == 'input_image':
                     submessage['detail'] = submessage.get('detail', 'auto')
 
-    def _get_full_message_list(self, metadata: dict) -> list[dict]:
+    async def _get_full_message_list(self, metadata: dict) -> list[dict]:
         """We are fetching messages from open webui database here.
         Right now it is only way to get a connection between message and attached file:
         official Open WebUI Pipe API is giving only unordered files with no
@@ -345,12 +345,10 @@ class Pipe:
         """
 
         chat_id = self._assert_not_none(metadata.get('chat_id'), 'chat_id in metadata')
-        parent_message_id = self._assert_not_none(metadata.get('parent_message_id'), 'parent_message_id in metadata')
+        parent_message_id = self._assert_not_none(metadata.get('user_message_id'), 'user_message_id in metadata')
 
-        all_messages = self._assert_not_none(
-            Chats.get_messages_map_by_chat_id(chat_id),
-            f'{chat_id} present in DB'
-        )
+        messages_map = await Chats.get_messages_map_by_chat_id(chat_id)
+        all_messages = self._assert_not_none(messages_map, f'{chat_id} present in DB')
 
         messages: list[dict] = []
 
@@ -361,6 +359,7 @@ class Pipe:
                 all_messages.get(parent_id),
                 f'message {parent_id} is present in DB'
             )
+
             messages.append(message)
             parent_id = message.get('parentId')
 
@@ -465,9 +464,7 @@ class Pipe:
             await self._emit_status(event_emitter, 'Skipping file usage in AIStudio...')
             return responses_kwargs
 
-        full_message_list = await asyncio.to_thread(
-            self._get_full_message_list, metadata
-        )
+        full_message_list = await self._get_full_message_list(metadata)
 
         input_ = self._assert_not_none(responses_kwargs.get('input'), "input field must be present")
 
@@ -540,10 +537,7 @@ class Pipe:
             },
         }
         await self._emit_status(event_emitter, f'Uploading {filename} to WebUI....')
-        result = await asyncio.to_thread(
-            upload_file_handler,
-            **kwargs,  # ty: ignore[invalid-argument-type]
-        )
+        result = await upload_file_handler(**kwargs)  # ty: ignore[invalid-argument-type]
         return result
 
     async def _attach_files_to_webui(
@@ -604,6 +598,9 @@ class Pipe:
                 }
             })
 
+    async def _event_emit_dummy(self, data: dict) -> None:
+        pass
+
     async def pipe(
         self,
         body: dict,
@@ -614,7 +611,7 @@ class Pipe:
         __request__: Request | None = None,
         __user__: dict | None = None,
     ) -> AsyncGenerator[str]:
-        event_emitter = self._assert_not_none(__event_emitter__, 'event_emitter')
+        event_emitter = __event_emitter__ or self._event_emit_dummy
         metadata = self._assert_not_none(__metadata__, 'request metadata')
         user = self._assert_not_none(__user__, 'user')
         request = self._assert_not_none(__request__, 'request')
