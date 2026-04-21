@@ -1,9 +1,9 @@
 Yandex AI Studio Agents Integration for Open WebUI
 ==================================================
 
-This manifold pipe is allowing to use agents from https://ai.yandex-team.ru/ service.
+This manifold pipe is allowing to use agents from https://aistudio.yandex.ru/ service.
 
-1) Create an agent at https://ai.yandex-team.ru/
+1) Create an agent at https://aistudio.yandex.ru/
 
 2) Get an API Key at `https://aistudio.yandex.ru/platform/folders/<your_folder_id>/access`
 
