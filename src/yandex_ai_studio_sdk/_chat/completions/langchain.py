@@ -298,7 +298,7 @@ class ChatYandexGPT(BaseYandexLanguageModel[ChatAPIModel], LCBaseChatModel):
         *,
         tool_choice: str | dict[str, Any] | bool | None = None,
         **kwargs: Any,
-    ) -> "ChatYandexGPT":
+    ) -> ChatYandexGPT:
         """Bind tools to this model, returning a new configured instance.
 
         :param tools: LangChain-compatible tools: dicts (OpenAI schema),
