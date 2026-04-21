@@ -67,3 +67,15 @@ jobs:
         cache: 'pip'
     - run: pip install tox tox-gh-actions
     - run: tox -e ycmlsdk-compat -vv
+
+  open-webui:
+    name: open-webui plugins
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+        cache: 'pip'
+    - run: pip install tox tox-gh-actions
+    - run: tox -e open-webui -vv

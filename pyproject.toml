@@ -328,3 +328,6 @@ module = [
     "botocore.exceptions",
 ]
 ignore_missing_imports = true
+
+[tool.ty.src]
+include = ["open-webui"]

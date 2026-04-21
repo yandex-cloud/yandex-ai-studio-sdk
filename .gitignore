@@ -133,3 +133,5 @@ dmypy.json
 
 .changelog_generator.toml
 .aider*
+
+.webui_secret_key
