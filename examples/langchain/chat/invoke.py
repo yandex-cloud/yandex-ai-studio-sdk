@@ -16,7 +16,7 @@ def main() -> None:
     )
     sdk.setup_default_logging()
 
-    model = sdk.models.completions('yandexgpt').langchain(model_type="chat", timeout=60)
+    model = sdk.chat.completions('yandexgpt').langchain()
 
     result = model.invoke(
         [

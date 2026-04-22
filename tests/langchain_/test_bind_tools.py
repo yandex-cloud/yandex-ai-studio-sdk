@@ -1,4 +1,5 @@
 """Unit tests for ChatYandexGPT.bind_tools()."""
+# pylint: disable=protected-access  # tests verify internal config state
 from __future__ import annotations
 
 import pytest
@@ -66,3 +67,16 @@ def test_bind_tools_tool_choice_name_converts_to_dict(model):
         "type": "function",
         "function": {"name": "get_weather"},
     }
+
+
+@pytest.mark.asyncio
+@pytest.mark.vcr
+async def test_tool_invoke(model):
+    from langchain_core.messages import HumanMessage  # pylint: disable=import-outside-toplevel,import-error
+
+    bound = model.bind_tools([_WEATHER_TOOL])
+    result = await bound.ainvoke([HumanMessage(content="What is the weather in Moscow?")])
+
+    assert result.tool_calls
+    assert result.tool_calls[0]["name"] == "get_weather"
+    assert result.tool_calls[0]["args"] == {"city": "Moscow"}
