@@ -110,7 +110,7 @@ class ChatChoice(TextMessage, HaveToolCalls[ToolCallTypeT], JsonBased):
 
         message = data['message']
         role = message['role']
-        text = message['content']
+        text = message.get('content', '')
         reasoning_text = message.get('reasoning_content')
 
         tool_calls: HttpToolCallList | None = None
