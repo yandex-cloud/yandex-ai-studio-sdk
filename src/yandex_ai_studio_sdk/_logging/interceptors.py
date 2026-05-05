@@ -10,6 +10,7 @@ from yandex_ai_studio_sdk._utils.grpc import (
     RequestType, ResponseType, StreamReturnCallType, StreamStreamCallResponseIterator, UnaryReturnCallType,
     UnaryStreamCallResponseIterator, WrappedStreamReturnCallType
 )
+from yandex_ai_studio_sdk._utils.metadata import CLIENT_REQUEST_ID_METADATA_KEY, extract_client_request_id
 
 from .utils import get_logger
 
@@ -38,7 +39,8 @@ async def _log_from_call(
     call: Any,
     full_method: str,
     err: BaseException | None,
-    method_type: str
+    method_type: str,
+    request_id: str | None,
 ):
     service, method = split_full_method(full_method)
     metadata: dict[str, str] = {}
@@ -73,6 +75,10 @@ async def _log_from_call(
     if trailing:
         # pylint: disable-next=unnecessary-comprehension
         metadata = {key: value for key, value in trailing}
+    elif err is not None and request_id is not None:
+        metadata = {
+            CLIENT_REQUEST_ID_METADATA_KEY: request_id,
+        }
 
     logger.debug(
         "grpc client %s call service=%s method=%s code=%s details=%r metadata=%r",
@@ -88,9 +94,15 @@ async def _log_from_call(
 class UnaryReturnCallProxy(Generic[ResponseType]):
     method: str
 
-    def __init__(self, call: UnaryReturnCallType[RequestType, ResponseType], full_method: str):
+    def __init__(
+        self,
+        call: UnaryReturnCallType[RequestType, ResponseType],
+        full_method: str,
+        request_id: str | None,
+    ):
         self._call = call
         self._full_method = full_method
+        self._request_id = request_id
 
     def __getattr__(self, name):
         return getattr(self._call, name)
@@ -106,7 +118,11 @@ class UnaryReturnCallProxy(Generic[ResponseType]):
             raise
         finally:
             await _log_from_call(
-                call=self._call, full_method=self._full_method, err=err, method_type=self.method
+                call=self._call,
+                full_method=self._full_method,
+                err=err,
+                method_type=self.method,
+                request_id=self._request_id,
             )
 
     def __await__(self):
@@ -124,9 +140,15 @@ class _StreamUnaryCallProxy(UnaryReturnCallProxy):
 class StreamReturnCallProxy(Generic[RequestType, ResponseType]):
     method: str
 
-    def __init__(self, call: StreamReturnCallType[RequestType, ResponseType], full_method: str):
+    def __init__(
+        self,
+        call: StreamReturnCallType[RequestType, ResponseType],
+        full_method: str,
+        request_id: str | None,
+    ):
         self._call = call
         self._full_method = full_method
+        self._request_id = request_id
         self._logged = False
 
     def __getattr__(self, name):
@@ -146,7 +168,11 @@ class StreamReturnCallProxy(Generic[RequestType, ResponseType]):
             if not self._logged:
                 self._logged = True
                 await _log_from_call(
-                    call=self._call, full_method=self._full_method, err=err, method_type=self.method,
+                    call=self._call,
+                    full_method=self._full_method,
+                    err=err,
+                    method_type=self.method,
+                    request_id=self._request_id,
                 )
 
     def __aiter__(self):
@@ -164,25 +190,35 @@ class _StreamStreamCallProxy(StreamReturnCallProxy):
 class UnaryUnaryLogInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
     async def intercept_unary_unary(self, continuation, client_call_details, request) -> ResponseType:
         call = await continuation(client_call_details, request)
-        return await _UnaryUnaryCallProxy(call, client_call_details.method)
+        request_id = extract_client_request_id(client_call_details.metadata)
+        return await _UnaryUnaryCallProxy(call, client_call_details.method, request_id)
 
 
 class UnaryStreamLogInterceptor(grpc.aio.UnaryStreamClientInterceptor):
     async def intercept_unary_stream(self, continuation, client_call_details, request) -> AsyncIterator[ResponseType]:
         call = await continuation(client_call_details, request)
-        return UnaryStreamCallResponseIterator(call, _UnaryStreamCallProxy(call, client_call_details.method))
+        request_id = extract_client_request_id(client_call_details.metadata)
+        return UnaryStreamCallResponseIterator(
+            call,
+            _UnaryStreamCallProxy(call, client_call_details.method, request_id),
+        )
 
 
 class StreamUnaryLogInterceptor(grpc.aio.StreamUnaryClientInterceptor):
     async def intercept_stream_unary(self, continuation, client_call_details, request_iterator) -> ResponseType:
         call = await continuation(client_call_details, request_iterator)
-        return await _StreamUnaryCallProxy(call, client_call_details.method)
+        request_id = extract_client_request_id(client_call_details.metadata)
+        return await _StreamUnaryCallProxy(call, client_call_details.method, request_id)
 
 
 class StreamStreamLogInterceptor(grpc.aio.StreamStreamClientInterceptor):
     async def intercept_stream_stream(self, continuation, client_call_details, request_iterator) -> AsyncIterator[ResponseType]:
         call = await continuation(client_call_details, request_iterator)
-        return StreamStreamCallResponseIterator(call, _StreamStreamCallProxy(call, client_call_details.method))
+        request_id = extract_client_request_id(client_call_details.metadata)
+        return StreamStreamCallResponseIterator(
+            call,
+            _StreamStreamCallProxy(call, client_call_details.method, request_id),
+        )
 
 
 def get_log_interceprtors():

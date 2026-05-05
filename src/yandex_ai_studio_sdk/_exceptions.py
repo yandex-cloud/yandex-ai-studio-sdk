@@ -7,6 +7,7 @@ from grpc.aio import AioRpcError as BaseAioRpcError
 from grpc.aio import Metadata
 
 from ._auth import BaseAuth
+from ._utils.metadata import CLIENT_REQUEST_ID_METADATA_KEY, extract_client_request_id
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
@@ -99,15 +100,11 @@ class AioRpcError(BaseAioRpcError):
         ):
             self._client_request_id = "grpc metadata was replaced with non-Metadata object"
         else:
-            client_request_id = (
-                initial and initial.get('x-client-request-id') or
-                trailing and trailing.get('x-client-request-id') or
+            self._client_request_id = (
+                extract_client_request_id(initial) or
+                extract_client_request_id(trailing) or
                 ""
             )
-            if isinstance(client_request_id, bytes):
-                self._client_request_id = client_request_id.decode('utf-8')
-            else:
-                self._client_request_id = client_request_id
 
     @classmethod
     def from_base_rpc_error(
@@ -138,7 +135,7 @@ class AioRpcError(BaseAioRpcError):
         ]
 
         if self._client_request_id:
-            parts.append(f'x-client-request-id = "{self._client_request_id}"')
+            parts.append(f'{CLIENT_REQUEST_ID_METADATA_KEY} = "{self._client_request_id}"')
 
         if self._code == StatusCode.UNAUTHENTICATED:
             auth = self._auth.__class__.__name__ if self._auth else None

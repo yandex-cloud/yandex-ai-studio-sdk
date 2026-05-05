@@ -22,6 +22,7 @@ from ._retry import RETRY_KIND_METADATA_KEY, RetryKind, RetryPolicy
 from ._types.misc import PathLike, coerce_path
 from ._utils.http import HTTPServiceName, get_http_service_endpoint
 from ._utils.lock import LazyLock
+from ._utils.metadata import CLIENT_REQUEST_ID_METADATA_KEY
 from ._utils.proto import service_for_ctor
 
 
@@ -168,7 +169,7 @@ class AsyncCloudClient:
         timeout: float,
     ) -> list[tuple[str, str]]:
         headers = [
-            ('x-client-request-id', str(uuid.uuid4())),
+            (CLIENT_REQUEST_ID_METADATA_KEY, str(uuid.uuid4())),
         ]
         if self._enable_server_data_logging is not None:
             enable_server_data_logging = "true" if self._enable_server_data_logging else "false"

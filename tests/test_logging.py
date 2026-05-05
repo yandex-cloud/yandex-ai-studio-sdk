@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import logging
+import time
 
+import grpc
 import pytest
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import Token
 from yandex.cloud.ai.foundation_models.v1.text_generation.text_generation_service_pb2 import (
@@ -18,6 +20,15 @@ from yandex.cloud.ai.foundation_models.v1.text_generation.text_generation_servic
 def servicers():
     class TextGenerationServicer(TextGenerationServiceServicer):
         def Completion(self, request, context):
+            if request.messages[0].text == 'timeout':
+                time.sleep(0.2)
+                yield CompletionResponse(
+                    alternatives=[],
+                    usage=None,
+                    model_version='timeout'
+                )
+                return
+
             context.set_trailing_metadata((
                 ('key', 'value'),
             ))
@@ -29,6 +40,13 @@ def servicers():
 
     class TokenizerService(TokenizerServiceServicer):
         def TokenizeCompletion(self, request, context):
+            if request.messages[0].text == 'timeout':
+                time.sleep(0.2)
+                return TokenizeResponse(
+                    tokens=[],
+                    model_version="timeout"
+                )
+
             context.set_trailing_metadata((
                  ('key', 'value'),
             ))
@@ -41,6 +59,14 @@ def servicers():
         (TextGenerationServicer(), add_TextGenerationServiceServicer_to_server),
         (TokenizerService(), add_TokenizerServiceServicer_to_server),
     ]
+
+
+def assert_timeout_log_record(record):
+    assert 'code=StatusCode.DEADLINE_EXCEEDED' in record.getMessage()
+    assert record.args
+    metadata = record.args[-1]
+    assert isinstance(metadata, dict)
+    assert 'x-client-request-id' in metadata
 
 
 @pytest.mark.asyncio
@@ -65,6 +91,18 @@ async def test_logging_unary_unary(async_sdk, caplog):
 
 
 @pytest.mark.asyncio
+async def test_logging_unary_unary_timeout_request_id(async_sdk, caplog):
+    caplog.set_level(50)
+    caplog.set_level(logging.DEBUG, logger="yandex_ai_studio_sdk")
+
+    with pytest.raises(grpc.aio.AioRpcError, match='DEADLINE'):
+        await async_sdk.models.completions('foo').tokenize('timeout', timeout=0.05)
+
+    assert caplog.records
+    assert_timeout_log_record(caplog.records[0])
+
+
+@pytest.mark.asyncio
 async def test_logging_unary_stream(async_sdk, caplog):
     # sometimes there are strange asyncio+grpc ERROR log message about shutdown
     # and I'm too lazy to write a code here about selecting this test target log message
@@ -81,3 +119,15 @@ async def test_logging_unary_stream(async_sdk, caplog):
     metadata = record.args[-1]
     assert isinstance(metadata, dict)
     assert metadata['key'] == 'value'
+
+
+@pytest.mark.asyncio
+async def test_logging_unary_stream_timeout_request_id(async_sdk, caplog):
+    caplog.set_level(50)
+    caplog.set_level(logging.DEBUG, logger="yandex_ai_studio_sdk")
+
+    with pytest.raises(grpc.aio.AioRpcError, match='DEADLINE'):
+        await async_sdk.models.completions('foo').run('timeout', timeout=0.05)
+
+    assert caplog.records
+    assert_timeout_log_record(caplog.records[0])
