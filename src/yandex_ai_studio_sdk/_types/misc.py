@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import pathlib
+from collections.abc import Sequence
 from typing import Any, TypeAlias, TypeGuard, TypeVar, Union, cast
 
 _T = TypeVar('_T')
@@ -42,3 +43,12 @@ def is_path_like(path: Any) -> TypeGuard[PathLike]:
 
 def coerce_path(path: PathLike) -> pathlib.Path:
     return pathlib.Path(path)
+
+
+SmartSequence: TypeAlias = Union[Sequence[_T], _T]
+
+
+def coerce_sequence(value: SmartSequence[_T]) -> Sequence[_T]:
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+        return value  # type: ignore[return-value]
+    return [value]  # type: ignore[list-item]

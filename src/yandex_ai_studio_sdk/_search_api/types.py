@@ -4,17 +4,22 @@ import datetime
 import itertools
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import ClassVar, Generic, TypeAlias, TypeVar, Union, overload
+from types import MappingProxyType
+from typing import ClassVar, Generic, Literal, TypeAlias, TypeVar, Union, overload
 
 from typing_extensions import Self, override
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchResponse
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.searchapi.v2.search_service_pb2 import WebSearchResponse
+# pylint: disable-next=no-name-in-module
+from yandex.cloud.searchapi.v2.wordstat_service_pb2 import GetRegionsTreeResponse
+
 from yandex_ai_studio_sdk._types.model import BaseModel, ConfigTypeT
+from yandex_ai_studio_sdk._types.proto import ProtoBased
 from yandex_ai_studio_sdk._types.request import RequestDetails
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, ProtoMessageTypeT, SDKType
 from yandex_ai_studio_sdk._types.xml import XMLBased
@@ -189,3 +194,104 @@ class XMLBaseSearchResult(
     def docs(self) -> tuple[XMLSearchDocumentTypeT, ...]:
         """Returns all documents within search response."""
         return tuple(itertools.chain.from_iterable(self.groups))
+
+
+@dataclass(frozen=True)
+class Region(ProtoBased[GetRegionsTreeResponse.RegionInfo]):
+    id: str
+    label: str
+    children: RegionsMapping | None
+
+    @override
+    @classmethod
+    def _from_proto(cls, *, proto: GetRegionsTreeResponse.RegionInfo, sdk: SDKType) -> Self:
+        children: RegionsMapping | None = None
+        if proto.children:
+            children = RegionsMapping._from_proto_iterable(proto=proto.children, sdk=sdk)
+
+        return cls(
+            id=proto.id,
+            label=proto.label,
+            children=children,
+        )
+
+    @classmethod
+    def _coerce_to_str(cls, value: Region | str) -> str:
+        if isinstance(value, Region):
+            return value.id
+        print(type(value))
+        return value
+
+
+@dataclass(frozen=True)
+class RegionsMapping(Mapping[str, Region]):
+    _regions: MappingProxyType[str, Region]
+
+    @overload
+    def __getitem__(self, key: str) -> Region:
+        pass
+
+    @overload
+    def __getitem__(self, key: int) -> Region:
+        pass
+
+    def __getitem__(self, key: str | int) -> Region:
+        return self._regions[str(key)]
+
+    def __len__(self) -> int:
+        return len(self._regions)
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._regions)
+
+    @classmethod
+    def _from_proto_iterable(
+        cls, *, proto: Iterable[GetRegionsTreeResponse.RegionInfo], sdk: SDKType
+    ) -> Self:
+        return cls(
+            _regions=MappingProxyType({
+                region.id: Region._from_proto(proto=region, sdk=sdk) for region in proto
+                if region
+            })
+        )
+
+    def dfs(self) -> Iterator[Region]:
+        for region in self.values():
+            yield region
+            if region.children:
+                yield from region.children.dfs()
+
+    @overload
+    def search_by_label(
+        self,
+        label: str,
+        *,
+        first: Literal[False] = False,
+    ) -> tuple[Region]:
+        pass
+
+    @overload
+    def search_by_label(
+        self,
+        label: str,
+        *,
+        first: Literal[True],
+    ) -> Region | None:
+        pass
+
+    def search_by_label(
+        self,
+        label: str,
+        *,
+        first: bool = False
+    ):
+        result = []
+        for region in self.dfs():
+            if region.label == label:
+                if first:
+                    return region
+                result.append(region)
+
+        if first:
+            return None
+        return tuple(result)
