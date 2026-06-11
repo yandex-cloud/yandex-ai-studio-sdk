@@ -12,10 +12,9 @@ from yandex.cloud.searchapi.v2.wordstat_service_pb2_grpc import WordstatServiceS
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._search_api.types import Region
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, EnumWithUnknownInput
-from yandex_ai_studio_sdk._types.misc import (
-    UNDEFINED, SmartSequence, UndefinedOr, coerce_sequence, get_defined_value, is_defined
-)
+from yandex_ai_studio_sdk._types.misc import UNDEFINED, SmartIterable, UndefinedOr, get_defined_value, is_defined
 from yandex_ai_studio_sdk._types.model import BaseModel
+from yandex_ai_studio_sdk._utils.coerce import coerce_tuple
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
@@ -70,8 +69,8 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         phrase: str,
         num_phrases: int,
         *,
-        regions: UndefinedOr[SmartSequence[str | Region]],
-        devices: UndefinedOr[SmartSequence[EnumWithUnknownInput[Device]]],
+        regions: UndefinedOr[SmartIterable[str | Region]],
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]],
         timeout: float,
     ) -> GetTopResult:
         """
@@ -91,14 +90,14 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         if is_defined(regions):
             regions_ = [
                 Region._coerce_to_str(cast(str | Region, region))
-                for region in coerce_sequence(regions)
+                for region in coerce_tuple(regions, (str, Region))
             ]
 
         devices_: list[EnumWithUnknownAlias[Device]] | None = None
         if is_defined(devices):
             devices_ = [
                 Device._coerce(cast(EnumWithUnknownAlias[Device], device))
-                for device in coerce_sequence(devices)
+                for device in coerce_tuple(devices, (str, int, Device))
             ]
 
         request = GetTopRequest(
@@ -134,8 +133,8 @@ class AsyncWordstat(BaseWordstat):
         phrase: str,
         num_phrases: int,
         *,
-        regions: UndefinedOr[SmartSequence[str | Region]] = UNDEFINED,
-        devices: UndefinedOr[SmartSequence[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
         timeout: float = 60,
     ) -> GetTopResult:
         return await self._get_top(
@@ -162,8 +161,8 @@ class Wordstat(BaseWordstat):
         phrase: str,
         num_phrases: int,
         *,
-        regions: UndefinedOr[SmartSequence[str | Region]] = UNDEFINED,
-        devices: UndefinedOr[SmartSequence[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
         timeout: float = 60,
     ) -> GetTopResult:
         return self.__get_top(

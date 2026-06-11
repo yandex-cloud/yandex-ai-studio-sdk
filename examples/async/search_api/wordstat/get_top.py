@@ -54,7 +54,7 @@ async def main() -> None:
         num_phrases=1,
         regions=msk + spb,
         # you can specify devices values with two different ways
-        devices=['tablet', wordstat.Device.TABLET]
+        devices=['tablet', wordstat.Device.PHONE]
     )
     if not top.results:
         print("nothing found for MSK and SPB for mobile devices")

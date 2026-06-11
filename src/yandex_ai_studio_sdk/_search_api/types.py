@@ -219,7 +219,6 @@ class Region(ProtoBased[GetRegionsTreeResponse.RegionInfo]):
     def _coerce_to_str(cls, value: Region | str) -> str:
         if isinstance(value, Region):
             return value.id
-        print(type(value))
         return value
 
 
