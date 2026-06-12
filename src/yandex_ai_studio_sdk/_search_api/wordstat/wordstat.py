@@ -1,11 +1,13 @@
 # pylint: disable=arguments-renamed,no-name-in-module
 from __future__ import annotations
 
+import datetime
 from typing import TypeVar, cast
 
 from typing_extensions import Self, override
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import (
-    GetRegionsTreeRequest, GetRegionsTreeResponse, GetTopRequest, GetTopResponse
+    GetDynamicsRequest, GetDynamicsResponse, GetRegionsTreeRequest, GetRegionsTreeResponse, GetTopRequest,
+    GetTopResponse
 )
 from yandex.cloud.searchapi.v2.wordstat_service_pb2_grpc import WordstatServiceStub
 
@@ -15,11 +17,12 @@ from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, EnumWithUnkno
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, SmartIterable, UndefinedOr, get_defined_value, is_defined
 from yandex_ai_studio_sdk._types.model import BaseModel
 from yandex_ai_studio_sdk._utils.coerce import coerce_tuple
+from yandex_ai_studio_sdk._utils.datetime import to_timestamp
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
-from .config import Device, WordstatConfig
-from .result import BaseWordstatResult, GetTopResult, RegionsTree
+from .config import Device, PeriodType, WordstatConfig
+from .result import BaseWordstatResult, GetDynamicsResult, GetTopResult, RegionsTree
 from .synonyms import SynonymsMixin
 
 logger = get_logger(__name__)
@@ -64,6 +67,24 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
             sdk=self._sdk
         )
 
+    @staticmethod
+    def _coerce_regions(regions: UndefinedOr[SmartIterable[str | Region]]) -> list[str]:
+        if is_defined(regions):
+            return [
+                Region._coerce_to_str(cast(str | Region, region))
+                for region in coerce_tuple(regions, (str, Region))
+            ]
+        return []
+
+    @staticmethod
+    def _coerce_devices(devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]]) -> list[int]:
+        if is_defined(devices):
+            return [
+                int(Device._coerce(cast(EnumWithUnknownAlias[Device], device)))
+                for device in coerce_tuple(devices, (str, int, Device))
+            ]
+        return []
+
     async def _get_top(
         self,
         phrase: str,
@@ -86,25 +107,12 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         :param devices: A list of device types a query was made from.
         """
 
-        regions_: list[str] | None = None
-        if is_defined(regions):
-            regions_ = [
-                Region._coerce_to_str(cast(str | Region, region))
-                for region in coerce_tuple(regions, (str, Region))
-            ]
-
-        devices_: list[EnumWithUnknownAlias[Device]] | None = None
-        if is_defined(devices):
-            devices_ = [
-                Device._coerce(cast(EnumWithUnknownAlias[Device], device))
-                for device in coerce_tuple(devices, (str, int, Device))
-            ]
 
         request = GetTopRequest(
             phrase=phrase,
             num_phrases=num_phrases,
-            devices=devices_,  # type: ignore[arg-type]
-            regions=regions_,
+            devices=self._coerce_devices(devices),  # type: ignore[arg-type]
+            regions=self._coerce_regions(regions),
             folder_id=self._sdk._folder_id
         )
         async with self._client.get_service_stub(WordstatServiceStub, timeout=timeout) as stub:
@@ -116,6 +124,56 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
             )
 
         return GetTopResult._from_proto(
+            proto=response,
+            sdk=self._sdk
+        )
+
+    async def _get_dynamics(
+        self,
+        phrase: str,
+        period: EnumWithUnknownInput[PeriodType],
+        from_date: datetime.date | int | float,
+        to_date: datetime.date | int | float,
+        *,
+        regions: UndefinedOr[SmartIterable[str | Region]],
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]],
+        timeout: float,
+     ) -> GetDynamicsResult:
+        """
+        The method returns the last 30 days data about popular queries containing the
+        specified keyword and queries that are similar to the specified one.
+
+        :param phrase: Keyword.
+            The maximum string length in characters is 400.
+        :param period: The period of aggregation of the number of queries
+        :param from_date: The start of the period data is requested for.
+             :py:class:`datetime.date` and :py:class:`datetime.datetime` without
+             timezone, will be converted to timestamp with UTC timezone.
+        :param to_date: The end of the period data is requested for.
+             :py:class:`datetime.date` and :py:class:`datetime.datetime` without
+             timezone, will be converted to timestamp with UTC timezone.
+        :param regions: A list of regions or IDs of the regions a query was made from.
+            The maximum number of elements is 100.
+        :param devices: A list of device types a query was made from.
+        """
+        request = GetDynamicsRequest(
+            phrase=phrase,
+            period=PeriodType._coerce(period),  # type: ignore[arg-type]
+            from_date=to_timestamp(from_date),
+            to_date=to_timestamp(to_date),
+            devices=self._coerce_devices(devices),  # type: ignore[arg-type]
+            regions=self._coerce_regions(regions),
+            folder_id=self._sdk._folder_id,
+        )
+        async with self._client.get_service_stub(WordstatServiceStub, timeout=timeout) as stub:
+            response: GetDynamicsResponse = await self._client.call_service(
+                stub.GetDynamics,
+                request,
+                timeout=timeout,
+                expected_type=GetDynamicsResponse
+            )
+
+        return GetDynamicsResult._from_proto(
             proto=response,
             sdk=self._sdk
         )
@@ -145,11 +203,34 @@ class AsyncWordstat(BaseWordstat):
             timeout=timeout,
         )
 
+    @doc_from(BaseWordstat._get_dynamics)
+    async def get_dynamics(
+        self,
+        phrase: str,
+        period: EnumWithUnknownInput[PeriodType],
+        from_date: datetime.date | int | float,
+        to_date: datetime.date | int | float,
+        *,
+        regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        timeout: float = 60,
+     ) -> GetDynamicsResult:
+        return await self._get_dynamics(
+            phrase=phrase,
+            period=period,
+            from_date=from_date,
+            to_date=to_date,
+            regions=regions,
+            devices=devices,
+            timeout=timeout
+        )
+
 
 @doc_from(BaseWordstat)
 class Wordstat(BaseWordstat):
     __get_regions_tree = run_sync(BaseWordstat._get_regions_tree)
     __get_top = run_sync(BaseWordstat._get_top)
+    __get_dynamics = run_sync(BaseWordstat._get_dynamics)
 
     @doc_from(BaseWordstat._get_regions_tree)
     def get_regions_tree(self, timeout: float = 60) -> RegionsTree:
@@ -171,6 +252,28 @@ class Wordstat(BaseWordstat):
             regions=regions,
             devices=devices,
             timeout=timeout,
+        )
+
+    @doc_from(BaseWordstat._get_dynamics)
+    def get_dynamics(
+        self,
+        phrase: str,
+        period: EnumWithUnknownInput[PeriodType],
+        from_date: datetime.date | int | float,
+        to_date: datetime.date | int | float,
+        *,
+        regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        timeout: float = 60,
+     ) -> GetDynamicsResult:
+        return self.__get_dynamics(
+            phrase=phrase,
+            period=period,
+            from_date=from_date,
+            to_date=to_date,
+            regions=regions,
+            devices=devices,
+            timeout=timeout
         )
 
 
