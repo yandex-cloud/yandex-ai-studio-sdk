@@ -62,7 +62,7 @@ class Dynamics(BaseWordstatResult[GetDynamicsResponse], Sequence[DynamicsItem]):
         )
 
     def __len__(self):
-        return len(self.share)
+        return len(self.dynamics)
 
     @overload
     def __getitem__(self, index: int, /) -> DynamicsItem:
