@@ -72,6 +72,9 @@ Generic types
 .. py:class:: yandex_ai_studio_sdk._search_api.by_image.by_image.ByImageSearchTypeT
 
 
+.. py:class:: yandex_ai_studio_sdk._search_api.wordstat.wordstat.WordstatTypeT
+
+
 .. py:class:: yandex_ai_studio_sdk._search_api.types.XMLSearchDocumentTypeT
 
 
