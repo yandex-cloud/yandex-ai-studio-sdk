@@ -3,13 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import Device as ProtoDevice
-from yandex.cloud.searchapi.v2.wordstat_service_pb2 import GetDynamicsRequest
+from yandex.cloud.searchapi.v2.wordstat_service_pb2 import GetDynamicsRequest, GetRegionsDistributionRequest
 
 from yandex_ai_studio_sdk._types.enum import ProtoBasedEnum
 from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 
 
-class Device(ProtoBasedEnum):
+class DeviceType(ProtoBasedEnum):
     """Device type"""
 
     __proto_enum_type__ = ProtoDevice
@@ -30,6 +30,15 @@ class PeriodType(ProtoBasedEnum):
     MONTHLY = GetDynamicsRequest.Period.PERIOD_MONTHLY
     WEEKLY = GetDynamicsRequest.Period.PERIOD_WEEKLY
     DAILY = GetDynamicsRequest.Period.PERIOD_DAILY
+
+
+class RegionsDistributionType(ProtoBasedEnum):
+    """Requested type of regions distribution"""
+    __proto_enum_type__ = GetRegionsDistributionRequest.Region
+    __common_prefix__ = 'REGION_'
+    ALL = GetRegionsDistributionRequest.Region.REGION_ALL
+    CITIES = GetRegionsDistributionRequest.Region.REGION_CITIES
+    REGIONS = GetRegionsDistributionRequest.Region.REGION_REGIONS
 
 
 @dataclass(frozen=True)

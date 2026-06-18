@@ -6,23 +6,23 @@ from typing import TypeVar, cast
 
 from typing_extensions import Self, override
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import (
-    GetDynamicsRequest, GetDynamicsResponse, GetRegionsTreeRequest, GetRegionsTreeResponse, GetTopRequest,
-    GetTopResponse
+    GetDynamicsRequest, GetDynamicsResponse, GetRegionsDistributionRequest, GetRegionsDistributionResponse,
+    GetRegionsTreeRequest, GetRegionsTreeResponse, GetTopRequest, GetTopResponse
 )
 from yandex.cloud.searchapi.v2.wordstat_service_pb2_grpc import WordstatServiceStub
 
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._search_api.types import Region
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, EnumWithUnknownInput
-from yandex_ai_studio_sdk._types.misc import UNDEFINED, SmartIterable, UndefinedOr, get_defined_value, is_defined
+from yandex_ai_studio_sdk._types.misc import UNDEFINED, SmartIterable, UndefinedOr, is_defined
 from yandex_ai_studio_sdk._types.model import BaseModel
 from yandex_ai_studio_sdk._utils.coerce import coerce_tuple
 from yandex_ai_studio_sdk._utils.datetime import to_timestamp
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
-from .config import Device, PeriodType, WordstatConfig
-from .result import BaseWordstatResult, GetDynamicsResult, GetTopResult, RegionsTree
+from .config import DeviceType, PeriodType, RegionsDistributionType, WordstatConfig
+from .result import BaseWordstatResult, Dynamics, RegionsDistribution, RegionsDistributionContext, RegionsTree, Top
 from .synonyms import SynonymsMixin
 
 logger = get_logger(__name__)
@@ -77,11 +77,11 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         return []
 
     @staticmethod
-    def _coerce_devices(devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]]) -> list[int]:
+    def _coerce_devices(devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]]) -> list[int]:
         if is_defined(devices):
             return [
-                int(Device._coerce(cast(EnumWithUnknownAlias[Device], device)))
-                for device in coerce_tuple(devices, (str, int, Device))
+                int(DeviceType._coerce(cast(EnumWithUnknownAlias[DeviceType], device)))
+                for device in coerce_tuple(devices, (str, int, DeviceType))
             ]
         return []
 
@@ -91,9 +91,9 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         num_phrases: int,
         *,
         regions: UndefinedOr[SmartIterable[str | Region]],
-        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]],
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]],
         timeout: float,
-    ) -> GetTopResult:
+    ) -> Top:
         """
         The method returns the last 30 days data about popular queries containing the
         specified keyword and queries that are similar to the specified one.
@@ -123,7 +123,7 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
                 expected_type=GetTopResponse
             )
 
-        return GetTopResult._from_proto(
+        return Top._from_proto(
             proto=response,
             sdk=self._sdk
         )
@@ -136,9 +136,9 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         to_date: datetime.date | int | float,
         *,
         regions: UndefinedOr[SmartIterable[str | Region]],
-        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]],
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]],
         timeout: float,
-     ) -> GetDynamicsResult:
+     ) -> Dynamics:
         """
         The method returns the last 30 days data about popular queries containing the
         specified keyword and queries that are similar to the specified one.
@@ -173,9 +173,64 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
                 expected_type=GetDynamicsResponse
             )
 
-        return GetDynamicsResult._from_proto(
+        return Dynamics._from_proto(
             proto=response,
             sdk=self._sdk
+        )
+
+    async def _get_regions_distribution(
+        self,
+        phrase: str,
+        *,
+        distribution_type: UndefinedOr[EnumWithUnknownInput[RegionsDistributionType]],
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]],
+        resolve_regions: bool,
+        timeout: float,
+     ) -> RegionsDistribution:
+        """
+        The method returns the distribution of the number of queries
+        containing the given keyword globally by region for the last 30 days.
+
+        :param phrase: Keyword.
+            The maximum string length in characters is 400.
+        :param distribution_type: Show query distribution only by city, only by region, or everywhere.
+        :param devices: A list of device types a query was made from.
+        :param resolve_region: Should return a result with region_ids resolved into
+            :py:class:`~.Region` objects.
+            NB: resolving region means additional call of :py:method:`~.get_regions_distribution`
+            method.
+        """
+        distribution_type_: EnumWithUnknownAlias[RegionsDistributionType] | None = None
+        if is_defined(distribution_type):
+            distribution_type_ = RegionsDistributionType._coerce(
+                cast(EnumWithUnknownInput[RegionsDistributionType], distribution_type)
+            )
+
+        request = GetRegionsDistributionRequest(
+            phrase=phrase,
+            region=distribution_type_,   # type: ignore[arg-type]
+            devices=self._coerce_devices(devices),  # type: ignore[arg-type]
+            folder_id=self._sdk._folder_id,
+        )
+        async with self._client.get_service_stub(WordstatServiceStub, timeout=timeout) as stub:
+            response: GetRegionsDistributionResponse = await self._client.call_service(
+                stub.GetRegionsDistribution,
+                request,
+                timeout=timeout,
+                expected_type=GetRegionsDistributionResponse,
+            )
+
+        regions_tree = None
+        if resolve_regions:
+            regions_tree = await self._get_regions_tree(timeout=timeout)
+
+        return RegionsDistribution._from_proto(
+            proto=response,
+            sdk=self._sdk,
+            ctx=RegionsDistributionContext(
+                resolve_regions=resolve_regions,
+                regions_tree=regions_tree,
+            )
         )
 
 
@@ -192,9 +247,9 @@ class AsyncWordstat(BaseWordstat):
         num_phrases: int,
         *,
         regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
-        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]] = UNDEFINED,
         timeout: float = 60,
-    ) -> GetTopResult:
+    ) -> Top:
         return await self._get_top(
             phrase=phrase,
             num_phrases=num_phrases,
@@ -212,9 +267,9 @@ class AsyncWordstat(BaseWordstat):
         to_date: datetime.date | int | float,
         *,
         regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
-        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]] = UNDEFINED,
         timeout: float = 60,
-     ) -> GetDynamicsResult:
+     ) -> Dynamics:
         return await self._get_dynamics(
             phrase=phrase,
             period=period,
@@ -225,12 +280,31 @@ class AsyncWordstat(BaseWordstat):
             timeout=timeout
         )
 
+    async def get_regions_distribution(
+        self,
+        phrase: str,
+        *,
+        distribution_type: UndefinedOr[EnumWithUnknownInput[RegionsDistributionType]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]] = UNDEFINED,
+        resolve_regions = False,
+        timeout: float = 60,
+     ) -> RegionsDistribution:
+        return await self._get_regions_distribution(
+            phrase=phrase,
+            distribution_type=distribution_type,
+            devices=devices,
+            resolve_regions=resolve_regions,
+            timeout=timeout,
+        )
+
+
 
 @doc_from(BaseWordstat)
 class Wordstat(BaseWordstat):
     __get_regions_tree = run_sync(BaseWordstat._get_regions_tree)
     __get_top = run_sync(BaseWordstat._get_top)
     __get_dynamics = run_sync(BaseWordstat._get_dynamics)
+    __get_regions_distribution = run_sync(BaseWordstat._get_regions_distribution)
 
     @doc_from(BaseWordstat._get_regions_tree)
     def get_regions_tree(self, timeout: float = 60) -> RegionsTree:
@@ -243,9 +317,9 @@ class Wordstat(BaseWordstat):
         num_phrases: int,
         *,
         regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
-        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]] = UNDEFINED,
         timeout: float = 60,
-    ) -> GetTopResult:
+    ) -> Top:
         return self.__get_top(
             phrase=phrase,
             num_phrases=num_phrases,
@@ -263,9 +337,9 @@ class Wordstat(BaseWordstat):
         to_date: datetime.date | int | float,
         *,
         regions: UndefinedOr[SmartIterable[str | Region]] = UNDEFINED,
-        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[Device]]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]] = UNDEFINED,
         timeout: float = 60,
-     ) -> GetDynamicsResult:
+     ) -> Dynamics:
         return self.__get_dynamics(
             phrase=phrase,
             period=period,
@@ -274,6 +348,23 @@ class Wordstat(BaseWordstat):
             regions=regions,
             devices=devices,
             timeout=timeout
+        )
+
+    def get_regions_distribution(
+        self,
+        phrase: str,
+        *,
+        distribution_type: UndefinedOr[EnumWithUnknownInput[RegionsDistributionType]] = UNDEFINED,
+        devices: UndefinedOr[SmartIterable[EnumWithUnknownInput[DeviceType]]] = UNDEFINED,
+        resolve_regions = False,
+        timeout: float = 60,
+     ) -> RegionsDistribution:
+        return self.__get_regions_distribution(
+            phrase=phrase,
+            distribution_type=distribution_type,
+            devices=devices,
+            resolve_regions=resolve_regions,
+            timeout=timeout,
         )
 
 
