@@ -59,7 +59,7 @@ def coerce_tuple(value: SmartIterable[_T], value_type: type[_T] | tuple[type[_T]
     result = tuple(value)
     for item in result:
         if not isinstance(item, value_type):
-            raise ValueError(f"all items expected {value_type}, got {item} of type {type(item)}")
+            raise TypeError(f"all items expected {value_type}, got {item} of type {type(item)}")
     return result
 
 

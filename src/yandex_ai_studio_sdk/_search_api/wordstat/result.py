@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Sequence
 from dataclasses import dataclass
-from datetime import date, timezone
 from types import MappingProxyType
 from typing import overload
 
@@ -39,7 +39,7 @@ class Top(BaseWordstatResult[GetTopResponse]):
 
 @dataclass(frozen=True)
 class DynamicsItem:
-    date: date
+    date: datetime.date
     share: float
     count: int
 
@@ -54,7 +54,7 @@ class Dynamics(BaseWordstatResult[GetDynamicsResponse], Sequence[DynamicsItem]):
         return cls(
             dynamics=tuple(
                 DynamicsItem(
-                    date=result.date.ToDatetime(tzinfo=timezone.utc).date(),
+                    date=result.date.ToDatetime(tzinfo=datetime.timezone.utc).date(),
                     share=result.share,
                     count=result.count
                 ) for result in proto.results

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._models.completions.result import Alternative, GPTModelResult
 from yandex_ai_studio_sdk._search_api.generative.message import GenSearchMessage, messages_to_proto
@@ -57,7 +58,7 @@ async def test_generative_filters(async_sdk: AsyncAIStudio) -> None:
         {'format': 'foo'},
         [['foo']]
     ):
-        with pytest.raises(AIStudioConfigurationError):
+        with pytest.raises((AIStudioConfigurationError, TypeError)):
             async_sdk.search_api.generative(search_filters=bad_value)  # type: ignore[arg-type]
 
     for format_ in async_sdk.search_api.generative.available_formats:
