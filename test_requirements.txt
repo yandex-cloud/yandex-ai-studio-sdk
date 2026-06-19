@@ -5,7 +5,7 @@ psutil
 pyarrow-stubs
 pydantic>2.10
 pylint-protobuf
-pytest
+pytest<9
 pytest-asyncio
 pytest-flakes
 pytest-httpx
