@@ -11,7 +11,6 @@ from typing_extensions import Self, override
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import (
     GetDynamicsResponse, GetRegionsDistributionResponse, GetRegionsTreeResponse, GetTopResponse
 )
-
 from yandex_ai_studio_sdk._search_api.types import Region, RegionsMapping
 from yandex_ai_studio_sdk._types.proto import Context, ProtoMessageTypeT
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, BaseProtoResult, SDKType

@@ -10,7 +10,6 @@ from yandex.cloud.searchapi.v2.wordstat_service_pb2 import (
     GetRegionsTreeRequest, GetRegionsTreeResponse, GetTopRequest, GetTopResponse
 )
 from yandex.cloud.searchapi.v2.wordstat_service_pb2_grpc import WordstatServiceStub
-
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._search_api.types import Region
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, EnumWithUnknownInput

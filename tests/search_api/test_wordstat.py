@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 
 import pytest
-
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._search_api.types import Region
 
