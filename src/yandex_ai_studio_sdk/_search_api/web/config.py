@@ -7,6 +7,7 @@ from typing_extensions import Self, override
 from yandex_ai_studio_sdk._search_api.enums import (
     FamilyMode, FixTypoMode, GroupMode, Localization, SearchType, SortMode, SortOrder
 )
+from yandex_ai_studio_sdk._search_api.types import Region
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum
 from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 
@@ -38,7 +39,7 @@ class WebSearchConfig(BaseModelConfig):
     #: Maximum number of passages that can be used when generating a document
     max_passages: int | None = None
     #: Search country or region ID that affects the document ranking rules.
-    region: str | None = None
+    region: str | Region | None = None
     #: String containing the User-Agent header.
     user_agent: str | None = None
 

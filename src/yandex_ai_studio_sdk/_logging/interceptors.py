@@ -43,14 +43,14 @@ async def _log_from_call(
     request_id: str | None,
 ):
     service, method = split_full_method(full_method)
-    metadata: dict[str, str] = {}
+    metadata: dict[str, str | bytes] = {}
 
     # Prefer details from AioRpcError (it always has them)
     if isinstance(err, grpc.aio.AioRpcError):
         code = err.code()
         details = err.details()
         raw_trailing = err.trailing_metadata()
-        trailing = None
+        trailing: grpc.aio.Metadata | list[tuple[str, str]] | None = None
         if raw_trailing:
             if isinstance(raw_trailing, grpc.aio.Metadata):
                 trailing = raw_trailing

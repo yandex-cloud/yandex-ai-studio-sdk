@@ -7,6 +7,7 @@ from .by_image.function import AsyncByImageSearchFunction, BaseByImageSearchFunc
 from .generative.function import AsyncGenerativeSearchFunction, BaseGenerativeSearchFunction, GenerativeSearchFunction
 from .image.function import AsyncImageSearchFunction, BaseImageSearchFunction, ImageSearchFunction
 from .web.function import AsyncWebSearchFunction, BaseWebSearchFunction, WebSearchFunction
+from .wordstat.function import AsyncWordstatFunction, BaseWordstatFunction, WordstatFunction
 
 
 class BaseSearchAPIDomain(DomainWithFunctions):
@@ -22,6 +23,8 @@ class BaseSearchAPIDomain(DomainWithFunctions):
     image: BaseImageSearchFunction
     #: API for `search by image <https://aistudio.yandex.ru/docs/search-api/concepts/image-search#search-by-image>`_ service
     by_image: BaseByImageSearchFunction
+    #: API for `Wordstat <https://aistudio.yandex.ru/docs/ru/search-api/concepts/wordstat.html>`_ service
+    wordstat: BaseWordstatFunction
 
 
 @doc_from(BaseSearchAPIDomain)
@@ -30,6 +33,7 @@ class AsyncSearchAPIDomain(BaseSearchAPIDomain):
     web: AsyncWebSearchFunction
     image: AsyncImageSearchFunction
     by_image: AsyncByImageSearchFunction
+    wordstat: AsyncWordstatFunction
 
 
 @doc_from(BaseSearchAPIDomain)
@@ -38,3 +42,4 @@ class SearchAPIDomain(BaseSearchAPIDomain):
     web: WebSearchFunction
     image: ImageSearchFunction
     by_image: ByImageSearchFunction
+    wordstat: WordstatFunction

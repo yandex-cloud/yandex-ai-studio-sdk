@@ -48,3 +48,13 @@ Search by image
 
 .. autoclass:: yandex_ai_studio_sdk._search_api.by_image.result.ByImageSearchResult
    :undoc-members:
+
+Wordstat
+--------
+
+.. autoclass:: yandex_ai_studio_sdk._search_api.wordstat.function.WordstatFunction
+   :undoc-members:
+
+.. autoclass:: yandex_ai_studio_sdk._search_api.wordstat.wordstat.Wordstat
+   :undoc-members:
+   :exclude-members: to_bytes,from_bytes

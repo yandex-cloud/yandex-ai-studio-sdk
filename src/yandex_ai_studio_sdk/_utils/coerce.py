@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import TypeVar, Union
+from typing import TypeVar, Union, cast, overload
 
+from yandex_ai_studio_sdk._types.misc import SmartIterable
 from yandex_ai_studio_sdk._types.resource import BaseResource
 
 _T = TypeVar('_T')
@@ -35,14 +36,31 @@ def coerce_resource_ids(
     return tuple(result)
 
 
-def coerce_tuple(value: Iterable[_T] | _T, value_type: type[_T]) -> tuple[_T, ...]:
+@overload
+def coerce_tuple(
+    value: SmartIterable[_T],
+    value_type: type[_T],
+) -> tuple[_T, ...]: ...
+
+@overload
+def coerce_tuple(
+    value: SmartIterable[_T],
+    value_type: tuple[type[_T], ...],
+) -> tuple[_T, ...]: ...
+
+
+def coerce_tuple(value: SmartIterable[_T], value_type: type[_T] | tuple[type[_T], ...]) -> tuple[_T, ...]:
     if isinstance(value, value_type):
-        return (value, )
+        return (cast(_T, value), )
 
     if not isinstance(value, Iterable):
-        raise TypeError(f'{value} expected to be {value_type} or Iterable')
+        raise TypeError(f'{value} of type {type(value)} expected to be {value_type} or Iterable')
 
-    return tuple(value)
+    result = tuple(value)
+    for item in result:
+        if not isinstance(item, value_type):
+            raise TypeError(f"all items expected {value_type}, got {item} of type {type(item)}")
+    return result
 
 
 def coerce_optional_int(value: str | None) -> int | None:

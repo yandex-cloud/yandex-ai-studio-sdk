@@ -6,6 +6,7 @@ from typing_extensions import override
 from yandex_ai_studio_sdk._search_api.enums import (
     FamilyMode, FixTypoMode, GroupMode, Localization, SearchType, SortMode, SortOrder
 )
+from yandex_ai_studio_sdk._search_api.types import Region
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownInput, UndefinedOrEnumWithUnknownInput
 from yandex_ai_studio_sdk._types.function import BaseModelFunction
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
@@ -35,7 +36,7 @@ class BaseWebSearchFunction(BaseModelFunction[WebSearchTypeT]):
         groups_on_page: UndefinedOr[int] = UNDEFINED,
         docs_in_group: UndefinedOr[int] = UNDEFINED,
         max_passages: UndefinedOr[int] = UNDEFINED,
-        region: UndefinedOr[str] = UNDEFINED,
+        region: UndefinedOr[str | Region] = UNDEFINED,
         user_agent: UndefinedOr[str] = UNDEFINED,
         metadata: UndefinedOr[Mapping[str, str]] = UNDEFINED,
     ) -> WebSearchTypeT:

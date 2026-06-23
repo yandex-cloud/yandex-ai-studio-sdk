@@ -94,6 +94,11 @@ Base classes
 
 .. autoclass:: yandex_ai_studio_sdk._search_api.by_image.function.BaseByImageSearchFunction
 
+.. autoclass:: yandex_ai_studio_sdk._search_api.wordstat.function.BaseWordstatFunction
+
+.. autoclass:: yandex_ai_studio_sdk._search_api.wordstat.wordstat.BaseWordstat
+   :exclude-members: to_bytes,from_bytes
+
 .. autoclass:: yandex_ai_studio_sdk._speechkit.domain.BaseSpeechKitDomain
    :exclude-members: to_bytes,from_bytes
 

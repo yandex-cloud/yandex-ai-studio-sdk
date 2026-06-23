@@ -13,7 +13,7 @@ from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._search_api.enums import (
     FamilyMode, FixTypoMode, Format, GroupMode, Localization, SearchType, SortMode, SortOrder
 )
-from yandex_ai_studio_sdk._search_api.types import SearchRequestDetails
+from yandex_ai_studio_sdk._search_api.types import Region, SearchRequestDetails
 from yandex_ai_studio_sdk._types.enum import UndefinedOrEnumWithUnknownInput
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
 from yandex_ai_studio_sdk._types.model import ModelAsyncMixin, ModelSyncMixin, OperationTypeT
@@ -61,7 +61,7 @@ class BaseWebSearch(
         groups_on_page: UndefinedOr[int] | None = UNDEFINED,
         docs_in_group: UndefinedOr[int] | None = UNDEFINED,
         max_passages: UndefinedOr[int] | None = UNDEFINED,
-        region: UndefinedOr[str] | None = UNDEFINED,
+        region: UndefinedOr[str | Region] | None = UNDEFINED,
         user_agent: UndefinedOr[str] | None = UNDEFINED,
         metadata: UndefinedOr[Mapping[str, str]] | None = UNDEFINED,
     ) -> Self:
@@ -123,6 +123,8 @@ class BaseWebSearch(
         expected_type: type[ProtoResponseTypeT],
     ) -> ProtoResponseTypeT:
         c = self._config
+        region = Region._coerce_to_str(c.region) if c.region else ''
+
         request = WebSearchRequest(
             query=SearchQuery(
                 family_mode=c.family_mode,  # type: ignore[arg-type]
@@ -140,7 +142,7 @@ class BaseWebSearch(
             l10n=c.localization,  # type: ignore[arg-type]
             max_passages=c.max_passages or 0,
             metadata=SearchMetadata(fields=c.metadata) if c.metadata else None,
-            region=c.region or '',
+            region=region,
             response_format=Format._coerce(format),  # type: ignore[arg-type]
             sort_spec=SortSpec(
                 sort_mode=c.sort_mode,  # type: ignore[arg-type]

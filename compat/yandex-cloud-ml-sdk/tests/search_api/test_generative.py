@@ -60,7 +60,7 @@ async def test_generative_filters(async_sdk: AsyncYCloudML) -> None:
         {'format': 'foo'},
         [['foo']]
     ):
-        with pytest.raises(YCloudMLConfigurationError):
+        with pytest.raises((YCloudMLConfigurationError, TypeError)):
             async_sdk.search_api.generative(search_filters=bad_value)  # type: ignore[arg-type]
 
     for format_ in async_sdk.search_api.generative.available_formats:

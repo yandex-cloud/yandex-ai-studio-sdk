@@ -25,6 +25,10 @@ General
 
 .. autoclass:: yandex_ai_studio_sdk._search_api.types.SearchGroup
 
+.. autoclass:: yandex_ai_studio_sdk._search_api.types.Region
+
+.. autoclass:: yandex_ai_studio_sdk._search_api.types.RegionsMapping
+
 
 Web search
 ----------
@@ -45,9 +49,21 @@ Search by image
 .. autoclass:: yandex_ai_studio_sdk._search_api.by_image.result.ByImageSearchDocument
    :undoc-members:
 
+Wordstat
+--------
+
+.. automodule:: yandex_ai_studio_sdk._search_api.wordstat.result
+   :undoc-members:
+   :exclude-members: to_bytes,from_bytes
+
+
 Enum-like settings
 ------------------
 
 .. automodule:: yandex_ai_studio_sdk._search_api.enums
    :undoc-members:
    :exclude-members: to_bytes,from_bytes
+
+.. automodule:: yandex_ai_studio_sdk._search_api.wordstat.config
+   :undoc-members:
+   :exclude-members: to_bytes,from_bytes,WordstatConfig

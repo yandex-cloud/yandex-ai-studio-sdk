@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import pathlib
+from collections.abc import Iterable
 from typing import Any, TypeAlias, TypeGuard, TypeVar, Union, cast
 
 _T = TypeVar('_T')
@@ -42,3 +43,6 @@ def is_path_like(path: Any) -> TypeGuard[PathLike]:
 
 def coerce_path(path: PathLike) -> pathlib.Path:
     return pathlib.Path(path)
+
+
+SmartIterable: TypeAlias = Union[Iterable[_T], _T]
