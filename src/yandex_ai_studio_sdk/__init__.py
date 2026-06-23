@@ -4,7 +4,7 @@ from ._logging import setup_default_logging
 from ._logging import setup_default_logging_from_env as _setup_default_logging_from_env
 from ._sdk import AIStudio, AsyncAIStudio
 
-__version__ = "0.20.2"
+__version__ = "0.21.0"
 
 __all__ = [
     '__version__',
