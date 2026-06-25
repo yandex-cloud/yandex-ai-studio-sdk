@@ -153,7 +153,11 @@ class ModelAsyncAttachMixin(Generic[OperationTypeT]):
     """Mixin that exposes a public async ``attach_deferred`` on top of ``_attach_deferred``."""
 
     @abc.abstractmethod
-    async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT: ...
+    async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
+        raise NotImplementedError(
+            f"{type(self).__name__}._attach_deferred is not implemented. "
+            "Make sure ModelAsyncMixin appears before ModelAsyncAttachMixin in the MRO."
+        )
 
     @doc_from(ModelAsyncMixin._attach_deferred)
     async def attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
@@ -164,7 +168,11 @@ class ModelSyncAttachMixin(Generic[OperationTypeT]):
     """Mixin that exposes a public sync ``attach_deferred`` on top of ``_attach_deferred``."""
 
     @abc.abstractmethod
-    async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT: ...
+    async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
+        raise NotImplementedError(
+            f"{type(self).__name__}._attach_deferred is not implemented. "
+            "Make sure ModelAsyncMixin appears before ModelSyncAttachMixin in the MRO."
+        )
 
     @doc_from(ModelAsyncMixin._attach_deferred)
     def attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
