@@ -125,9 +125,7 @@ class ModelAsyncMixin(
     _operation_type: type[OperationTypeT]
     _proto_result_type: type[ProtoMessage]
 
-    @property
-    def _operation_transformer(self) -> ResultTransformerType | None:
-        return None
+    _operation_transformer: ResultTransformerType | None = None
 
     @abc.abstractmethod
     async def _run_deferred(self, *args, **kwargs) -> OperationTypeT:

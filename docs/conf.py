@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from sphinx.domains.python import PythonDomain
+
 import yandex_ai_studio_sdk
 import yandex_ai_studio_sdk._sdk
-from sphinx.domains.python import PythonDomain
 
 # -- Project information -----------------------------------------------------
 
@@ -68,6 +69,8 @@ nitpick_ignore = {
     ('py:class', 'google.protobuf.message.Message'),
     ('py:class', 'httpx.AsyncClient'),
     ('py:class', 'httpx_sse._models.ServerSentEvent'),
+    # TypeVar from ModelAsyncAttachMixin/ModelSyncAttachMixin, not a real public class
+    ('py:class', 'yandex_ai_studio_sdk._types.operation.OperationTypeT'),
     # It creates a ton of langchain refs I want to pass right now
     ('py:class', 'yandex_ai_studio_sdk._types.langchain.BaseYandexLanguageModel'),
     ('py:class', 'BaseYandexLanguageModel'),

@@ -19,7 +19,7 @@ from yandex_ai_studio_sdk._types.model import (
     ModelAsyncAttachMixin, ModelAsyncMixin, ModelSyncAttachMixin, ModelSyncMixin, ModelSyncStreamMixin
 )
 from yandex_ai_studio_sdk._types.operation import (
-    AsyncOperation, Operation, OperationContext, OperationTypeT, ProtoOperation, ResultTransformerType
+    AsyncOperation, Operation, OperationContext, OperationTypeT, ProtoOperation
 )
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
@@ -59,11 +59,6 @@ class BaseSpeechToText(
     _operation_type: type[OperationTypeT]
     _deferred_result_impl: type[DeferredSpeechToTextResultTypeT]
     _proto_result_type = StreamingResponse
-
-    @override
-    @property
-    def _operation_transformer(self) -> ResultTransformerType:
-        return self._deferred_result_transformer
 
     # pylint: disable=useless-parent-delegation,arguments-differ
     @override
@@ -240,7 +235,7 @@ class BaseSpeechToText(
             ctx=ctx,
         )
 
-    async def _deferred_result_transformer(
+    async def _operation_transformer(
         self,
         proto_result: Empty,  # pylint: disable=unused-argument
         timeout: float,
@@ -302,7 +297,7 @@ class BaseSpeechToText(
             id=response.id ,
             proto_result_type=self._proto_result_type,
             result_type=SpeechToTextResult,
-            transformer=self._deferred_result_transformer,
+            transformer=self._operation_transformer,
         )
 
     @override
