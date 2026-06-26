@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Generator
 from typing import Any
 
 RecordType = dict[Any, Any]
@@ -16,15 +16,18 @@ async def read_dataset_records(path: str, batch_size: int | None) -> AsyncIterat
         except StopIteration:
             return None
 
-    while True:
-        item = await asyncio.to_thread(get_next)
-        if item is None:
-            return
+    try:
+        while True:
+            item = await asyncio.to_thread(get_next)
+            if item is None:
+                return
 
-        yield item
+            yield item
+    finally:
+        iterator.close()
 
 
-def read_dataset_records_sync(path: str, batch_size: int | None) -> Iterator[RecordType]:
+def read_dataset_records_sync(path: str, batch_size: int | None) -> Generator[RecordType]:
     import pyarrow.parquet as pq  # pylint: disable=import-outside-toplevel
 
     # we need use kwargs method to preserve original default value
