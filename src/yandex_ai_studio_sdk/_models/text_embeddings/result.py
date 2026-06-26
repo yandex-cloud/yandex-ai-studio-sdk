@@ -1,20 +1,20 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING
 
-from typing_extensions import Self
+from typing_extensions import Self, override
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.ai.foundation_models.v1.embedding.embedding_service_pb2 import TextEmbeddingResponse
 from yandex_ai_studio_sdk._types.result import BaseProtoResult
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 
 if TYPE_CHECKING:
     from yandex_ai_studio_sdk._sdk import BaseSDK
 
 
 @dataclass(frozen=True)
-class TextEmbeddingsModelResult(BaseProtoResult, Sequence):
+class TextEmbeddingsModelResult(TupleSequence[float], BaseProtoResult):
     """
     Represents the result of a text embeddings model.
 
@@ -28,6 +28,11 @@ class TextEmbeddingsModelResult(BaseProtoResult, Sequence):
     #: the version of the model used for generating embeddings
     model_version: str
 
+    @override
+    @property
+    def _items(self) -> tuple[float, ...]:
+        return self.embedding
+
     @classmethod
     def _from_proto(cls, *, proto: TextEmbeddingResponse, sdk: BaseSDK) -> Self:  # pylint: disable=unused-argument
         return cls(
@@ -35,20 +40,6 @@ class TextEmbeddingsModelResult(BaseProtoResult, Sequence):
             num_tokens=proto.num_tokens,
             model_version=proto.model_version,
         )
-
-    def __len__(self) -> int:
-        return len(self.embedding)
-
-    @overload
-    def __getitem__(self, index: int, /) -> float:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[float, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.embedding[index]
 
     def __array__(self, dtype=None, copy=None):
         import numpy  # pylint: disable=import-outside-toplevel

@@ -105,7 +105,7 @@ line-length = 120
 use_parentheses = true
 multi_line_output = 5
 line_length = 120
-src_paths = ["src"]
+known_first_party = ["yandex_ai_studio_sdk"]
 
 [tool.flake8]
 max-line-length = 120

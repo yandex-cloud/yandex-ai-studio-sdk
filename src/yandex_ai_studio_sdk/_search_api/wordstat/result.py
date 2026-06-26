@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Sequence
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import overload
 
 from typing_extensions import Self, override
 # pylint: disable-next=no-name-in-module
@@ -14,6 +12,7 @@ from yandex.cloud.searchapi.v2.wordstat_service_pb2 import (
 from yandex_ai_studio_sdk._search_api.types import Region, RegionsMapping
 from yandex_ai_studio_sdk._types.proto import Context, ProtoMessageTypeT
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, BaseProtoResult, SDKType
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 
 
 @dataclass(frozen=True)
@@ -44,8 +43,13 @@ class DynamicsItem:
 
 
 @dataclass(frozen=True)
-class Dynamics(BaseWordstatResult[GetDynamicsResponse], Sequence[DynamicsItem]):
+class Dynamics(TupleSequence[DynamicsItem], BaseWordstatResult[GetDynamicsResponse]):
     dynamics: tuple[DynamicsItem, ...]
+
+    @override
+    @property
+    def _items(self) -> tuple[DynamicsItem, ...]:
+        return self.dynamics
 
     @override
     @classmethod
@@ -59,20 +63,6 @@ class Dynamics(BaseWordstatResult[GetDynamicsResponse], Sequence[DynamicsItem]):
                 ) for result in proto.results
             )
         )
-
-    def __len__(self):
-        return len(self.dynamics)
-
-    @overload
-    def __getitem__(self, index: int, /) -> DynamicsItem:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[DynamicsItem, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.dynamics[index]
 
 
 @dataclass(frozen=True)
@@ -92,10 +82,15 @@ class RegionsDistributionContext(Context):
 
 @dataclass(frozen=True)
 class RegionsDistribution(
+    TupleSequence[RegionItem],
     BaseProtoModelResult[GetRegionsDistributionResponse, RegionsDistributionContext],
-    Sequence[RegionItem]
 ):
     _distribution: tuple[RegionItem, ...]
+
+    @override
+    @property
+    def _items(self) -> tuple[RegionItem, ...]:
+        return self._distribution
 
     @override
     @classmethod
@@ -126,20 +121,6 @@ class RegionsDistribution(
         return cls(
             _distribution=distribution
         )
-
-    def __len__(self):
-        return len(self._distribution)
-
-    @overload
-    def __getitem__(self, index: int, /) -> RegionItem:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[RegionItem, ...]:
-        pass
-
-    def __getitem__(self, index, /) -> RegionItem | tuple[RegionItem, ...]:
-        return self._distribution[index]
 
 
 @dataclass(frozen=True)
