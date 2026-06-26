@@ -10,7 +10,9 @@ from google.protobuf.empty_pb2 import Empty
 from typing_extensions import Self
 from yandex.cloud.ai.stt.v3.stt_pb2 import DeleteRecognitionRequest, StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
+
 from yandex_ai_studio_sdk._types.result import SDKType
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
@@ -130,7 +132,7 @@ class Utterance:
 
 
 @dataclass(frozen=True)
-class ChannelResult(Sequence):
+class ChannelResult(TupleSequence[Utterance]):
     """A class representing result of speech recognition request for one audio channel
     """
     tag: str
@@ -139,19 +141,9 @@ class ChannelResult(Sequence):
     #: Speech statistics for this channel with window_type=TOTAL
     speaker_analysis: SpeakerAnalysis | None
 
-    def __len__(self):
-        return len(self.utterances)
-
-    @overload
-    def __getitem__(self, index: int, /) -> Utterance:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[Utterance, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.utterances[index]
+    @property
+    def _items(self) -> tuple[Utterance, ...]:
+        return self.utterances
 
     @property
     def final_text(self) -> str:

@@ -2,10 +2,11 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, overload
+from typing import Any
+
+from typing_extensions import override
 
 from yandex_ai_studio_sdk._models.completions.result import AlternativeStatus, Usage
 from yandex_ai_studio_sdk._tools.tool_call import HaveToolCalls, ToolCallTypeT
@@ -13,6 +14,7 @@ from yandex_ai_studio_sdk._tools.tool_call_list import HttpToolCallList
 from yandex_ai_studio_sdk._types.json import JsonBased
 from yandex_ai_studio_sdk._types.message import TextMessage
 from yandex_ai_studio_sdk._types.result import BaseJsonResult, SDKType
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 
 # Keys for passing "special" message data from streaming handler to
 # results parser
@@ -172,7 +174,7 @@ class DeltaChatChoice(ChatChoice[ToolCallTypeT]):
 
 
 @dataclass(frozen=True)
-class ChatModelResult(BaseJsonResult, Sequence, HaveToolCalls[ToolCallTypeT]):
+class ChatModelResult(TupleSequence[ChatChoice], BaseJsonResult, HaveToolCalls[ToolCallTypeT]):
     """
     Result of a chat model completion request.
 
@@ -190,6 +192,11 @@ class ChatModelResult(BaseJsonResult, Sequence, HaveToolCalls[ToolCallTypeT]):
     model: str
     #: ID of the completion request (for debugging purposes)
     id: str
+
+    @override
+    @property
+    def _items(self) -> tuple[ChatChoice, ...]:
+        return self.choices
 
     @property
     def alternatives(self) -> tuple[ChatChoice[ToolCallTypeT], ...]:
@@ -215,20 +222,6 @@ class ChatModelResult(BaseJsonResult, Sequence, HaveToolCalls[ToolCallTypeT]):
             id=data['id']
         )
 
-
-    def __len__(self):
-        return len(self.alternatives)
-
-    @overload
-    def __getitem__(self, index: int, /) -> ChatChoice:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[ChatChoice, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.choices[index]
 
     @property
     def role(self) -> str:

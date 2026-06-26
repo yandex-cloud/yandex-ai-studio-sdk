@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Generic, TypeVar, overload
+from typing import TYPE_CHECKING, Generic, TypeVar
 
-from typing_extensions import Self
+from typing_extensions import Self, override
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.ai.foundation_models.v1.text_classification.text_classification_service_pb2 import (
     FewShotTextClassificationResponse, TextClassificationResponse
 )
+
 from yandex_ai_studio_sdk._types.result import BaseProtoResult
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 
 from .types import TextClassificationLabel
 
@@ -25,7 +26,7 @@ TextClassificationResponseT = TypeVar(
 
 
 @dataclass(frozen=True)
-class TextClassifiersModelResultBase(BaseProtoResult[TextClassificationResponseT], Sequence, Generic[TextClassificationResponseT]):
+class TextClassifiersModelResultBase(TupleSequence[TextClassificationLabel], BaseProtoResult[TextClassificationResponseT], Generic[TextClassificationResponseT]):
     """A class for text classifiers model results.
     It represents the common structure for the results returned by text classification models.
     """
@@ -35,6 +36,11 @@ class TextClassifiersModelResultBase(BaseProtoResult[TextClassificationResponseT
     model_version: str
     #: Number of input tokens provided to the model.
     input_tokens: int
+
+    @override
+    @property
+    def _items(self) -> tuple[TextClassificationLabel, ...]:
+        return self.predictions
 
     @classmethod
     def _from_proto(cls, *, proto: TextClassificationResponseT, sdk: BaseSDK) -> Self:  # pylint: disable=unused-argument
@@ -50,20 +56,6 @@ class TextClassifiersModelResultBase(BaseProtoResult[TextClassificationResponseT
             model_version=proto.model_version,
             input_tokens = proto.input_tokens
         )
-
-    def __len__(self) -> int:
-        return len(self.predictions)
-
-    @overload
-    def __getitem__(self, index: int, /) -> TextClassificationLabel:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[TextClassificationLabel, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.predictions[index]
 
 
 @dataclass(frozen=True)

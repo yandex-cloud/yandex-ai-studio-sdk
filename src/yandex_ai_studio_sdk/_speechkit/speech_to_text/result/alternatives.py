@@ -1,16 +1,17 @@
 # pylint: disable=no-name-in-module,invalid-enum-extension,unused-argument
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, overload
+from typing import Any
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import Alternative as ProtoAlternative
 from yandex.cloud.ai.stt.v3.stt_pb2 import AlternativeUpdate
 from yandex.cloud.ai.stt.v3.stt_pb2 import FinalRefinement as ProtoFinalRefinement
 from yandex.cloud.ai.stt.v3.stt_pb2 import Word as ProtoWord
+
 from yandex_ai_studio_sdk._types.proto import ProtoBased, ProtoMirrored, SDKType
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 
 from .utils import TimeSpan
 
@@ -69,22 +70,13 @@ class Alternative(ProtoMirrored[ProtoAlternative]):
 
 
 @dataclass(frozen=True)
-class BaseAlternatives(Sequence):
+class BaseAlternatives(TupleSequence[Alternative]):
     alternatives: tuple[Alternative, ...]
 
-    def __len__(self):
-        return len(self.alternatives)
-
-    @overload
-    def __getitem__(self, index: int, /) -> Alternative:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[Alternative, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.alternatives[index]
+    @override
+    @property
+    def _items(self) -> tuple[Alternative, ...]:
+        return self.alternatives
 
     @property
     def words(self) -> tuple[Word, ]:

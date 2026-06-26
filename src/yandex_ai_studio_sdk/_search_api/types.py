@@ -4,7 +4,7 @@ import datetime
 import itertools
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
-from collections.abc import Iterable, Iterator, Mapping, Sequence
+from collections.abc import Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from functools import cached_property
 from types import MappingProxyType
@@ -17,10 +17,12 @@ from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchResponse
 from yandex.cloud.searchapi.v2.search_service_pb2 import WebSearchResponse
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import GetRegionsTreeResponse
+
 from yandex_ai_studio_sdk._types.model import BaseModel, ConfigTypeT
 from yandex_ai_studio_sdk._types.proto import ProtoBased
 from yandex_ai_studio_sdk._types.request import RequestDetails
 from yandex_ai_studio_sdk._types.result import BaseProtoModelResult, ProtoMessageTypeT, SDKType
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 from yandex_ai_studio_sdk._types.xml import XMLBased
 
 from .utils import get_subelement_text
@@ -70,8 +72,13 @@ class SearchRequestDetails(RequestDetails[ConfigTypeT]):
 
 
 @dataclass(frozen=True)
-class SearchGroup(XMLBased, Sequence, Generic[XMLSearchDocumentTypeT]):
+class SearchGroup(TupleSequence[XMLSearchDocumentTypeT], XMLBased, Generic[XMLSearchDocumentTypeT]):
     documents: tuple[XMLSearchDocumentTypeT, ...]
+
+    @override
+    @property
+    def _items(self) -> tuple[XMLSearchDocumentTypeT, ...]:
+        return self.documents
 
     @classmethod
     def _from_xml(
@@ -89,26 +96,12 @@ class SearchGroup(XMLBased, Sequence, Generic[XMLSearchDocumentTypeT]):
             )
         )
 
-    def __len__(self):
-        return len(self.documents)
-
-    @overload
-    def __getitem__(self, index: int, /) -> XMLSearchDocumentTypeT:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[XMLSearchDocumentTypeT, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.documents[index]
-
 
 @dataclass(frozen=True)
 class BaseSearchResult(
+    TupleSequence[SearchDocumentTypeT],
     Generic[ProtoMessageTypeT, SearchDocumentTypeT, ConfigTypeT],
     BaseProtoModelResult[ProtoMessageTypeT, SearchRequestDetails[ConfigTypeT]],
-    Sequence[SearchDocumentTypeT],
     ABC
 ):
     _sdk: SDKType = field(repr=False)
@@ -122,6 +115,11 @@ class BaseSearchResult(
     def docs(self) -> tuple[SearchDocumentTypeT, ...]:
         """Returns all documents within search response."""
 
+    @override
+    @property
+    def _items(self) -> tuple[SearchDocumentTypeT, ...]:
+        return self.docs
+
     @property
     @abstractmethod
     def _model(self) -> BaseModel:
@@ -130,22 +128,6 @@ class BaseSearchResult(
     @abstractmethod
     async def _next_page(self, *, timeout: float | None = None) -> Self:
         pass
-
-    def __len__(self) -> int:
-        """Returns the number of documents in search response."""
-        return len(self.docs)
-
-    @overload
-    def __getitem__(self, index: int, /) -> SearchDocumentTypeT:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[SearchDocumentTypeT, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        """getitem implementation for search response documents."""
-        return self.docs[index]
 
 
 @dataclass(frozen=True)

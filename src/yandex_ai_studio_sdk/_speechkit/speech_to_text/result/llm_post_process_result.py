@@ -1,20 +1,20 @@
 # pylint: disable=no-name-in-module,invalid-enum-extension,unused-argument
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import overload
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import Summarization
+
 from yandex_ai_studio_sdk._models.completions.result import Usage
 from yandex_ai_studio_sdk._types.proto import ProtoBasedWithCtx, SDKType
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 
 from .context import RequestDetails
 
 
 @dataclass(frozen=True)
-class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails], Sequence):
+class LLMPostProcessResult(TupleSequence[str], ProtoBasedWithCtx[Summarization, RequestDetails]):
     """Result of the LLM postprocessing"""
 
     #: A set of statistics describing the number of content tokens used by the completion model.
@@ -24,6 +24,11 @@ class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails], Seq
     texts: tuple[str, ...]
     #: instructions given to model
     instructions: tuple[str, ...] | None
+
+    @override
+    @property
+    def _items(self) -> tuple[str, ...]:
+        return self.texts
 
     @property
     def by_instructions(self) -> dict[str, str]:
@@ -54,17 +59,3 @@ class LLMPostProcessResult(ProtoBasedWithCtx[Summarization, RequestDetails], Seq
                 total_tokens=proto.content_usage.total_tokens,
             )
         )
-
-    def __len__(self):
-        return len(self.texts)
-
-    @overload
-    def __getitem__(self, index: int, /) -> str:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[str, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.texts[index]

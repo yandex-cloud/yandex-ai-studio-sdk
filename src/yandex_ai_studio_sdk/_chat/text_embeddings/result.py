@@ -1,12 +1,14 @@
 # pylint: disable=no-name-in-module
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import cast, overload
+from typing import cast
+
+from typing_extensions import override
 
 from yandex_ai_studio_sdk._types.result import BaseJsonResult, SDKType
 from yandex_ai_studio_sdk._types.schemas import JsonObject
+from yandex_ai_studio_sdk._types.sequence import TupleSequence
 from yandex_ai_studio_sdk._types.usage import BaseUsage
 
 
@@ -23,7 +25,7 @@ class EmbeddingsUsage(BaseUsage):
 
 
 @dataclass(frozen=True)
-class ChatEmbeddingsModelResult(BaseJsonResult, Sequence):
+class ChatEmbeddingsModelResult(TupleSequence[float], BaseJsonResult):
     """
     Represents the result of a text embeddings model.
 
@@ -37,6 +39,11 @@ class ChatEmbeddingsModelResult(BaseJsonResult, Sequence):
     model: str
     #: Usage statistics for the embedding request
     usage: EmbeddingsUsage | None
+
+    @override
+    @property
+    def _items(self) -> tuple[float, ...]:
+        return self.embedding
 
     @classmethod
     def _from_json(cls, *, data: JsonObject, sdk: SDKType) -> ChatEmbeddingsModelResult:
@@ -64,20 +71,6 @@ class ChatEmbeddingsModelResult(BaseJsonResult, Sequence):
             embedding=tuple(cast(list[float], embedding)),
             usage=usage
         )
-
-    def __len__(self):
-        return len(self.embedding)
-
-    @overload
-    def __getitem__(self, index: int, /) -> float:
-        pass
-
-    @overload
-    def __getitem__(self, slice_: slice, /) -> tuple[float, ...]:
-        pass
-
-    def __getitem__(self, index, /):
-        return self.embedding[index]
 
     def __array__(self, dtype=None, copy=None):
         import numpy  # pylint: disable=import-outside-toplevel
