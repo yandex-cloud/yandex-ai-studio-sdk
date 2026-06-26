@@ -90,6 +90,9 @@ Generic types
 .. py:class:: yandex_ai_studio_sdk._speechkit.text_to_speech.bistream.TTSBidirectionalStreamTypeT
 
 
+.. py:class:: yandex_ai_studio_sdk._vision.ocr.ocr.OCRTypeT
+
+
 .. py:class:: yandex_ai_studio_sdk._speechkit.speech_to_text.stt.SpeechToTextTypeT
 
 

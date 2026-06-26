@@ -116,3 +116,10 @@ Base classes
    :exclude-members: to_bytes,from_bytes
 
 .. autoclass:: yandex_ai_studio_sdk._speechkit.speech_to_text.bistream.BaseSTTBidirectionalStream
+
+.. autoclass:: yandex_ai_studio_sdk._vision.domain.BaseVisionDomain
+
+.. autoclass:: yandex_ai_studio_sdk._vision.ocr.function.BaseOCRFunction
+
+.. autoclass:: yandex_ai_studio_sdk._vision.ocr.ocr.BaseOCR
+   :exclude-members: to_bytes,from_bytes
