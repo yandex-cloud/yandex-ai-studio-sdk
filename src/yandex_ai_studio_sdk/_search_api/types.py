@@ -17,7 +17,6 @@ from yandex.cloud.searchapi.v2.img_search_service_pb2 import ImageSearchResponse
 from yandex.cloud.searchapi.v2.search_service_pb2 import WebSearchResponse
 # pylint: disable-next=no-name-in-module
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import GetRegionsTreeResponse
-
 from yandex_ai_studio_sdk._types.model import BaseModel, ConfigTypeT
 from yandex_ai_studio_sdk._types.proto import ProtoBased
 from yandex_ai_studio_sdk._types.request import RequestDetails

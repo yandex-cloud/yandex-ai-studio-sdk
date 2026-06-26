@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from typing import cast
 
 from typing_extensions import override
-
 from yandex_ai_studio_sdk._types.result import BaseJsonResult, SDKType
 from yandex_ai_studio_sdk._types.schemas import JsonObject
 from yandex_ai_studio_sdk._types.sequence import TupleSequence

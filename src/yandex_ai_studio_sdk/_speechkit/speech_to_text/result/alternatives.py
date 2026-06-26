@@ -9,7 +9,6 @@ from yandex.cloud.ai.stt.v3.stt_pb2 import Alternative as ProtoAlternative
 from yandex.cloud.ai.stt.v3.stt_pb2 import AlternativeUpdate
 from yandex.cloud.ai.stt.v3.stt_pb2 import FinalRefinement as ProtoFinalRefinement
 from yandex.cloud.ai.stt.v3.stt_pb2 import Word as ProtoWord
-
 from yandex_ai_studio_sdk._types.proto import ProtoBased, ProtoMirrored, SDKType
 from yandex_ai_studio_sdk._types.sequence import TupleSequence
 

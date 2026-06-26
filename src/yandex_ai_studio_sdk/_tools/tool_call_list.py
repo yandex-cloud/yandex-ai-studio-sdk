@@ -7,7 +7,6 @@ from typing import Any, Generic, TypeVar
 from typing_extensions import Self, override
 from yandex.cloud.ai.assistants.v1.common_pb2 import ToolCallList as ProtoAssistantToolCallList
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import ToolCallList as ProtoCompletionsToolCallList
-
 from yandex_ai_studio_sdk._types.json import JsonBased
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
 from yandex_ai_studio_sdk._types.sequence import TupleSequence
