@@ -1,8 +1,6 @@
 # pylint: disable=arguments-renamed,no-name-in-module
 from __future__ import annotations
 
-from typing import cast
-
 from typing_extensions import Self, override
 from yandex.cloud.ai.foundation_models.v1.image_generation.image_generation_pb2 import (
     AspectRatio, ImageGenerationOptions
@@ -15,7 +13,9 @@ from yandex.cloud.ai.foundation_models.v1.image_generation.image_generation_serv
 )
 from yandex.cloud.operation.operation_pb2 import Operation as ProtoOperation
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
-from yandex_ai_studio_sdk._types.model import ModelAsyncMixin, OperationTypeT
+from yandex_ai_studio_sdk._types.model import (
+    ModelAsyncAttachMixin, ModelAsyncMixin, ModelSyncAttachMixin, OperationTypeT
+)
 from yandex_ai_studio_sdk._types.operation import AsyncOperation, Operation
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync
@@ -95,7 +95,7 @@ class BaseImageGenerationModel(
 
 
 @doc_from(BaseImageGenerationModel)
-class AsyncImageGenerationModel(BaseImageGenerationModel[AsyncOperation[ImageGenerationModelResult]]):
+class AsyncImageGenerationModel(BaseImageGenerationModel[AsyncOperation[ImageGenerationModelResult]], ModelAsyncAttachMixin[AsyncOperation[ImageGenerationModelResult]]):
     _operation_type = AsyncOperation[ImageGenerationModelResult]
 
     async def run_deferred(
@@ -116,25 +116,12 @@ class AsyncImageGenerationModel(BaseImageGenerationModel[AsyncOperation[ImageGen
             timeout=timeout
         )
 
-    async def attach_deferred(
-        self,
-        operation_id: str,
-        timeout: float = 60,
-    ) -> AsyncOperation[ImageGenerationModelResult]:
-        """Attaches to an ongoing image generation operation.
-
-        :param operation_id: the ID of the operation to attach to.
-        :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
-            Defaults to 60 seconds.
-        """
-        return await self._attach_deferred(operation_id=operation_id, timeout=timeout)
-
 
 @doc_from(BaseImageGenerationModel)
-class ImageGenerationModel(BaseImageGenerationModel[Operation[ImageGenerationModelResult]]):
+class ImageGenerationModel(BaseImageGenerationModel[Operation[ImageGenerationModelResult]], ModelSyncAttachMixin[Operation[ImageGenerationModelResult]]):
     _operation_type = Operation[ImageGenerationModelResult]
     __run_deferred = run_sync(BaseImageGenerationModel[Operation[ImageGenerationModelResult]]._run_deferred)
-    __attach_deferred = run_sync(BaseImageGenerationModel[Operation[ImageGenerationModelResult]]._attach_deferred)
+
 
     @doc_from(AsyncImageGenerationModel.run_deferred)
     def run_deferred(
@@ -147,11 +134,4 @@ class ImageGenerationModel(BaseImageGenerationModel[Operation[ImageGenerationMod
         return self.__run_deferred(  # type: ignore[return-value]
             messages=messages,
             timeout=timeout
-        )
-
-    @doc_from(AsyncImageGenerationModel.attach_deferred)
-    def attach_deferred(self, operation_id: str, timeout: float = 60) -> Operation[ImageGenerationModelResult]:
-        return cast(
-            Operation[ImageGenerationModelResult],
-            self.__attach_deferred(operation_id=operation_id, timeout=timeout)
         )

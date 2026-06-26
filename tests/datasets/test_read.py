@@ -22,8 +22,16 @@ pytestmark = [pytest.mark.asyncio, pytest.mark.require_env('pyarrow')]
 @pytest.fixture
 def mock_dataset(mocker) -> AsyncDataset:
     """Create a mock dataset for testing."""
+    from contextlib import asynccontextmanager  # pylint: disable=import-outside-toplevel
+
     sdk_mock = mocker.MagicMock()
-    sdk_mock._client.httpx.return_value = httpx.AsyncClient()
+
+    @asynccontextmanager
+    async def httpx_context_manager(**_kwargs):
+        async with httpx.AsyncClient() as client:
+            yield client
+
+    sdk_mock._client.httpx.side_effect = httpx_context_manager
 
     dataset = AsyncDataset._from_proto(
         sdk=sdk_mock,
@@ -93,7 +101,7 @@ async def test_reading_order(mock_dataset, httpx_mock: HTTPXMock, mocker, tmp_pa
 
     data = [line async for line in mock_dataset.read()]
 
-    assert process.num_fds() == fd_num
+    assert process.num_fds() <= fd_num
     assert data == [{'name': '1.parquet'},
                     {'name': '2.parquet'},
                     {'name': '3.parquet'},

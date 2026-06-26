@@ -14,9 +14,11 @@ from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat
 from yandex_ai_studio_sdk._types.enum import UndefinedOrEnumWithUnknownInput
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
-from yandex_ai_studio_sdk._types.model import ModelAsyncMixin, ModelSyncMixin, ModelSyncStreamMixin
+from yandex_ai_studio_sdk._types.model import (
+    ModelAsyncAttachMixin, ModelAsyncMixin, ModelSyncAttachMixin, ModelSyncMixin, ModelSyncStreamMixin
+)
 from yandex_ai_studio_sdk._types.operation import (
-    AsyncOperation, Operation, OperationContext, OperationTypeT, ProtoOperation, ResultTransformerType
+    AsyncOperation, Operation, OperationContext, OperationTypeT, ProtoOperation
 )
 from yandex_ai_studio_sdk._utils.doc import doc_from
 from yandex_ai_studio_sdk._utils.sync import run_sync, run_sync_generator
@@ -56,11 +58,6 @@ class BaseSpeechToText(
     _operation_type: type[OperationTypeT]
     _deferred_result_impl: type[DeferredSpeechToTextResultTypeT]
     _proto_result_type = StreamingResponse
-
-    @override
-    @property
-    def _operation_transformer(self) -> ResultTransformerType:
-        return self._deferred_result_transformer
 
     # pylint: disable=useless-parent-delegation,arguments-differ
     @override
@@ -237,7 +234,7 @@ class BaseSpeechToText(
             ctx=ctx,
         )
 
-    async def _deferred_result_transformer(
+    async def _operation_transformer(
         self,
         proto_result: Empty,  # pylint: disable=unused-argument
         timeout: float,
@@ -299,7 +296,7 @@ class BaseSpeechToText(
             id=response.id ,
             proto_result_type=self._proto_result_type,
             result_type=SpeechToTextResult,
-            transformer=self._deferred_result_transformer,
+            transformer=self._operation_transformer,
         )
 
     @override
@@ -356,7 +353,8 @@ class AsyncSpeechToText(
         AsyncSTTBidirectionalStream,
         AsyncOperation[AsyncDeferredSpeechToTextResult],
         AsyncDeferredSpeechToTextResult,
-    ]
+    ],
+    ModelAsyncAttachMixin[AsyncOperation[AsyncDeferredSpeechToTextResult]],
 ):
     _bistream_type = AsyncSTTBidirectionalStream
     _operation_type = AsyncOperation[AsyncDeferredSpeechToTextResult]
@@ -390,14 +388,6 @@ class AsyncSpeechToText(
     ) -> AsyncOperation[AsyncDeferredSpeechToTextResult]:
         return await self._run_deferred(input=input, timeout=timeout)
 
-    @doc_from(BaseSpeechToText._attach_deferred)
-    async def attach_deferred(
-        self,
-        operation_id: str,
-        timeout: float = 60
-    ) -> AsyncOperation[AsyncDeferredSpeechToTextResult]:
-        return await self._attach_deferred(operation_id=operation_id, timeout=timeout)
-
 
 @doc_from(BaseSpeechToText)
 class SpeechToText(
@@ -405,7 +395,8 @@ class SpeechToText(
         STTBidirectionalStream,
         Operation[DeferredSpeechToTextResult],
         DeferredSpeechToTextResult,
-    ]
+    ],
+    ModelSyncAttachMixin[Operation[DeferredSpeechToTextResult]],
 ):
     _bistream_type = STTBidirectionalStream
     _operation_type = Operation[DeferredSpeechToTextResult]
@@ -413,8 +404,6 @@ class SpeechToText(
     __run = run_sync(BaseSpeechToText._run)
     __run_stream = run_sync_generator(BaseSpeechToText._run_stream)
     __run_deferred = run_sync(BaseSpeechToText._run_deferred)
-    __attach_deferred = run_sync(BaseSpeechToText._attach_deferred)
-
     @doc_from(BaseSpeechToText._run)
     def run(
         self,
@@ -441,13 +430,5 @@ class SpeechToText(
         timeout: float = 60
     ) -> Operation[DeferredSpeechToTextResult]:
         return self.__run_deferred(input=input, timeout=timeout)
-
-    @doc_from(BaseSpeechToText._attach_deferred)
-    def attach_deferred(
-        self,
-        operation_id: str,
-        timeout: float = 60
-    ) -> Operation[DeferredSpeechToTextResult]:
-        return self.__attach_deferred(operation_id=operation_id, timeout=timeout)
 
 SpeechToTextTypeT = TypeVar('SpeechToTextTypeT', bound=BaseSpeechToText)

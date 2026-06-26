@@ -24,7 +24,8 @@ from yandex_ai_studio_sdk._types.batch.domain import AsyncBatchSubdomain, BatchS
 from yandex_ai_studio_sdk._types.batch.model import AsyncModelBatchMixin, BaseModelBatchMixin, ModelBatchMixin
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
 from yandex_ai_studio_sdk._types.model import (
-    ModelAsyncMixin, ModelSyncMixin, ModelSyncStreamMixin, ModelTuneMixin, OperationTypeT
+    ModelAsyncAttachMixin, ModelAsyncMixin, ModelSyncAttachMixin, ModelSyncMixin, ModelSyncStreamMixin, ModelTuneMixin,
+    OperationTypeT
 )
 from yandex_ai_studio_sdk._types.operation import AsyncOperation, Operation
 from yandex_ai_studio_sdk._types.schemas import ResponseType, make_response_format_kwargs
@@ -314,6 +315,7 @@ class AsyncGPTModel(
         AsyncToolCall,
         AsyncBatchSubdomain,
     ],
+    ModelAsyncAttachMixin[AsyncOperation[GPTModelResult[AsyncToolCall]]],
     AsyncModelBatchMixin,
 ):
     _operation_type = AsyncOperation[GPTModelResult[AsyncToolCall]]
@@ -377,16 +379,6 @@ class AsyncGPTModel(
             messages=messages,
             timeout=timeout,
         )
-
-    async def attach_deferred(self, operation_id: str, timeout: float = 60) -> AsyncOperation[GPTModelResult[AsyncToolCall]]:
-        """
-        Attaches to an ongoing deferred operation using its operation id.
-
-        :param operation_id: the id of the deferred operation to attach to.
-        :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
-            Defaults to 60 seconds.
-        """
-        return await self._attach_deferred(operation_id=operation_id, timeout=timeout)
 
     async def tokenize(
         self,
@@ -533,6 +525,7 @@ class GPTModel(
         ToolCall,
         BatchSubdomain,
     ],
+    ModelSyncAttachMixin[Operation[GPTModelResult[ToolCall]]],
     ModelBatchMixin,
 ):
     _operation_type = Operation[GPTModelResult[ToolCall]]
@@ -541,7 +534,6 @@ class GPTModel(
     __run = run_sync(BaseGPTModel._run)
     __run_stream = run_sync_generator(BaseGPTModel._run_stream)
     __run_deferred = run_sync(BaseGPTModel._run_deferred)
-    __attach_deferred = run_sync(BaseGPTModel._attach_deferred)
     __tokenize = run_sync(BaseGPTModel._tokenize)
     __tune_deferred = run_sync(BaseGPTModel._tune_deferred)
     __tune = run_sync(BaseGPTModel._tune)
@@ -581,13 +573,6 @@ class GPTModel(
         return self.__run_deferred(
             messages=messages,
             timeout=timeout,
-        )
-
-    @doc_from(AsyncGPTModel.attach_deferred)
-    def attach_deferred(self, operation_id: str, timeout: float = 60) -> Operation[GPTModelResult[ToolCall]]:
-        return cast(
-            Operation[GPTModelResult[ToolCall]],
-            self.__attach_deferred(operation_id=operation_id, timeout=timeout)
         )
 
     @doc_from(AsyncGPTModel.tokenize)

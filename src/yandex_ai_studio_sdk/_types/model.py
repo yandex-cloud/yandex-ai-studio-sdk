@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 from yandex_ai_studio_sdk._tuning.tuning_task import TuningTaskTypeT
 
 from .._client import AsyncCloudClient
+from .._utils.doc import doc_from
 from .._utils.parse_uri import parse_uri
+from .._utils.sync import run_sync_impl
 from .misc import Undefined, UndefinedOr, get_defined_value
 from .model_config import ConfigTypeT
 from .operation import OperationTypeT, ResultTransformerType
@@ -122,9 +124,7 @@ class ModelAsyncMixin(
     _operation_type: type[OperationTypeT]
     _proto_result_type: type[ProtoMessage]
 
-    @property
-    def _operation_transformer(self) -> ResultTransformerType | None:
-        return None
+    _operation_transformer: ResultTransformerType | None = None
 
     @abc.abstractmethod
     async def _run_deferred(self, *args, **kwargs) -> OperationTypeT:
@@ -145,6 +145,31 @@ class ModelAsyncMixin(
             result_type=self._result_type,
             proto_result_type=self._proto_result_type,
             transformer=self._operation_transformer
+        )
+
+
+class ModelAsyncAttachMixin(Generic[OperationTypeT]):
+    """Mixin that exposes a public async ``attach_deferred`` on top of ``_attach_deferred``."""
+
+    @abc.abstractmethod
+    async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT: ...
+
+    @doc_from(ModelAsyncMixin._attach_deferred)
+    async def attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
+        return await self._attach_deferred(operation_id=operation_id, timeout=timeout)
+
+
+class ModelSyncAttachMixin(Generic[OperationTypeT]):
+    """Mixin that exposes a public sync ``attach_deferred`` on top of ``_attach_deferred``."""
+
+    @abc.abstractmethod
+    async def _attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT: ...
+
+    @doc_from(ModelAsyncMixin._attach_deferred)
+    def attach_deferred(self, operation_id: str, timeout: float = 60) -> OperationTypeT:
+        return run_sync_impl(
+            self._attach_deferred(operation_id=operation_id, timeout=timeout),
+            self._sdk,  # type: ignore[attr-defined]
         )
 
 
