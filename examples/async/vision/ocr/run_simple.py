@@ -35,6 +35,15 @@ async def main() -> None:
     print('=== Full result structure ===')
     pprint.pprint(result[0])
 
+    # Recognize the same image with the markdown model to get Markdown-formatted output
+    ocr_md = ocr.configure(model='markdown')
+    result_md = await ocr_md.run(content)
+
+    print('=== Markdown output ===')
+    for page in result_md:
+        print(f'--- Page {page.page} ---')
+        print(page.markdown)
+
 
 if __name__ == '__main__':
     asyncio.run(main())
