@@ -11,6 +11,7 @@ from yandex.cloud.ai.assistants.v1.runs.run_pb2 import Run as ProtoRun
 from yandex.cloud.ai.assistants.v1.runs.run_service_pb2 import AttachRunRequest, GetRunRequest, ListenRunRequest
 from yandex.cloud.ai.assistants.v1.runs.run_service_pb2 import StreamEvent as ProtoStreamEvent
 from yandex.cloud.ai.assistants.v1.runs.run_service_pb2_grpc import RunServiceStub
+
 from yandex_ai_studio_sdk._assistants.prompt_truncation_options import PromptTruncationOptions
 from yandex_ai_studio_sdk._tools.tool_call import AsyncToolCall, ToolCall, ToolCallTypeT
 from yandex_ai_studio_sdk._tools.tool_result import (

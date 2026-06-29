@@ -7,6 +7,7 @@ from enum import Enum
 from typing import Any
 
 from typing_extensions import override
+
 from yandex_ai_studio_sdk._models.completions.result import AlternativeStatus, Usage
 from yandex_ai_studio_sdk._tools.tool_call import HaveToolCalls, ToolCallTypeT
 from yandex_ai_studio_sdk._tools.tool_call_list import HttpToolCallList

@@ -11,6 +11,7 @@ from contextlib import contextmanager
 
 import boto3
 import botocore.exceptions
+
 from yandex_ai_studio_sdk import AIStudio
 
 SAMPLERATE = 44100

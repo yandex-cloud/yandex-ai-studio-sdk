@@ -4,6 +4,7 @@ import pathlib
 import uuid
 
 import pytest
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 pytestmark = pytest.mark.asyncio

@@ -7,6 +7,7 @@ from typing_extensions import override
 from yandex.cloud.ai.stt.v3.stt_pb2 import StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2 import GetRecognitionRequest
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import AsyncRecognizerStub
+
 from yandex_ai_studio_sdk._speechkit.enums import AudioFormat
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownInput
 from yandex_ai_studio_sdk._types.function import BaseModelFunction

@@ -6,6 +6,7 @@ from unittest.mock import MagicMock
 
 import httpx
 import pytest
+
 from yandex_ai_studio_sdk.auth import MetadataAuth
 
 pytestmark = pytest.mark.asyncio

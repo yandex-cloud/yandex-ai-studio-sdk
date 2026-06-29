@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import CodeType as ProtoCodeType
 from yandex.cloud.ai.stt.v3.stt_pb2 import StatusCode as ProtoStatusCode
+
 from yandex_ai_studio_sdk._types.enum import EnumWithUnknownAlias, ProtoBasedEnum
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
 

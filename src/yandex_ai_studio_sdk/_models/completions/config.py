@@ -7,6 +7,7 @@ from typing import TypeAlias, Union
 
 # pylint: disable=no-name-in-module
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import ReasoningOptions as ProtoReasoningOptions
+
 from yandex_ai_studio_sdk._tools.tool import FunctionTool
 from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 from yandex_ai_studio_sdk._types.schemas import ResponseType

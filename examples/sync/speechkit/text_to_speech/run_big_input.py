@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 from sounddevice import OutputStream
+
 from yandex_ai_studio_sdk import AIStudio
 from yandex_ai_studio_sdk._experimental.audio.utils import choose_audio_device
 

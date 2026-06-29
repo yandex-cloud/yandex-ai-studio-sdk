@@ -4,6 +4,7 @@ from __future__ import annotations
 from enum import IntEnum
 
 from yandex.cloud.ai.batch_inference.v1.batch_inference_task_pb2 import BatchInferenceTask as ProtoBatchInferenceTask
+
 from yandex_ai_studio_sdk._types.operation import BaseOperationStatus
 from yandex_ai_studio_sdk._utils.proto import ProtoEnumBase
 

@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock
 import grpc.aio
 import pytest
 import pytest_asyncio
+
 import yandex_ai_studio_sdk._types.resource
 from yandex_ai_studio_sdk._auth import BaseAuth, NoAuth
 from yandex_ai_studio_sdk._client import AsyncCloudClient, _get_user_agent
@@ -16,7 +17,6 @@ from yandex_ai_studio_sdk._testing.interceptor import (
     AsyncUnaryStreamClientInterceptor, AsyncUnaryUnaryClientInterceptor, CassetteManager
 )
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
-
 from yandex_cloud_ml_sdk import AsyncYCloudML, YCloudML
 from yandex_cloud_ml_sdk.retry import NoRetryPolicy, RetryPolicy
 

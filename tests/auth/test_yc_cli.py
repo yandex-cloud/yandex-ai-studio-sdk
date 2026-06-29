@@ -5,6 +5,7 @@ import time
 from unittest.mock import AsyncMock
 
 import pytest
+
 from yandex_ai_studio_sdk.auth import YandexCloudCLIAuth
 
 pytestmark = pytest.mark.asyncio

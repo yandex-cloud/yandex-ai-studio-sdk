@@ -5,6 +5,7 @@ from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
 import httpx
+
 from yandex_ai_studio_sdk._logging import get_logger
 from yandex_ai_studio_sdk.cli.search_index.file_sources.base import BaseFileSource, FileMetadata
 

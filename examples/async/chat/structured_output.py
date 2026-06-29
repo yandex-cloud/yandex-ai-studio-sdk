@@ -6,6 +6,7 @@ import asyncio
 import json
 
 import pydantic
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 
 

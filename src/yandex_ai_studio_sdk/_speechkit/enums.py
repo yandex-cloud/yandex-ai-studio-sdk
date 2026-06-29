@@ -14,6 +14,7 @@ from yandex.cloud.ai.tts.v3.tts_pb2 import AudioFormatOptions as TTSAudioFormatO
 from yandex.cloud.ai.tts.v3.tts_pb2 import ContainerAudio as TTSContainerAudio
 from yandex.cloud.ai.tts.v3.tts_pb2 import LoudnessNormalizationType
 from yandex.cloud.ai.tts.v3.tts_pb2 import RawAudio as TTSRawAudio
+
 from yandex_ai_studio_sdk._types.enum import (
     EnumWithUnknownAlias, EnumWithUnknownInput, ProtoBasedEnum, UnknownEnumValue
 )

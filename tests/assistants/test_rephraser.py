@@ -3,6 +3,7 @@ from __future__ import annotations
 import pathlib
 
 import pytest
+
 from yandex_ai_studio_sdk._sdk import AsyncAIStudio
 
 pytestmark = pytest.mark.asyncio

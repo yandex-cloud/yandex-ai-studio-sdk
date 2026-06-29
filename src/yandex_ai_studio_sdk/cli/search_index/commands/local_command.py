@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import click
+
 from yandex_ai_studio_sdk.cli.search_index.commands.base import BaseCommand
 from yandex_ai_studio_sdk.cli.search_index.file_sources.local import LocalFileSource
 from yandex_ai_studio_sdk.cli.search_index.utils.decorators import all_common_options
