@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import pytest
 from yandex.cloud.searchapi.v2.search_query_pb2 import SearchQuery as ProtoSearchQuery
+
 from yandex_ai_studio_sdk._types.enum import ProtoBasedEnum
 
 

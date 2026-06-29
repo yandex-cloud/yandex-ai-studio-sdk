@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from typing_extensions import Self, override
 from yandex.cloud.ai.stt.v3.stt_pb2 import Summarization
+
 from yandex_ai_studio_sdk._models.completions.result import Usage
 from yandex_ai_studio_sdk._types.proto import ProtoBasedWithCtx, SDKType
 from yandex_ai_studio_sdk._types.sequence import TupleSequence

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+
 from yandex_ai_studio_sdk._messages.message import Message as AssistantMessage
 from yandex_ai_studio_sdk._messages.message import PartialMessage
 from yandex_ai_studio_sdk._models.completions.result import Alternative, GPTModelResult

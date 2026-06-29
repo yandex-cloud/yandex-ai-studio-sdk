@@ -5,6 +5,7 @@ from typing import TypeVar
 
 from yandex.cloud.ai.stt.v3.stt_pb2 import AudioChunk, Eou, SilenceChunk, StreamingRequest, StreamingResponse
 from yandex.cloud.ai.stt.v3.stt_service_pb2_grpc import RecognizerStub
+
 from yandex_ai_studio_sdk._speechkit.bistream import (
     AsyncBidirectionalStreamMixin, BaseBidirectionalStream, BidirectionalStreamMixin
 )

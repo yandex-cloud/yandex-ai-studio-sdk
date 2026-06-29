@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.metadata
 
 import pytest
+
 from yandex_ai_studio_sdk._utils.packages import requires_package
 
 

@@ -4,6 +4,7 @@ import pathlib
 import sys
 
 import pytest
+
 import yandex_ai_studio_sdk
 
 pytest_plugins = [

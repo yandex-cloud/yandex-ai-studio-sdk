@@ -7,6 +7,7 @@ from typing import Literal
 from yandex.cloud.ai.tuning.v1.tuning_service_pb2 import (
     TextClassificationMulticlassParams, TextClassificationMultilabelParams
 )
+
 from yandex_ai_studio_sdk._types.tuning.params import BaseTuningParams
 
 ClassificationTuningTypes = Literal['multilabel', 'multiclass', 'binary']

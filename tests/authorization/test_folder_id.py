@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+
 from yandex_ai_studio_sdk import AIStudio, AsyncAIStudio
 
 

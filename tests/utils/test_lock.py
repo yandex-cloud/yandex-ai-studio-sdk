@@ -7,6 +7,7 @@ from typing import Any
 
 import pytest
 from typing_extensions import override
+
 from yandex_ai_studio_sdk._auth import RefresheableIAMTokenAuth
 from yandex_ai_studio_sdk._testing.client import MockClient
 from yandex_ai_studio_sdk._utils.contextlib import nullcontext

@@ -9,6 +9,7 @@ from typing_extensions import Self
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import HybridSearchIndex
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import SearchIndex as ProtoSearchIndex
 from yandex.cloud.ai.assistants.v1.searchindex.search_index_pb2 import TextSearchIndex, VectorSearchIndex
+
 from yandex_ai_studio_sdk._types.proto import ProtoBased, SDKType
 
 from .chunking_strategy import BaseIndexChunkingStrategy

@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any
 
 from yandex.cloud.ai.batch_inference.v1.batch_inference_task_pb2 import BatchInferenceTask as ProtoBatchInferenceTask
+
 from yandex_ai_studio_sdk._types.proto import ProtoMirrored, SDKType
 
 from .status import BatchTaskStatus

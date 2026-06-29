@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from yandex.cloud.ai.assistants.v1.common_pb2 import CompletionOptions
+
 from yandex_ai_studio_sdk._types.misc import UndefinedOr, is_defined
 
 

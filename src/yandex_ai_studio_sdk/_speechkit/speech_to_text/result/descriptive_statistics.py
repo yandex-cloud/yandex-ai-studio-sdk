@@ -6,6 +6,7 @@ from typing import Any
 
 from typing_extensions import override
 from yandex.cloud.ai.stt.v3.stt_pb2 import DescriptiveStatistics as ProtoDescriptiveStatistics
+
 from yandex_ai_studio_sdk._types.proto import ProtoMirrored, SDKType
 
 

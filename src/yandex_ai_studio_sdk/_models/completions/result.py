@@ -8,6 +8,7 @@ from typing_extensions import override
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import Alternative as ProtoAlternative
 from yandex.cloud.ai.foundation_models.v1.text_common_pb2 import ContentUsage as ProtoUsage
 from yandex.cloud.ai.foundation_models.v1.text_generation.text_generation_service_pb2 import CompletionResponse
+
 from yandex_ai_studio_sdk._tools.tool_call import HaveToolCalls, ToolCallTypeT
 from yandex_ai_studio_sdk._tools.tool_call_list import ProtoCompletionsToolCallList, ToolCallList
 from yandex_ai_studio_sdk._types.message import TextMessage

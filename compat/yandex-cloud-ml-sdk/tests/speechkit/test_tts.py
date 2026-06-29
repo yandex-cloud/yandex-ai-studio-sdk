@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import pytest
+
 from yandex_ai_studio_sdk._speechkit.enums import PCM16
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
-
 from yandex_cloud_ml_sdk import AsyncYCloudML
 from yandex_cloud_ml_sdk.exceptions import YCloudMLConfigurationError
 

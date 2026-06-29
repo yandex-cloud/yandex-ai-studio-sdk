@@ -6,6 +6,7 @@ import json
 from dataclasses import dataclass, field
 
 import click
+
 from yandex_ai_studio_sdk import AsyncAIStudio
 from yandex_ai_studio_sdk._logging import TRACE, LogLevel, get_logger, setup_default_logging
 from yandex_ai_studio_sdk._types.misc import UNDEFINED

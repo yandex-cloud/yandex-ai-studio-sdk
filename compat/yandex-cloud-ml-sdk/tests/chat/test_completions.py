@@ -7,11 +7,11 @@ from typing import cast
 
 import httpx._client
 import pytest
+
 from yandex_ai_studio_sdk._chat.completions.result import AlternativeStatus, FinishReason
 from yandex_ai_studio_sdk._types.misc import UNDEFINED
 from yandex_ai_studio_sdk._types.tools.function import FunctionDictType
 from yandex_ai_studio_sdk._types.tools.tool_choice import ToolChoiceType
-
 from yandex_cloud_ml_sdk import AsyncYCloudML
 
 pytestmark = [pytest.mark.asyncio, pytest.mark.vcr]

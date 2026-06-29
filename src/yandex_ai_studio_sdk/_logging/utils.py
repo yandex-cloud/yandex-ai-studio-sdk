@@ -5,6 +5,7 @@ import os
 import typing
 
 from google.protobuf.message import Message
+
 from yandex_ai_studio_sdk._utils.proto import proto_to_dict
 
 UpperLogLevel = typing.Literal['CRITICAL', 'FATAL', 'ERROR', 'WARN', 'WARNING', 'INFO', 'DEBUG', 'TRACE']

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import Device as ProtoDevice
 from yandex.cloud.searchapi.v2.wordstat_service_pb2 import GetDynamicsRequest, GetRegionsDistributionRequest
+
 from yandex_ai_studio_sdk._types.enum import ProtoBasedEnum
 from yandex_ai_studio_sdk._types.model_config import BaseModelConfig
 
