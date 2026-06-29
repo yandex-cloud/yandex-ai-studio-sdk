@@ -97,7 +97,8 @@ class Word(ProtoBasedWithCtx[ProtoWord, EntitiesContext]):
     @override
     def _from_proto(cls, *, proto: ProtoWord, sdk: SDKType, ctx: EntitiesContext) -> Self:
         entity: Entity | None = None
-        if 0 <= proto.entity_index < len(ctx.entities):
+        # entity_index == -1 means no entity; non-negative index is a valid reference
+        if proto.entity_index != -1 and 0 <= proto.entity_index < len(ctx.entities):
             entity = ctx.entities[proto.entity_index]
         return cls(
             bounding_box=_vertices_from_proto(proto.bounding_box, sdk),
@@ -169,7 +170,7 @@ class Block(TupleSequence[Line], ProtoBasedWithCtx[ProtoBlock, EntitiesContext])
                 for line in proto.lines
             ),
             languages=tuple(lang.language_code for lang in proto.languages),
-            layout_type=_LAYOUT_TYPE_INT_TO_NAME[proto.layout_type],
+            layout_type=_LAYOUT_TYPE_INT_TO_NAME.get(proto.layout_type, '<unknown>'),
         )
 
 

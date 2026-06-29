@@ -30,9 +30,13 @@ class BaseOCRFunction(BaseModelFunction[OCRTypeT]):
             (e.g. ``"ru"``, ``"en"``).
             See `supported languages <https://aistudio.yandex.ru/docs/vision/concepts/ocr/supported-languages.html>`_.
         :param model: Model to use for text recognition.
-            Possible values: ``"page"`` (default), ``"line"``, ``"template"``,
-            ``"handwritten"``, ``"markdown"``, ``"math-markdown"``.
-            See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/#models>`_.
+            General models: ``"page"`` (default), ``"page-column-sort"``, ``"handwritten"``,
+            ``"table"``, ``"markdown"``, ``"math-markdown"``.
+            Document template models: ``"passport"``, ``"driver-license-front"``,
+            ``"driver-license-back"``, ``"vehicle-registration-front"``,
+            ``"vehicle-registration-back"``, ``"license-plates"``.
+            See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/#models>`_ and
+            `document recognition <https://aistudio.yandex.ru/docs/vision/concepts/ocr/template-recognition>`_.
         """
         ocr = self._model_type(sdk=self._sdk, uri='<vision-ocr>')
         return ocr.configure(

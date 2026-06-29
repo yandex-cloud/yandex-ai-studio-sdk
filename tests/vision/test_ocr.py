@@ -5,6 +5,30 @@ import pathlib
 import pytest
 
 from yandex_ai_studio_sdk import AsyncAIStudio
+from yandex_ai_studio_sdk._vision.ocr.utils import detect_mime_type
+from yandex_ai_studio_sdk.exceptions import AIStudioConfigurationError
+
+
+def test_detect_mime_type_jpeg() -> None:
+    assert detect_mime_type(b'\xff\xd8\xff\xe0' + b'\x00' * 10) == 'image/jpeg'
+
+
+def test_detect_mime_type_png() -> None:
+    assert detect_mime_type(b'\x89PNG\r\n\x1a\n' + b'\x00' * 10) == 'image/png'
+
+
+def test_detect_mime_type_pdf() -> None:
+    assert detect_mime_type(b'%PDF-1.4' + b'\x00' * 10) == 'application/pdf'
+
+
+def test_detect_mime_type_unknown_raises() -> None:
+    with pytest.raises(AIStudioConfigurationError, match='unable to detect MIME type'):
+        detect_mime_type(b'\x00\x01\x02\x03')
+
+
+def test_detect_mime_type_empty_raises() -> None:
+    with pytest.raises(AIStudioConfigurationError, match='unable to detect MIME type'):
+        detect_mime_type(b'')
 
 
 @pytest.fixture(name='image')

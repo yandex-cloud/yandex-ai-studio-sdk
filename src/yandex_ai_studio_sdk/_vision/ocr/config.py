@@ -18,9 +18,28 @@ class OCRConfig(BaseModelConfig):
     language_codes: tuple[str, ...] | None = None
 
     #: Model to use for text recognition.
-    #: Possible values: ``"page"`` (default), ``"line"``, ``"template"``,
-    #: ``"handwritten"``, ``"markdown"``, ``"math-markdown"``.
-    #: See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/#models>`_.
+    #:
+    #: General recognition models:
+    #:
+    #: * ``"page"`` (default): Single-column text, any number of lines.
+    #: * ``"page-column-sort"``: Multi-column text.
+    #: * ``"handwritten"``: Combination of typed and handwritten text (Russian and English only).
+    #: * ``"table"``: Tables (Russian and English only).
+    #: * ``"markdown"``: Returns results in Markdown format.
+    #: * ``"math-markdown"``: Math formulas; results include LaTeX-formatted expressions.
+    #:
+    #: Document template recognition models:
+    #:
+    #: * ``"passport"``: Main passport spread.
+    #: * ``"driver-license-front"``: Driver's license, front side.
+    #: * ``"driver-license-back"``: Driver's license, back side.
+    #: * ``"vehicle-registration-front"``: Vehicle registration certificate, front side.
+    #: * ``"vehicle-registration-back"``: Vehicle registration certificate, back side.
+    #: * ``"license-plates"``: All license plates visible in the image.
+    #:
+    #: See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/#models>`_ and
+    #: `document recognition <https://aistudio.yandex.ru/docs/vision/concepts/ocr/template-recognition>`_
+    #: for more details.
     model: str | None = None
 
     @override
