@@ -9,12 +9,14 @@ from typing_extensions import Self, override
 from yandex.cloud.ai.ocr.v1.ocr_service_pb2 import GetRecognitionRequest, RecognizeTextRequest, RecognizeTextResponse
 from yandex.cloud.ai.ocr.v1.ocr_service_pb2_grpc import TextRecognitionAsyncServiceStub, TextRecognitionServiceStub
 
+from yandex_ai_studio_sdk._exceptions import AIStudioConfigurationError
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr, is_defined
 from yandex_ai_studio_sdk._types.model import (
     ModelAsyncAttachMixin, ModelAsyncMixin, ModelSyncAttachMixin, ModelSyncMixin, OperationTypeT
 )
 from yandex_ai_studio_sdk._types.operation import AsyncOperation, Operation, OperationContext, ProtoOperation
 from yandex_ai_studio_sdk._utils.doc import doc_from
+from yandex_ai_studio_sdk._utils.mime import DetectMimeError
 from yandex_ai_studio_sdk._utils.sync import run_sync
 
 from .config import OCRConfig
@@ -68,7 +70,15 @@ class BaseOCR(
         mime_type: UndefinedOr[str] = UNDEFINED,
     ) -> RecognizeTextRequest:
         c = self._config
-        resolved_mime_type = mime_type if is_defined(mime_type) else detect_mime_type(content)
+        if is_defined(mime_type):
+            resolved_mime_type = mime_type
+        else:
+            try:
+                resolved_mime_type = detect_mime_type(content)
+            except DetectMimeError as e:
+                raise AIStudioConfigurationError(
+                    f'{e} Please pass mime_type explicitly.'
+                ) from e
         return RecognizeTextRequest(
             content=content,
             mime_type=resolved_mime_type,

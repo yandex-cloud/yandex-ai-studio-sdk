@@ -5,8 +5,7 @@ import pathlib
 import pytest
 
 from yandex_ai_studio_sdk import AsyncAIStudio
-from yandex_ai_studio_sdk._vision.ocr.utils import detect_mime_type
-from yandex_ai_studio_sdk.exceptions import AIStudioConfigurationError
+from yandex_ai_studio_sdk._utils.mime import DetectMimeError, detect_mime_type
 
 
 def test_detect_mime_type_jpeg() -> None:
@@ -22,12 +21,12 @@ def test_detect_mime_type_pdf() -> None:
 
 
 def test_detect_mime_type_unknown_raises() -> None:
-    with pytest.raises(AIStudioConfigurationError, match='unable to detect MIME type'):
+    with pytest.raises(DetectMimeError, match='image/jpeg, image/png, application/pdf'):
         detect_mime_type(b'\x00\x01\x02\x03')
 
 
 def test_detect_mime_type_empty_raises() -> None:
-    with pytest.raises(AIStudioConfigurationError, match='unable to detect MIME type'):
+    with pytest.raises(DetectMimeError, match='image/jpeg, image/png, application/pdf'):
         detect_mime_type(b'')
 
 
