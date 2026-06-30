@@ -18,6 +18,7 @@
    search_indexes
    search_api
    speechkit/domain
+   vision/domain
    threads
    assistants
    tools

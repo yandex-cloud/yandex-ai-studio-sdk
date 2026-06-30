@@ -17,3 +17,4 @@ Types
    other
    batch
    speechkit
+   vision

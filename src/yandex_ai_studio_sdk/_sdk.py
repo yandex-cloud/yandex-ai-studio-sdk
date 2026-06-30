@@ -35,6 +35,7 @@ from ._tools.domain import AsyncTools, BaseTools, Tools
 from ._tuning.domain import AsyncTuning, BaseTuning, Tuning
 from ._types.domain import BaseDomain
 from ._types.misc import UNDEFINED, PathLike, UndefinedOr, get_defined_value, is_defined
+from ._vision.domain import AsyncVisionDomain, BaseVisionDomain, VisionDomain
 
 
 class BaseSDK:
@@ -67,6 +68,9 @@ class BaseSDK:
     #: Domain for working with
     #: `Yandex SpeechKit <https://aistudio.yandex.ru/docs/speechkit/overview>`_ services.
     speechkit: BaseSpeechKitDomain
+    #: Domain for working with
+    #: `Yandex Vision <https://aistudio.yandex.ru/docs/vision/concepts/ocr/>`_ services.
+    vision: BaseVisionDomain
 
     _messages: BaseMessages
 
@@ -272,6 +276,7 @@ class AsyncAIStudio(BaseSDK):
     batch: AsyncBatch
     chat: AsyncChat
     speechkit: AsyncSpeechKitDomain
+    vision: AsyncVisionDomain
     _messages: AsyncMessages
 
 
@@ -290,4 +295,5 @@ class AIStudio(BaseSDK):
     batch: Batch
     chat: Chat
     speechkit: SpeechKitDomain
+    vision: VisionDomain
     _messages: Messages
