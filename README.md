@@ -36,7 +36,7 @@ Also there is some cross-domain functionality for features above:
 - [**Batch processing**](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/batch-processing)
   - Run long‑running batch tasks with automatic polling.
 - **Tools**
-  - Built‑in tools such as Generative Search Tool, [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) and Search Index Tool that can be used in Completions and Chat, providing a unified way to extend functionality across the SDK.
+  - [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) for extending models with custom callable functions in Completions and Chat.
 - [**Tuning**](https://aistudio.yandex.ru/docs/ai-studio/concepts/tuning/)
   - Fine‑tune models with configurable optimizers, schedulers and other hyper‑parameters.
 - [**Datasets**](https://aistudio.yandex.ru/docs/ai-studio/concepts/resources/dataset)
