@@ -26,7 +26,7 @@ async def test_run(model):
     assert result._repr_jpeg_() == result.image_bytes  # pylint: disable=protected-access
 
 
-def test_inputs(async_sdk):
+def test_inputs():
     def check_messages(messages, expected):
         assert len(messages) == len(expected)
         for message, expected_message in zip(messages, expected):
