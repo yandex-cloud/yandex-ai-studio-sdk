@@ -12,7 +12,6 @@ Types
    datasets
    search_api
    message
-   runs
    search_indexes
    other
    batch

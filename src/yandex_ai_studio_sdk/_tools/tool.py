@@ -133,7 +133,6 @@ class FunctionTool(BaseTool[ProtoFunctionTool]):
         }[proto_type]
 
         additional_kwargs = {}
-        # TODO: remove this logic after strict would be supported in assistants
         if self.strict is not None:
             strict_field_present = 'strict' in {
                 field.name
@@ -143,7 +142,7 @@ class FunctionTool(BaseTool[ProtoFunctionTool]):
                 additional_kwargs['strict'] = self.strict
             else:
                 raise ValueError(
-                    '"strict" field is not supported in sdk.assistants yet, only in sdk.models.completions'
+                    '"strict" field is not supported in this context, only in sdk.models.completions'
                 )
 
         function = function_class(
