@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from yandex_ai_studio_sdk._messages.message import Message as AssistantMessage
-from yandex_ai_studio_sdk._messages.message import PartialMessage
 from yandex_ai_studio_sdk._models.completions.result import Alternative, GPTModelResult
-from yandex_ai_studio_sdk._models.image_generation.message import ImageMessage, ProtoMessage, messages_to_proto
+from yandex_ai_studio_sdk._models.image_generation.message import (
+    AnyMessage, ImageMessage, ProtoMessage, messages_to_proto
+)
 from yandex_ai_studio_sdk._types.message import TextMessage
 
 
@@ -82,32 +82,26 @@ def test_inputs(async_sdk):
     messages = messages_to_proto(gpt_model_result)
     check_messages(messages, ['1'])
 
-    # pylint: disable=unexpected-keyword-arg
-    assistant_message = AssistantMessage(
-        id='1',
-        _sdk=async_sdk,
-        created_at=None,
-        created_by='foo',
-        labels=None,
-        parts=('a', 'b'),
-        author=None,
-        thread_id='2',
-        citations=(),
-        status=0,
-    )
-    messages = messages_to_proto(assistant_message)
+    # Test AnyMessage protocol — any object with a .text property should work
+    class _AnyMessageImpl:
+        def __init__(self, text: str) -> None:
+            self._text = text
+
+        @property
+        def text(self) -> str:
+            return self._text
+
+    assert isinstance(_AnyMessageImpl('x'), AnyMessage)
+
+    any_msg1 = _AnyMessageImpl('a\nb')
+    messages = messages_to_proto(any_msg1)
     check_messages(messages, ['a\nb'])
 
-    # pylint: disable=unexpected-keyword-arg
-    partial_message = PartialMessage(
-        id='1',
-        _sdk=async_sdk,
-        parts=('y', 'z')
-    )
-    messages = messages_to_proto(partial_message)
+    any_msg2 = _AnyMessageImpl('y\nz')
+    messages = messages_to_proto(any_msg2)
     check_messages(messages, ['y\nz'])
 
-    messages = messages_to_proto(['foo', {'text': 'bar'}, *gpt_model_result, assistant_message, partial_message])
+    messages = messages_to_proto(['foo', {'text': 'bar'}, *gpt_model_result, any_msg1, any_msg2])
     check_messages(messages, ['foo', 'bar', '1', '2', 'a\nb', 'y\nz'])
 
     with pytest.raises(TypeError):

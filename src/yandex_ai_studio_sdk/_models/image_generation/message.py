@@ -31,7 +31,7 @@ class ImageMessageDict(TypedDict):
     weight: NotRequired[float]
 
 
-# NB: it supports _messages.message.Message and _models.completions.message.TextMessage
+# NB: it supports any object with a .text property (AnyMessage protocol) as well as _models.completions.message.TextMessage
 @runtime_checkable
 class AnyMessage(Protocol):
     """

@@ -27,17 +27,16 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
   - Generative, web, image and by image search.
 - [**Search indexes**](https://aistudio.yandex.ru/docs/ai-studio/concepts/assistant/search-index)
   - Create, update, delete and query text, vector and hybrid search indexes.
-- **DEPRECATED Assistants**
-  - Create, list, update and delete AI assistants.
-- **DEPRECATED Threads**
-  - Organize conversations into threads, retrieve messages, and post new messages.
-  - Create and track execution of assistant runs, retrieve logs and results.
+
+> **Note:** The Assistants, Threads, Runs, and Messages domains have been removed from the SDK.
+> If you were using these features, please refer to the
+> [migration guide to Responses API](https://aistudio.yandex.ru/docs/ai-studio/concepts/agents/assistant-responses-migration.html).
 
 Also there is some cross-domain functionality for features above:
 - [**Batch processing**](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/batch-processing)
   - Run long‑running batch tasks with automatic polling.
 - **Tools**
-  - Built‑in tools such as Generative Search Tool, [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) and Search Index Tool that can be used in Assistants, Completions, and Chat, providing a unified way to extend functionality across the SDK.
+  - Built‑in tools such as Generative Search Tool, [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) and Search Index Tool that can be used in Completions and Chat, providing a unified way to extend functionality across the SDK.
 - [**Tuning**](https://aistudio.yandex.ru/docs/ai-studio/concepts/tuning/)
   - Fine‑tune models with configurable optimizers, schedulers and other hyper‑parameters.
 - [**Datasets**](https://aistudio.yandex.ru/docs/ai-studio/concepts/resources/dataset)

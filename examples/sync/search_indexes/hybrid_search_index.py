@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import asyncio
 import pathlib
 import pprint
 
-from yandex_ai_studio_sdk import AsyncAIStudio
+from yandex_ai_studio_sdk import AIStudio
 from yandex_ai_studio_sdk.search_indexes import (
     HybridSearchIndexType, ReciprocalRankFusionIndexCombinationStrategy, StaticIndexChunkingStrategy,
     TextSearchIndexType, VectorSearchIndexType
@@ -17,37 +16,36 @@ def local_path(path: str) -> pathlib.Path:
     return pathlib.Path(__file__).parent / path
 
 
-async def main() -> None:
+def main() -> None:
     # You can set authentication using environment variables instead of the 'auth' argument:
     # YC_OAUTH_TOKEN, YC_TOKEN, YC_IAM_TOKEN, or YC_API_KEY
     # You can also set 'folder_id' using the YC_FOLDER_ID environment variable
-    sdk = AsyncAIStudio(
+    sdk = AIStudio(
         # folder_id="<YC_FOLDER_ID>",
         # auth="<YC_API_KEY/YC_IAM_TOKEN>",
     )
     sdk.setup_default_logging()
 
-    file_coros = (
-        sdk.files.upload(
+    files = []
+    for path in ['turkey_example.txt', 'maldives_example.txt']:
+        file = sdk.files.upload(
             local_path(path),
             ttl_days=5,
             expiration_policy="static",
         )
-        for path in ['turkey_example.txt', 'maldives_example.txt']
-    )
-    files = await asyncio.gather(*file_coros)
+        files.append(file)
 
     # How to create search index with all default settings:
-    operation = await sdk.search_indexes.create_deferred(
+    operation = sdk.search_indexes.create_deferred(
         files,
         index_type=HybridSearchIndexType()
     )
-    default_search_index = await operation.wait()
+    default_search_index = operation.wait()
     print("new hybrid search index with default settings:")
     pprint.pprint(default_search_index)
 
     # But you could override any default:
-    operation = await sdk.search_indexes.create_deferred(
+    operation = sdk.search_indexes.create_deferred(
         files,
         index_type=HybridSearchIndexType(
             chunking_strategy=StaticIndexChunkingStrategy(
@@ -65,21 +63,20 @@ async def main() -> None:
             )
         )
     )
-    search_index = await operation.wait()
+    search_index = operation.wait()
     print("new hybrid search index with overridden settings:")
     pprint.pprint(search_index)
 
-    # And how to use your index you could learn in example file "assistant_with_search_index.py".
-    # Working with hybrid index does not differ from working with any other index besides creation.
+    # Working with a hybrid index does not differ from working with any other index besides creation.
 
     # Created resources cleanup:
     for file in files:
-        await file.delete()
+        file.delete()
 
     for search_index in [default_search_index, search_index]:
         print(f"delete {search_index.id=}")
-        await search_index.delete()
+        search_index.delete()
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()

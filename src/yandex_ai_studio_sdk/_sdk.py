@@ -13,7 +13,6 @@ from typing_extensions import Self
 
 from yandex_ai_studio_sdk._utils.doc import doc_from
 
-from ._assistants.domain import Assistants, AsyncAssistants, BaseAssistants
 from ._auth import BaseAuth
 from ._authorization import get_folder_id
 from ._batch.domain import AsyncBatch, BaseBatch, Batch
@@ -23,14 +22,11 @@ from ._datasets.domain import AsyncDatasets, BaseDatasets, Datasets
 from ._files.domain import AsyncFiles, BaseFiles, Files
 from ._logging import DEFAULT_DATE_FORMAT, DEFAULT_LOG_FORMAT, DEFAULT_LOG_LEVEL, LogLevel
 from ._logging.utils import setup_default_logging_impl
-from ._messages.domain import AsyncMessages, BaseMessages, Messages
 from ._models import AsyncModels, BaseModels, Models
 from ._retry import RetryPolicy
-from ._runs.domain import AsyncRuns, BaseRuns, Runs
 from ._search_api.domain import AsyncSearchAPIDomain, BaseSearchAPIDomain, SearchAPIDomain
 from ._search_indexes.domain import AsyncSearchIndexes, BaseSearchIndexes, SearchIndexes
 from ._speechkit.domain import AsyncSpeechKitDomain, BaseSpeechKitDomain, SpeechKitDomain
-from ._threads.domain import AsyncThreads, BaseThreads, Threads
 from ._tools.domain import AsyncTools, BaseTools, Tools
 from ._tuning.domain import AsyncTuning, BaseTuning, Tuning
 from ._types.domain import BaseDomain
@@ -40,21 +36,15 @@ from ._vision.domain import AsyncVisionDomain, BaseVisionDomain, VisionDomain
 
 class BaseSDK:
     """The main class that needs to be instantiated to work with SDK."""
-    #: Domain for creating various tools for assistants and function calling
+    #: Domain for creating various tools for function calling
     tools: BaseTools
     #: Domain for working with models (inference and tuning)
     models: BaseModels
-    #: DEPRECATED Domain for working with threads (a part of the Assistants API)
-    threads: BaseThreads
-    #: DEPRECATED Domain for working with files (a part of the Asssistants API)
+    #: Domain for working with files
     files: BaseFiles
-    #: Domain for working with assistants (a part of the Assistants API)
-    assistants: BaseAssistants
-    #: DEPRECATED Domain for working with assistants' runs (a part of the Assistants API)
-    runs: BaseRuns
     #: Domain for working with `Yandex Search API <https://aistudio.yandex.ru/docs/search-api/concepts/index>`_
     search_api: BaseSearchAPIDomain
-    #: Domain for working with search indexes (a part of the Assistants API)
+    #: Domain for working with search indexes
     search_indexes: BaseSearchIndexes
     #: Domain for working with datasets
     datasets: BaseDatasets
@@ -71,8 +61,6 @@ class BaseSDK:
     #: Domain for working with
     #: `Yandex Vision <https://aistudio.yandex.ru/docs/vision/concepts/ocr/>`_ services.
     vision: BaseVisionDomain
-
-    _messages: BaseMessages
 
     _logger_name: str = 'yandex_ai_studio_sdk'
 
@@ -266,9 +254,6 @@ class AsyncAIStudio(BaseSDK):
     tools: AsyncTools
     models: AsyncModels
     files: AsyncFiles
-    threads: AsyncThreads
-    assistants: AsyncAssistants
-    runs: AsyncRuns
     search_api: AsyncSearchAPIDomain
     search_indexes: AsyncSearchIndexes
     datasets: AsyncDatasets
@@ -277,7 +262,6 @@ class AsyncAIStudio(BaseSDK):
     chat: AsyncChat
     speechkit: AsyncSpeechKitDomain
     vision: AsyncVisionDomain
-    _messages: AsyncMessages
 
 
 @doc_from(BaseSDK)
@@ -285,9 +269,6 @@ class AIStudio(BaseSDK):
     tools: Tools
     models: Models
     files: Files
-    threads: Threads
-    assistants: Assistants
-    runs: Runs
     search_api: SearchAPIDomain
     search_indexes: SearchIndexes
     datasets: Datasets
@@ -296,4 +277,3 @@ class AIStudio(BaseSDK):
     chat: Chat
     speechkit: SpeechKitDomain
     vision: VisionDomain
-    _messages: Messages

@@ -51,12 +51,6 @@ Generic types
 .. py:class:: yandex_ai_studio_sdk._search_api.generative.generative.GenerativeSearchTypeT
 
 
-.. py:class:: yandex_ai_studio_sdk._runs.result.StatusTypeT
-
-
-.. py:class:: yandex_ai_studio_sdk._runs.result.MessageTypeT
-
-
 .. py:class:: yandex_ai_studio_sdk._types.operation.AnyResultTypeT_co
 
 

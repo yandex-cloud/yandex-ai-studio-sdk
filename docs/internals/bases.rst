@@ -35,21 +35,9 @@ Base classes
 
 .. autoclass:: yandex_ai_studio_sdk._models.image_generation.function.BaseImageGeneration
 
-.. autoclass:: yandex_ai_studio_sdk._threads.domain.BaseThreads
-
-.. autoclass:: yandex_ai_studio_sdk._threads.thread.BaseThread
-
 .. autoclass:: yandex_ai_studio_sdk._files.domain.BaseFiles
 
 .. autoclass:: yandex_ai_studio_sdk._files.file.BaseFile
-
-.. autoclass:: yandex_ai_studio_sdk._assistants.domain.BaseAssistants
-
-.. autoclass:: yandex_ai_studio_sdk._assistants.assistant.BaseAssistant
-
-.. autoclass:: yandex_ai_studio_sdk._runs.domain.BaseRuns
-
-.. autoclass:: yandex_ai_studio_sdk._runs.run.BaseRun
 
 .. autoclass:: yandex_ai_studio_sdk._search_api.domain.BaseSearchAPIDomain
 
@@ -70,8 +58,6 @@ Base classes
 .. autoclass:: yandex_ai_studio_sdk._tuning.domain.BaseTuning
 
 .. autoclass:: yandex_ai_studio_sdk._types.batch.domain.BaseBatchSubdomain
-
-.. autoclass:: yandex_ai_studio_sdk._messages.base.BaseMessage
 
 .. autoclass:: yandex_ai_studio_sdk._batch.domain.BaseBatch
 

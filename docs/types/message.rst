@@ -2,31 +2,6 @@ Messages
 ========
 
 
-Assistant-related message types
--------------------------------
-
-.. currentmodule::  yandex_ai_studio_sdk._messages.message
-
-.. autoclass:: Message
-   :undoc-members:
-
-.. autoclass:: PartialMessage
-   :undoc-members:
-
-.. autoclass:: Author
-   :undoc-members:
-
-.. autoclass:: MessageStatus
-   :undoc-members:
-   :no-inherited-members:
-
-.. autoclass:: yandex_ai_studio_sdk._messages.citations.Citation
-    :undoc-members:
-
-.. autoclass:: yandex_ai_studio_sdk._messages.citations.Source
-   :undoc-members:
-
-
 Completions-related message types
 ---------------------------------
 

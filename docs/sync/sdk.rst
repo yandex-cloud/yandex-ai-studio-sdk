@@ -11,7 +11,6 @@
    models/domain
    chat/domain
    batch
-   runs
    datasets
    tuning
    files
@@ -19,6 +18,4 @@
    search_api
    speechkit/domain
    vision/domain
-   threads
-   assistants
    tools
