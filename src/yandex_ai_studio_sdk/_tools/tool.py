@@ -44,33 +44,8 @@ class BaseTool(ProtoBased[ProtoMessageTypeT]):
                 sdk=sdk
             )
 
-        # Because of weird polymorphism
-        if (
-            hasattr(proto, 'search_index') and
-            proto.HasField('search_index')  # type: ignore[arg-type]
-        ):
-            # pylint: disable-next=import-outside-toplevel
-            from .search_index.tool import SearchIndexTool
-
-            return SearchIndexTool._from_proto(
-                proto=proto.search_index,
-                sdk=sdk
-            )
-
-        if (
-            hasattr(proto, 'gen_search') and
-            proto.HasField('gen_search')  # type: ignore[arg-type]
-        ):
-            # pylint: disable-next=import-outside-toplevel
-            from .generative_search import GenerativeSearchTool
-
-            return GenerativeSearchTool._from_proto(
-                proto=proto.gen_search,
-                sdk=sdk
-            )
-
         raise NotImplementedError(
-            'tools other then search_index, function and gen_search are not supported in this SDK version'
+            'tools other than function are not supported in this SDK version'
         )
 
     def _to_json(self) -> JsonObject:

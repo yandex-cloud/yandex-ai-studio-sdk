@@ -8,7 +8,6 @@ from yandex.cloud.searchapi.v2.gen_search_service_pb2 import GenSearchRequest, G
 from yandex.cloud.searchapi.v2.gen_search_service_pb2_grpc import GenSearchServiceStub
 
 from yandex_ai_studio_sdk._logging import get_logger
-from yandex_ai_studio_sdk._tools.generative_search import GenerativeSearchTool
 from yandex_ai_studio_sdk._types.misc import UNDEFINED, UndefinedOr
 from yandex_ai_studio_sdk._types.model import ModelSyncMixin
 from yandex_ai_studio_sdk._types.string import SmartStringSequence
@@ -151,28 +150,6 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
                 return GenerativeSearchResult._from_proto(proto=response, sdk=self._sdk)
 
         raise RuntimeError("call returned less then one result")
-
-    def as_tool(self, description: str) -> GenerativeSearchTool:
-        """
-        Converts generative search instance to :py:class:`~.GenerativeSearchTool` object
-        which is eligible to use as tools in LLMs/Assistants.
-
-        :param description: description of tool instance which also instructs model when to call it.
-        """
-        c = self.config
-        if c.fix_misspell is not None:
-            raise ValueError("Option fix_misspell doest not supported in GenSearchTool")
-
-        return GenerativeSearchTool(
-            description=description,
-            enable_nrfm_docs=c.enable_nrfm_docs,
-            search_filters=c.search_filters,
-            fix_misspell=None,
-            host=c.host,
-            site=c.site,
-            url=c.url,
-        )
-
 
 @doc_from(BaseGenerativeSearch)
 class AsyncGenerativeSearch(BaseGenerativeSearch):
