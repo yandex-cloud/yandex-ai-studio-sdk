@@ -15,16 +15,20 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
 - [**Chat**](https://aistudio.yandex.ru/docs/ai-studio/concepts/api#openai)
   - OpenAI‑compatible chat API (`sdk.chat`) designed to work seamlessly with the rest of the Yandex AI Studio SDK.
   - Send and receive messages, stream responses, and work with tool calls in a unified way.
+  - OpenAI‑compatible text embeddings endpoint (`sdk.chat.text_embeddings`).
 - [**Files**](https://aistudio.yandex.ru/docs/ai-studio/concepts/assistant/files)
   - Upload, download, list and delete files stored in Yandex Cloud AI Studio.
 - [**Image generation**](https://aistudio.yandex.ru/docs/ai-studio/operations/generation/yandexart-request)
   - Generate images via YandexART models.
+- [**Vision OCR**](https://aistudio.yandex.ru/docs/vision/concepts/ocr/)
+  - Recognize text in images and PDFs (JPEG, PNG, PDF).
 - [**Text embeddings**](https://aistudio.yandex.ru/docs/ai-studio/concepts/embeddings)
   - Compute dense vector embeddings for arbitrary text.
 - [**Text classifiers**](https://aistudio.yandex.ru/docs/ai-studio/concepts/classifier/)
   - Run multi‑class, multi‑label and binary classifiers.
 - [**Yandex Search API**](https://aistudio.yandex.ru/docs/search-api/concepts/index)
   - Generative, web, image and by image search.
+  - [Wordstat](https://aistudio.yandex.ru/docs/ru/search-api/concepts/wordstat.html) keyword statistics: query volume trends, top queries, regional and device distribution.
 - [**Search indexes**](https://aistudio.yandex.ru/docs/ai-studio/concepts/assistant/search-index)
   - Create, update, delete and query text, vector and hybrid search indexes.
 
