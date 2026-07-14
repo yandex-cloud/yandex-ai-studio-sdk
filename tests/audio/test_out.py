@@ -15,7 +15,7 @@ np = pytest.importorskip('numpy')
 # so the module is mocked out entirely
 sys.modules.setdefault('sounddevice', MagicMock())
 
-from yandex_ai_studio_sdk._experimental.audio.out import AsyncAudioOut  # noqa: E402
+from yandex_ai_studio_sdk._experimental.audio.out import AsyncAudioOut  # noqa: E402  # pylint: disable=wrong-import-position
 
 SAMPLERATE = 44100
 BLOCKSIZE = 100
