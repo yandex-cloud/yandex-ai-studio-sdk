@@ -2,39 +2,49 @@
 from __future__ import annotations
 
 import asyncio
+import sys
+from unittest.mock import MagicMock
 
 import pytest
+import pytest_asyncio
 
 np = pytest.importorskip('numpy')
-pytest.importorskip('sounddevice')
+
+# sounddevice needs the PortAudio system library even at import time and CI has
+# no audio devices; the tests below drive the queue and the callback directly,
+# so the module is mocked out entirely
+sys.modules.setdefault('sounddevice', MagicMock())
 
 from yandex_ai_studio_sdk._experimental.audio.out import AsyncAudioOut  # noqa: E402
 
+SAMPLERATE = 44100
+BLOCKSIZE = 100
 
-def make_out(samplerate: int = 44100, blocksize: int = 100) -> AsyncAudioOut:
+
+@pytest_asyncio.fixture(name='out')
+async def out_fixture() -> AsyncAudioOut:
     """AsyncAudioOut with the queue set up manually: no real audio device needed."""
-    out = AsyncAudioOut(samplerate=samplerate, blocksize=blocksize)
+    out = AsyncAudioOut(samplerate=SAMPLERATE, blocksize=BLOCKSIZE)
     out._loop = asyncio.get_running_loop()
     out._queue = asyncio.Queue()
     return out
 
 
-def drain_one_block(out: AsyncAudioOut, blocksize: int = 100) -> None:
+def drain_one_block(out: AsyncAudioOut) -> None:
     """Simulate the PortAudio callback consuming one block from the queue."""
-    outdata = np.zeros((blocksize, 1), dtype='int16')
-    out._callback(outdata, blocksize, None, None)
+    outdata = np.zeros((BLOCKSIZE, 1), dtype='int16')
+    out._callback(outdata, BLOCKSIZE, None, None)
 
 
 @pytest.mark.asyncio
-async def test_played_ms_counts_only_played_payload():
-    out = make_out()
+async def test_played_ms_counts_only_played_payload(out):
     # 3 blocks of 100 samples; 100 samples at 44100 Hz int16 = 200 bytes
     await out.write(b'\x01\x02' * 300)
-    assert out.written_ms == pytest.approx(300 / 44100 * 1000)
+    assert out.written_ms == pytest.approx(300 / SAMPLERATE * 1000)
     assert out.played_ms == 0
 
     drain_one_block(out)
-    assert out.played_ms == pytest.approx(100 / 44100 * 1000)
+    assert out.played_ms == pytest.approx(100 / SAMPLERATE * 1000)
 
     drain_one_block(out)
     drain_one_block(out)
@@ -46,24 +56,22 @@ async def test_played_ms_counts_only_played_payload():
 
 
 @pytest.mark.asyncio
-async def test_padding_silence_is_not_counted():
-    out = make_out()
+async def test_padding_silence_is_not_counted(out):
     # 150 samples: one full block and one half-filled block padded with silence
     await out.write(b'\x01\x02' * 150)
 
     drain_one_block(out)
     drain_one_block(out)
-    assert out.played_ms == pytest.approx(150 / 44100 * 1000)
+    assert out.played_ms == pytest.approx(150 / SAMPLERATE * 1000)
 
 
 @pytest.mark.asyncio
-async def test_clear_returns_played_and_resets():
-    out = make_out()
+async def test_clear_returns_played_and_resets(out):
     await out.write(b'\x01\x02' * 300)
     drain_one_block(out)
 
     played = await out.clear()
-    assert played == pytest.approx(100 / 44100 * 1000)
+    assert played == pytest.approx(100 / SAMPLERATE * 1000)
     assert out.played_ms == 0
     assert out.written_ms == 0
     assert out.queue_size == 0
@@ -71,4 +79,4 @@ async def test_clear_returns_played_and_resets():
     # writing after clear starts a fresh count
     await out.write(b'\x01\x02' * 100)
     drain_one_block(out)
-    assert out.played_ms == pytest.approx(100 / 44100 * 1000)
+    assert out.played_ms == pytest.approx(100 / SAMPLERATE * 1000)
