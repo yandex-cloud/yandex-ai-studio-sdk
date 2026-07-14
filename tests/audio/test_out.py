@@ -2,32 +2,42 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import sys
-from unittest.mock import MagicMock
+from typing import TYPE_CHECKING, AsyncIterator
+from unittest import mock
 
 import pytest
 import pytest_asyncio
 
 np = pytest.importorskip('numpy')
 
-# sounddevice needs the PortAudio system library even at import time and CI has
-# no audio devices; the tests below drive the queue and the callback directly,
-# so the module is mocked out entirely
-sys.modules.setdefault('sounddevice', MagicMock())
+if TYPE_CHECKING:
+    from yandex_ai_studio_sdk._experimental.audio.out import AsyncAudioOut
 
-from yandex_ai_studio_sdk._experimental.audio.out import AsyncAudioOut  # noqa: E402  # pylint: disable=wrong-import-position
+OUT_MODULE = 'yandex_ai_studio_sdk._experimental.audio.out'
 
 SAMPLERATE = 44100
 BLOCKSIZE = 100
 
 
 @pytest_asyncio.fixture(name='out')
-async def out_fixture() -> AsyncAudioOut:
-    """AsyncAudioOut with the queue set up manually: no real audio device needed."""
-    out = AsyncAudioOut(samplerate=SAMPLERATE, blocksize=BLOCKSIZE)
-    out._loop = asyncio.get_running_loop()
-    out._queue = asyncio.Queue()
-    return out
+async def out_fixture() -> AsyncIterator[AsyncAudioOut]:
+    """AsyncAudioOut with mocked sounddevice and a manually set up queue.
+
+    sounddevice needs the PortAudio system library even at import time and CI
+    has no audio devices; the tests below drive the queue and the callback
+    directly. The mock is scoped to the fixture and the cached module is
+    dropped afterwards, so nothing leaks into other test files.
+    """
+    sys.modules.pop(OUT_MODULE, None)
+    with mock.patch.dict(sys.modules, {'sounddevice': mock.MagicMock()}):
+        out_module = importlib.import_module(OUT_MODULE)
+        audio_out = out_module.AsyncAudioOut(samplerate=SAMPLERATE, blocksize=BLOCKSIZE)
+        audio_out._loop = asyncio.get_running_loop()
+        audio_out._queue = asyncio.Queue()
+        yield audio_out
+    sys.modules.pop(OUT_MODULE, None)
 
 
 def drain_one_block(out: AsyncAudioOut) -> None:
