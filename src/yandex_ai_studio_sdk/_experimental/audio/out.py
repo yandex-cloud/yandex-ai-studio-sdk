@@ -6,6 +6,13 @@ To use it: ``pip install sounddevice numpy``
 At Ubuntu also: ``sudo apt install libportaudio2``
 At Windows and MacOS PortAudio will be installed automagically.
 
+AsyncAudioOut tracks playback progress: ``played_ms`` is the duration of audio
+actually handed to the output device (padding silence excluded), ``written_ms``
+is the duration written so far. ``clear()`` drops the queued tail and returns
+the played duration. This makes honest barge-in handling possible in realtime
+voice agents: on interruption the caller knows exactly how much of the response
+the user heard (e.g. for ``conversation.item.truncate`` in the Realtime API).
+
 NB: AsyncAudioOut is not threadsafe!
 """
 
@@ -16,13 +23,14 @@ import types
 from typing import Any
 
 import numpy as np
-import sounddevice as sd
 from typing_extensions import Self
 
 try:
-    from .utils import choose_audio_device
-except ImportError:
-    from utils import choose_audio_device  # type: ignore[no-redef,import-not-found,attr-defined]
+    import sounddevice as sd
+except (ImportError, OSError):  # sounddevice also needs the PortAudio system library
+    # the module stays importable without sounddevice: it is only required
+    # to actually open the output stream
+    sd = None  # type: ignore[assignment]
 
 
 OUT_RATE = 44100
@@ -48,23 +56,45 @@ class AsyncAudioOut:
 
         self._stopped = asyncio.Event()
         self._loop: asyncio.AbstractEventLoop | None = None
-        self._queue: asyncio.Queue[np.ndarray | None] | None = None
+        self._queue: asyncio.Queue[tuple[np.ndarray, int] | None] | None = None
         self._stream: sd.OutputStream | None = None
         self._write_lock = asyncio.Lock()
         self._start_lock = asyncio.Lock()
+        # payload bytes only, padding silence excluded
+        self._played_bytes = 0
+        self._written_bytes = 0
 
     @property
     def queue_size(self) -> int:
         assert self._queue
         return self._queue.qsize()
 
+    @property
+    def played_ms(self) -> float:
+        """Duration of audio actually handed to the output device since open/last clear()."""
+        return self._bytes_to_ms(self._played_bytes)
+
+    @property
+    def written_ms(self) -> float:
+        """Duration of audio written via write() since open/last clear()."""
+        return self._bytes_to_ms(self._written_bytes)
+
+    def _bytes_to_ms(self, size: int) -> float:
+        return size / 2 / self._samplerate * 1000
+
     async def __aenter__(self) -> Self:
+        if sd is None:
+            raise RuntimeError(
+                'sounddevice is not available; see the module docstring for installation notes'
+            )
         async with self._start_lock:
             if self._loop:
                 raise RuntimeError('cannot use AsyncAudioOut simultaneously')
 
             self._loop = asyncio.get_running_loop()
             self._queue = asyncio.Queue(MAX_QUEUE_SIZE)
+            self._played_bytes = 0
+            self._written_bytes = 0
             self._stream = sd.OutputStream(
                 samplerate=self._samplerate,
                 channels=1,
@@ -93,18 +123,29 @@ class AsyncAudioOut:
 
         assert self._loop
         try:
-            chunk = queue.get_nowait()
-            if chunk is None:
+            item = queue.get_nowait()
+            if item is None:
                 self._loop.call_soon_threadsafe(self._stopped.set)
                 return
 
+            chunk, payload_size = item
             outdata[:] = chunk
+            self._played_bytes += payload_size
         except asyncio.QueueEmpty:
             outdata.fill(0)
         return
 
-    async def clear(self):
+    async def clear(self) -> float:
+        """Drop queued audio and return how many ms were actually played.
+
+        Intended for barge-in: the return value is the exact duration the user
+        heard before the interruption.
+        """
+        played = self.played_ms
         self._queue = asyncio.Queue()
+        self._played_bytes = 0
+        self._written_bytes = 0
+        return played
 
     async def __aexit__(
         self,
@@ -148,15 +189,18 @@ class AsyncAudioOut:
                 end = min((payload_size, i + chunk_size))
                 chunk = pcm_16[i:end].ljust(chunk_size, b'\x00')
                 array = np.frombuffer(chunk, dtype=DTYPE)  # type: ignore[arg-type]
-                await queue.put(array.reshape(-1, 1))
+                await queue.put((array.reshape(-1, 1), end - i))
+            self._written_bytes += payload_size
 
 
 async def main() -> None:
     # pylint: disable=import-outside-toplevel
     try:
         from .microphone import AsyncMicrophone
+        from .utils import choose_audio_device
     except ImportError:
         from microphone import AsyncMicrophone  # type: ignore[no-redef,import-not-found,attr-defined]
+        from utils import choose_audio_device  # type: ignore[no-redef,import-not-found,attr-defined]
 
     mic_id = choose_audio_device('in')
     out_id = choose_audio_device('out')
