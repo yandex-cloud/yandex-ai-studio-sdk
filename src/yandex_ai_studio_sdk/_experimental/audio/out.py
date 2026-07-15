@@ -23,13 +23,14 @@ import types
 from typing import Any
 
 import numpy as np
-import sounddevice as sd
 from typing_extensions import Self
 
 try:
-    from .utils import choose_audio_device
-except ImportError:
-    from utils import choose_audio_device  # type: ignore[no-redef,import-not-found,attr-defined]
+    import sounddevice as sd
+except (ImportError, OSError):  # sounddevice also needs the PortAudio system library
+    # the module stays importable without sounddevice: it is only required
+    # to actually open the output stream
+    sd = None  # type: ignore[assignment]
 
 
 OUT_RATE = 44100
@@ -82,6 +83,10 @@ class AsyncAudioOut:
         return size / 2 / self._samplerate * 1000
 
     async def __aenter__(self) -> Self:
+        if sd is None:
+            raise RuntimeError(
+                'sounddevice is not available; see the module docstring for installation notes'
+            )
         async with self._start_lock:
             if self._loop:
                 raise RuntimeError('cannot use AsyncAudioOut simultaneously')
@@ -192,8 +197,10 @@ async def main() -> None:
     # pylint: disable=import-outside-toplevel
     try:
         from .microphone import AsyncMicrophone
+        from .utils import choose_audio_device
     except ImportError:
         from microphone import AsyncMicrophone  # type: ignore[no-redef,import-not-found,attr-defined]
+        from utils import choose_audio_device  # type: ignore[no-redef,import-not-found,attr-defined]
 
     mic_id = choose_audio_device('in')
     out_id = choose_audio_device('out')
