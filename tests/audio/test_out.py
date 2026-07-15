@@ -4,7 +4,8 @@ from __future__ import annotations
 import asyncio
 import importlib
 import sys
-from typing import TYPE_CHECKING, AsyncIterator
+from typing import TYPE_CHECKING
+from collections.abc import AsyncIterator
 from unittest import mock
 
 import pytest
