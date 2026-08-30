@@ -1,6 +1,6 @@
 """
 title: Yandex AI Studio Agents Integration for Open WebUI
-version: 0.1.0
+version: 0.1.2
 description: Integration with Yandex AI Studio Agents using Responses API with real-time status and streaming
 author: https://github.com/vhaldemar
 license: MIT
@@ -38,7 +38,7 @@ from pydantic import BaseModel, Field
 EventEmitterType = Callable[[dict], Awaitable[None]]
 T = TypeVar("T")
 
-THIS_PIPE_VERSION = "0.1.1"
+THIS_PIPE_VERSION = "0.1.2"
 PIPE_ORIGIN = (
     "https://github.com/yandex-cloud/yandex-ai-studio-sdk/tree/master/open-webui"
 )
@@ -365,6 +365,84 @@ class Pipe:
 
         return messages[::-1]
 
+    @staticmethod
+    def _get_message_text(message: dict) -> str:
+        """Extract text from Open WebUI and Responses API message formats."""
+
+        content = message.get('content', '')
+        if isinstance(content, str):
+            return content.strip()
+
+        if isinstance(content, dict):
+            text = content.get('text')
+            return text.strip() if isinstance(text, str) else ''
+
+        if not isinstance(content, list):
+            return ''
+
+        text_parts: list[str] = []
+        for part in content:
+            if isinstance(part, str):
+                text_parts.append(part)
+            elif isinstance(part, dict):
+                text = part.get('text')
+                if isinstance(text, str):
+                    text_parts.append(text)
+
+        return '\n'.join(text_parts).strip()
+
+    def _match_messages_with_files(
+        self,
+        responses_messages: list[dict],
+        stored_messages: list[dict],
+    ) -> list[tuple[dict, dict]]:
+        """Match stored file attachments to messages present in the request.
+
+        Open WebUI context compaction removes old messages and inserts a synthetic
+        summary system message. It can also expand structured assistant output into
+        several request messages, so list lengths and positions are not stable.
+        """
+
+        matches: list[tuple[dict, dict]] = []
+        response_cursor = len(responses_messages) - 1
+
+        for stored_index in range(len(stored_messages) - 1, -1, -1):
+            stored_message = stored_messages[stored_index]
+            stored_role = stored_message.get('role')
+            stored_text = self._get_message_text(stored_message)
+            matched_index: int | None = None
+
+            for response_index in range(response_cursor, -1, -1):
+                response_message = responses_messages[response_index]
+                if response_message.get('role') != stored_role:
+                    continue
+                if self._get_message_text(response_message) == stored_text:
+                    matched_index = response_index
+                    break
+
+            is_current_user_message = (
+                stored_index == len(stored_messages) - 1
+                and stored_role == 'user'
+            )
+            if matched_index is None and is_current_user_message:
+                # Inlet filters may modify the current user message text. The last
+                # user request still corresponds to metadata["user_message_id"].
+                for response_index in range(response_cursor, -1, -1):
+                    if responses_messages[response_index].get('role') == 'user':
+                        matched_index = response_index
+                        break
+
+            if matched_index is None:
+                # The message was compacted out or transformed beyond safe matching.
+                continue
+
+            response_cursor = matched_index - 1
+            if stored_message.get('files'):
+                matches.append((responses_messages[matched_index], stored_message))
+
+        matches.reverse()
+        return matches
+
     async def _upload_if_not_exists(
         self,
         client: AsyncOpenAI,
@@ -468,14 +546,9 @@ class Pipe:
 
         input_ = self._assert_not_none(responses_kwargs.get('input'), "input field must be present")
 
-        if len(input_) != len(full_message_list):
-            raise RuntimeError(
-                "Failed to join attached files to messages; "
-                "this logic could break in case of Open WebUI update; "
-                f"{self._error_string}"
-            )
+        message_matches = self._match_messages_with_files(input_, full_message_list)
 
-        for responses_message, full_message in zip(input_, full_message_list):
+        for responses_message, full_message in message_matches:
             if attached_files := full_message.get('files'):
                 file_ids = await self._get_file_ids(client, event_emitter, attached_files)
 
