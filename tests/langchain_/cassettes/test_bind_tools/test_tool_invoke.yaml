@@ -1,0 +1,36 @@
+interactions:
+- request:
+    body: '{"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","messages":[{"content":"What
+      is the weather in Moscow?","role":"user"}],"stream":false,"tools":[{"type":"function","function":{"name":"get_weather","description":"Get
+      the current weather","parameters":{"type":"object","properties":{"city":{"type":"string"}},"required":["city"]}}}]}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Host:
+      - llm.api.cloud.yandex.net
+      User-Agent:
+      - yandex-ai-studio-sdk/0.20.0 python/3.13
+    method: POST
+    uri: https://llm.api.cloud.yandex.net/v1/chat/completions
+  response:
+    body:
+      string: '{"id":"tool-call-test-01","object":"chat.completion","created":1774968400,"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_weather_01","type":"function","function":{"name":"get_weather","arguments":"{\"city\":\"Moscow\"}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":45,"completion_tokens":15,"total_tokens":60,"prompt_tokens_details":{"cached_tokens":0}}}
+
+        '
+    headers:
+      content-type:
+      - application/json
+      date:
+      - Tue, 22 Apr 2026 09:00:00 GMT
+      server:
+      - ycalb
+    status:
+      code: 200
+      message: OK
+version: 1

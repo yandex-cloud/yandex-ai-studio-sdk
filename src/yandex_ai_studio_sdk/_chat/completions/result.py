@@ -112,7 +112,7 @@ class ChatChoice(TextMessage, HaveToolCalls[ToolCallTypeT], JsonBased):
 
         message = data['message']
         role = message['role']
-        text = message['content']
+        text = message.get('content', '')
         reasoning_text = message.get('reasoning_content')
 
         tool_calls: HttpToolCallList | None = None
@@ -217,7 +217,7 @@ class ChatModelResult(TupleSequence[ChatChoice], BaseJsonResult, HaveToolCalls[T
         return cls(
             choices=choices,
             usage=usage,
-            created=datetime.datetime.utcfromtimestamp(data['created']),
+            created=datetime.datetime.fromtimestamp(data['created'], datetime.timezone.utc),
             model=data['model'],
             id=data['id']
         )
