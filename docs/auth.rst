@@ -1,7 +1,7 @@
 Authentication in the Yandex AI Studio SDK
 ==========================================
 
-Authentication methods classes
+Authentication method classes
 ------------------------------
 
 .. automodule:: yandex_ai_studio_sdk.auth

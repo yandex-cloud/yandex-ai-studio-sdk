@@ -26,7 +26,7 @@ class SpeechToTextConfig(BaseModelConfig):
     audio_format: EnumWithUnknownInput[AudioFormat]
 
     #: The name of the STT model to use for recognition.
-    #: Look for available model and versions
+    #: Look for available models and versions
     #: `in documentation <https://aistudio.yandex.ru/docs/speechkit/stt/models>`_.
     model: str | None = None
 
@@ -38,7 +38,7 @@ class SpeechToTextConfig(BaseModelConfig):
     #:
     #: * ``True`` for turning on text normalization with default parameters;
     #: * ``False`` for turning text normalization off;
-    #: * :py:class:`~.TextNormalization` instance for text normaliztion with non-default parameters;
+    #: * :py:class:`~.TextNormalization` instance for text normalization with non-default parameters;
     #: * Nothing for server default.
     text_normalization: TextNormalization | bool | None = None
 

@@ -35,7 +35,7 @@ from ._vision.domain import AsyncVisionDomain, BaseVisionDomain, VisionDomain
 
 
 class BaseSDK:
-    """The main class that needs to be instantiated to work with SDK."""
+    """The main class that needs to be instantiated to work with the SDK."""
     #: Domain for creating various tools for function calling
     tools: BaseTools
     #: Domain for working with models (inference and tuning)
@@ -77,15 +77,15 @@ class BaseSDK:
         enable_server_data_logging: UndefinedOr[bool] = UNDEFINED,
         verify: UndefinedOr[bool | PathLike] = UNDEFINED,
     ):
-        """Construct a new asynchronous sdk instance.
+        """Construct a new asynchronous SDK instance.
 
         :param folder_id: Yandex Cloud folder identifier which will be billed
-            for models usage. In case of default Undefined value,
+            for model usage. In case of default Undefined value,
             the parameter will be taken from the environment variable ``YC_FOLDER_ID``.
         :type folder_id: str
         :param endpoint: domain:port pair for Yandex Cloud API or any other
-            grpc compatible target.
-            In case of ``None`` passed it turns off service endpoint discovery mechanism
+            gRPC-compatible target.
+            Passing ``None`` turns off the service endpoint discovery mechanism
             and requires ``service_map`` to be passed.
         :type endpoint: str
         :param auth: string with API Key, IAM token or one of yandex_ai_studio_sdk.auth objects;
@@ -95,12 +95,12 @@ class BaseSDK:
         :param service_map: a way to redefine endpoints for one or more cloud subservices
             with a format of dict ``{"service_name": "service_address"}``.
         :type service_map: Dict[str, str]
-        :param enable_server_data_logging: when passed bool, we will add
-            `x-data-logging-enabled: <value>` to all of requests, which will
-            enable or disable logging of user data on server side.
-            It will do something only on those parts of backends which supports
+        :param enable_server_data_logging: when passed a bool, we add
+            `x-data-logging-enabled: <value>` to all requests, which will
+            enable or disable logging of user data on the server side.
+            It will do something only on those parts of backends that support
             this option.
-        :param verify: SSL certificates (a.k.a CA bundle) used to verify the identity
+        :param verify: SSL certificates (a.k.a. a CA bundle) used to verify the identity
             of requested hosts. Either `True` (default CA bundle), a path to an SSL certificate file, or `False`
             (which will disable verification).
         :type verify: bool | pathlib.Path | str | os.PathLike

@@ -55,13 +55,13 @@ class TextToSpeechChunk:
 
 @dataclass(frozen=True)
 class TextToSpeechResult(BaseProtoModelResult[SynthesisResponse, RequestDetails[TextToSpeechConfig]]):
-    """A class representing result of a speech generation request.
+    """A class representing the result of a speech generation request.
 
-    In case of different run modes could contain one chunk of data or
+    Depending on the run mode, the result may contain one chunk of data or
     several data chunks.
-    Class provides identical interface for both cases.
+    The class provides an identical interface for both cases.
 
-    Also have a rich representation in Jupyter Notebooks.
+    It also has a rich representation in Jupyter notebooks.
 
     """
 

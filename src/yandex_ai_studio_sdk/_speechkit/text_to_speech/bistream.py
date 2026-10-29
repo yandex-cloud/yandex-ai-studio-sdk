@@ -30,8 +30,8 @@ class BaseTTSBidirectionalStream(
         str,
     ]
 ):
-    """Bidirectional SpeechKit TTS API which allows to write requests and read synthesized result
-    in realtime"""
+    """Bidirectional SpeechKit TTS API that lets you write requests and read synthesized results
+    in real time"""
 
     _stub_class = SynthesizerStub
     _result_class = TextToSpeechResult

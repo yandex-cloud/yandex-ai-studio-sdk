@@ -40,7 +40,7 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
     @override
     def configure(self) -> Self:  # type: ignore[override]
         """
-        Returns the new object, but actually do nothing.
+        Returns a new object without making any configuration changes.
         """
 
         return super().configure()
@@ -95,12 +95,12 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         timeout: float,
     ) -> Top:
         """
-        The method returns the last 30 days data about popular queries containing the
+        The method returns data from the last 30 days about popular queries containing the
         specified keyword and queries that are similar to the specified one.
 
         :param phrase: Keyword.
             The maximum string length in characters is 400.
-        :param num_phrases: Number of the phrases in the response.
+        :param num_phrases: Number of phrases in the response.
             Acceptable values are 1 to 2000, inclusive.
         :param regions: A list of regions or IDs of the regions a query was made from.
             The maximum number of elements is 100.
@@ -140,7 +140,7 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         timeout: float,
      ) -> Dynamics:
         """
-        The method returns the last 30 days data about popular queries containing the
+        The method returns data from the last 30 days about popular queries containing the
         specified keyword and queries that are similar to the specified one.
 
         :param phrase: Keyword.
@@ -148,10 +148,10 @@ class BaseWordstat(BaseModel[WordstatConfig, BaseWordstatResult], SynonymsMixin)
         :param period: The period of aggregation of the number of queries
         :param from_date: The start of the period data is requested for.
              :py:class:`datetime.date` and :py:class:`datetime.datetime` without
-             timezone, will be converted to timestamp with UTC timezone.
+             a time zone will be converted to a timestamp in the UTC time zone.
         :param to_date: The end of the period data is requested for.
              :py:class:`datetime.date` and :py:class:`datetime.datetime` without
-             timezone, will be converted to timestamp with UTC timezone.
+             a time zone will be converted to a timestamp in the UTC time zone.
         :param regions: A list of regions or IDs of the regions a query was made from.
             The maximum number of elements is 100.
         :param devices: A list of device types a query was made from.

@@ -34,7 +34,7 @@ class JsonSchemaResponseType(TypedDict):
     strict: NotRequired[bool]
     name: NotRequired[str]
 
-#: Types availailable for response format
+#: Types available for response format
 ResponseType: TypeAlias = Union[StrResponseType, JsonSchemaResponseType, type]
 #: Types available for function call parameters
 ParametersType: TypeAlias = Union[JsonSchemaType, type]

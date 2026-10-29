@@ -47,11 +47,11 @@ class ProtoBasedWithBoolDefault(ProtoSerializable[ProtoMessageTypeT]):
 
 @dataclass(frozen=True)
 class TextNormalization(ProtoBasedWithBoolDefault[ProtoTextNormalizationOptions]):
-    """Class which encapsulates `text normaliztion options <https://aistudio.yandex.ru/docs/speechkit/stt/normalization>`_.
+    """Class which encapsulates `text normalization options <https://aistudio.yandex.ru/docs/speechkit/stt/normalization>`_.
 
-    Usage of object of this class itself in speech to text configuration is turning on normalization.
-    Options of this class have different defaults at backend, i.e. some options could turn on the feature
-    and others could turn it off.
+    Using an instance of this class in the speech-to-text configuration turns on normalization.
+    The options of this class have different defaults on the backend, i.e. some options can turn on a feature
+    and others can turn it off.
 
     >> TextNormalization()
     TextNormalization()
@@ -98,17 +98,17 @@ class EndOfUtteranceSensitivity(ProtoBasedEnum):
 
     #: Default and more conservative EOU detector.
     DEFAULT = ProtoDefaultEouClassifier.EouSensitivity.DEFAULT
-    #: A high-sensitive and fast EOU detector, which may produce more false positives.
+    #: A highly sensitive and fast EOU detector, which may produce more false positives.
     HIGH = ProtoDefaultEouClassifier.EouSensitivity.HIGH
 
 
 
 @dataclass(frozen=True)
 class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifier]):
-    """Class which encapsulates settings
+    """Class which encapsulates settings for an
     `end of utterance classifier <https://aistudio.yandex.ru/docs/speechkit/stt/eou>`_.
 
-    Usage this class object in speech to text configuration turning on
+    Using an instance of this class in the speech-to-text configuration turns on
     default end-of-utterance classification.
 
     >>> EndOfUtteranceClassifier()
@@ -127,7 +127,7 @@ class EndOfUtteranceClassifier(ProtoBasedWithBoolDefault[ProtoDefaultEouClassifi
     #: Hint for max pause between words.
     #: SpeechKit EOU detector could use this information to adjust the speed of the EOU detection.
     #: For example, a long pause between words will help distinguish between
-    #: the end of utterance from slow speech like ``One <long pause> two <long pause> three``.
+    #: the end of an utterance and slow speech like ``One <long pause> two <long pause> three``.
     #: A short pause can be helpful if the speaker is speaking quickly
     #: and does not emphasize pauses between sentences.
     max_pause_between_words_hint_ms: UndefinedOr[int] = UNDEFINED
@@ -209,7 +209,7 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
         >>> RecognitionClassifier('insult', 'on_final')
         RecognitionClassifier(name='insult', triggers=(<RecognitionTriggerType.ON_FINAL: 2>,))
 
-    Or any iterable of strings to declare few triggers:
+    Or pass any iterable of strings to declare several triggers:
 
         >>> RecognitionClassifier('insult', ['on_final', 'on_partial'])
         RecognitionClassifier(..., triggers=(...ON_FINAL: 2>, <...ON_PARTIAL: 3>))
@@ -219,12 +219,12 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
         >>> RecognitionClassifier.on_utterance('insult')
         RecognitionClassifier(name='insult', triggers=(<RecognitionTriggerType.ON_UTTERANCE: 1>,))
 
-    There are special `RecognitionClassifier.WellKnown` enum with well-known classifier names:
+    There is a special `RecognitionClassifier.WellKnown` enum with well-known classifier names:
 
         >>> RecognitionClassifier(RecognitionClassifier.WellKnown.gender, 'on_final')
         RecognitionClassifier(name=<WellKnownRecognitionClassifiers.gender: 'gender'>, ...)
 
-    On unknown trigger names there will be exception raised:
+    An exception is raised for unknown trigger names:
 
         >>> RecognitionClassifier('insult', ['on_something'])
         Traceback (most recent call last):
@@ -273,17 +273,17 @@ class RecognitionClassifier(ProtoSerializable[ProtoRecognitionClassifier]):
 
     @classmethod
     def on_utterance(cls, name: str) -> Self:
-        """Alternative constructor to use onle 'on_utterance' trigger"""
+        """Alternative constructor to use only 'on_utterance' trigger"""
         return cls(name=name, triggers='on_utterance')
 
     @classmethod
     def on_final(cls, name: str) -> Self:
-        """Alternative constructor to use onle 'on_final' trigger"""
+        """Alternative constructor to use only 'on_final' trigger"""
         return cls(name=name, triggers='on_final')
 
     @classmethod
     def on_partial(cls, name: str) -> Self:
-        """Alternative constructor to use onle 'on_partial' trigger"""
+        """Alternative constructor to use only 'on_partial' trigger"""
         return cls(name=name, triggers='on_partial')
 
 
@@ -317,7 +317,7 @@ class SpeechAnalysis(ProtoSerializable[ProtoSpeechAnalysisOptions]):
 
 @dataclass
 class LLMPostProcessingInstruction(ProtoSerializable[SummarizationProperty]):
-    """Class for encapsulating exactly one post processing settings."""
+    """Class for encapsulating exactly one postprocessing instruction."""
 
     #: Instruction for model.
     instruction: str
@@ -345,23 +345,23 @@ class LLMPostProcessingInstruction(ProtoSerializable[SummarizationProperty]):
 @dataclass(frozen=True)
 class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
     """Class for encapsulating
-    `transcription llm post processing settings
+    `transcription LLM postprocessing settings
     <https://aistudio.yandex.ru/docs/speechkit/stt/llm-results>`_
 
-    You could pass a full model uri:
+    You could pass a full model URI:
 
         >>> llm_post_processor = LLMPostProcessing('gpt://<folder_id>/yandexgt/latest')
 
-    You could use model name, in this case model uri will be built using configurated folder_id:
+    You can use a model name; in this case, the model URI is built using the configured folder_id:
 
         >>> llm_post_processor = LLMPostProcessing('yandexgt')
 
-    You could also pass a model version, which have 'latest' by default:
+    You could also pass a model version, which defaults to 'latest':
 
         >>> llm_post_processor = LLMPostProcessing('yandexgt', model_version='latest')
 
-    After post processor object creation you should add some instructions into it
-    by using ``.with_instruction`` method (which is not mutates the object, but creates a copy):
+    After creating a postprocessor object, add instructions to it
+    by using the ``.with_instruction`` method (which does not mutate the object, but creates a copy):
 
         >>> llm_post_processor = llm_post_processor.with_instruction("Make a short review")
         >>> llm_post_processor = llm_post_processor.with_instruction(
@@ -369,14 +369,14 @@ class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
         ...     response_format="json"
         ... )
 
-    Created object will looks like this:
+    The created object looks like this:
 
         >>> llm_post_processor
         LLMPostProcessing(model_name='yandexgt', model_version='latest', ...)
         >>> llm_post_processor
         LLMPostProcessing(..., instructions=(LLMPostProcessingInstruction(...), LLMPostProcessingInstruction(...)))
 
-    You also can use pydantic model or pydantic dataclass as response format.
+    You can also use a Pydantic model or Pydantic dataclass as the response format.
 
     """
 

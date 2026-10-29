@@ -70,17 +70,17 @@ class EnumWithUnknownType(EnumMeta):
 
 class ProtoBasedEnum(IntEnum, metaclass=EnumWithUnknownType):
     """
-    The ideas behind this special enums is following:
-    1) Its descentants mirrors __proto_enum_type__
-       with lack of metainformation and autocompletion for users;
-    2) Final enum is applicable for processing user's input:
-       user could pass a string, integer or enum value to our interface
-       and it will be verified and unambiguously translated into enum value,
-       which is suitable for gprc/http request using.
-    3) In case of ``__proto_enum_type__`` class will be updated in protobuf files,
-       we wants to give a way to live without an SDK upgrade to users:
-       if there are will appear a new ``ProtoEnum`` protobuf enum value,
-       users will be able to pass a string value in our interface as a workaround
+    The ideas behind these special enums are as follows:
+    1) Its descendants mirror __proto_enum_type__
+       without metadata or autocompletion for users;
+    2) The resulting enum can process user input:
+       a user can pass a string, integer, or enum value to our interface
+       and it will be verified and unambiguously translated into an enum value,
+       which is suitable for gRPC/HTTP requests.
+    3) If the ``__proto_enum_type__`` class is updated in the protobuf files,
+       we want users to be able to continue without an SDK upgrade:
+       if a new ``ProtoEnum`` protobuf enum value appears,
+       users will be able to pass a string value to our interface as a workaround
        and it will be transformed to
        ``Enum.Unknown('new_enum_value_name', 'new_enum_value')`` value
        which is suitable to use in our grpc/http requests.
@@ -157,8 +157,8 @@ class ProtoBasedEnum(IntEnum, metaclass=EnumWithUnknownType):
         )
         return tuple(name for name in names if name != cls.__unspecified_name__)
 
-#: Enum type which is have a special Unknown value for values which is present
-#: in grpc api but not described in our python code
+#: Enum type which has a special Unknown value for values that are present
+#: in the gRPC API but not described in our Python code
 EnumWithUnknownAlias = Union[ProtoBasedEnumTypeT, UnknownEnumValue[ProtoBasedEnumTypeT]]
 EnumWithUnknownInput = Union[EnumWithUnknownAlias[ProtoBasedEnumTypeT], str, int]
 UndefinedOrEnumWithUnknownInput = Union[EnumWithUnknownInput[ProtoBasedEnumTypeT], Undefined]

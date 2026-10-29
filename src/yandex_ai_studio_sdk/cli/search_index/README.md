@@ -4,12 +4,12 @@ Command-line tool for creating Yandex AI Studio search indexes from various file
 
 - Local files
 - Atlassian Confluence
-- Amazon S3-compatible object storages such as Yandex Object Storage
+- Amazon S3-compatible object storage services such as Yandex Object Storage
 - MediaWiki instances
 
 ## Installation
 
-Install the base package and optional extras based on required data sources.
+Install the base package and optional extras based on the required data sources.
 
 ```bash
 # Base installation with local files and Confluence support
@@ -120,21 +120,21 @@ The page URL must contain a numeric page ID:
 > **Unsupported**: URLs in `/display/SPACE/Page+Title` format.
 
 To find the page ID:
-- **Cloud**: Extract from URL after `/pages/`.
-- **On-premise**: Open page → click `...` → *Page Information* → check URL for `?pageId=NNNNNN`.
+- **Cloud**: Extract it from the URL after `/pages/`.
+- **On-premise**: Open the page → click `...` → *Page Information* → check the URL for `?pageId=NNNNNN`.
 
 ### Options
 
 | Option                     | Environment Variable       | Default | Description |
 |----------------------------|----------------------------|---------|-------------|
 | `--page-url URL`           | —                          | —       | Page URL (required, repeatable) |
-| `--base-url URL`           | —                          | auto    | Confluence base URL (auto-detected from first `--page-url`) |
+| `--base-url URL`           | —                          | auto    | Confluence base URL (auto-detected from the first `--page-url`) |
 | `--username TEXT`          | `CONFLUENCE_USERNAME`      | —       | Email address (required for private instances) |
 | `--api-token TEXT`         | `CONFLUENCE_API_TOKEN`     | —       | API token (required for private instances) |
 | `--export-format TEXT`     | —                          | `pdf`   | Export format: `pdf`, `html`, or `markdown` |
 | `--no-verify`              | —                          | `false` | Disable SSL certificate verification |
 
-> **Note**: For Confluence Cloud, use email and API token. For on-premise, use local credentials unless otherwise configured.
+> **Note**: For Confluence Cloud, use an email address and an API token. For on-premise, use local credentials unless otherwise configured.
 
 ### Examples
 
@@ -160,11 +160,11 @@ yandex-ai-studio vector-stores confluence \
   --export-format html
 ```
 
-## Amazon S3-compatible object storages
+## Amazon S3-compatible object storage services
 
 The `s3` subcommand creates a search index from an S3-compatible bucket.
 
-> **Requirement**: Install with `cli-s3` extra.
+> **Requirement**: Install with the `cli-s3` extra.
 
 ```bash
 yandex-ai-studio vector-stores s3 [OPTIONS] BUCKET
@@ -207,7 +207,7 @@ yandex-ai-studio vector-stores s3 my-bucket \
 
 The `wiki` subcommand creates a search index from MediaWiki pages (e.g., Wikipedia).
 
-> **Requirement**: Install with `cli-wiki` extra.
+> **Requirement**: Install with the `cli-wiki` extra.
 
 ```bash
 yandex-ai-studio vector-stores wiki [OPTIONS] PAGE_URLS...

@@ -46,7 +46,7 @@ class TextClassifiersModelTuneParams(BaseTuningParams):
                 f'classification_type must be {ClassificationTuningTypes}, got {self.classification_type}'
             )
 
-    #: the type of classification to be used (should be one of 'multilabel', 'multiclass', or 'binary'.)
+    #: the type of classification to be used (should be one of 'multilabel', 'multiclass', or 'binary').
     classification_type: ClassificationTuningTypes | None = None
     #: random seed for reproducibility
     seed: int | None = None

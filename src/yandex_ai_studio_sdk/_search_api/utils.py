@@ -36,7 +36,7 @@ def get_subelement_text(subroot: ET.Element | None, name: str) -> str | None:
     """:meta private:
 
     Get text from some named subelement of given subroot;
-    In case of lackage of such subelement returns None.
+    Returns None if the subelement is absent.
     """
 
     if subroot is None:

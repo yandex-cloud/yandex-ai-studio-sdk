@@ -31,7 +31,7 @@ RetrierReturnType: TypeAlias = AsyncIterator[RetrierYieldType]
 
 
 class RetryKind(Enum):
-    """Enum used in "client" code for marking retry policy for specific for each distinct call."""
+    """Enum used in client code to select a retry policy for each distinct call."""
 
     NONE = 1  # This call must be not retried
     SINGLE = 2  # This call will be retried as a single entity

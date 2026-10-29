@@ -39,7 +39,7 @@ class BaseWebSearch(
     ModelAsyncMixin[WebSearchConfig, WebSearchResultTypeT, OperationTypeT],
 ):
     """Web search class which provides concrete methods for working with web search
-    and encapsulates search setting.
+    and encapsulates search settings.
     """
 
     _config_type = WebSearchConfig
@@ -67,7 +67,7 @@ class BaseWebSearch(
         metadata: UndefinedOr[Mapping[str, str]] | None = UNDEFINED,
     ) -> Self:
         """
-        Returns the new object with config fields overrode by passed values.
+        Returns a new object with configuration fields overridden by the provided values.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -193,10 +193,10 @@ class BaseWebSearch(
         page: int = 0,
         timeout: float = 60,
     ):
-        """Run a search query with given ``query`` and search settings of this web search
+        """Run a search query with the given ``query`` and search settings of this web search
         object.
 
-        To change initial search settings use ``.configure`` method:
+        To change the initial search settings, use the ``.configure`` method:
 
         >>> search = sdk.search_api.web(search_type='BE')
         >>> search = search.configure(search_type='RU')
@@ -264,10 +264,10 @@ class BaseWebSearch(
         page: int = 0,
         timeout: float = 60
     ):
-        """Run a deferred search query with given ``query`` and search settings of this
+        """Run a deferred search query with the given ``query`` and search settings of this
         web search object.
 
-        To change initial search settings use ``.configure`` method:
+        To change the initial search settings, use the ``.configure`` method:
 
         >>> search = sdk.search_api.web(search_type='BE')
         >>> search = search.configure(search_type='RU')

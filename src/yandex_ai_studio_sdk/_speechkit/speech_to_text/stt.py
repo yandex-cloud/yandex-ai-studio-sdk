@@ -50,7 +50,7 @@ class BaseSpeechToText(
     SynonymsMixin
 ):
     """Speech To Text class which provides concrete methods for working with SpeechKit STT API
-    and incapsulates speech recognition settings.
+    and encapsulates speech recognition settings.
     """
 
     _config_type = SpeechToTextConfig
@@ -78,9 +78,9 @@ class BaseSpeechToText(
         llm_post_process: UndefinedOr[LLMPostProcessing] | None = UNDEFINED,
     ) -> Self:
         """
-        Returns the new object with config fields overrode by passed values.
+        Returns a new object with configuration fields overridden by the provided values.
 
-        To return set value back to default, pass `None` value.
+        To reset a value to its default, pass `None`.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -203,16 +203,16 @@ class BaseSpeechToText(
         *,
         timeout: float = 60,
     ) -> SpeechToTextResult:
-        """Run a speech recognition for given `input` and return joined result.
+        """Run speech recognition for the the given `input` and return the combined result.
 
-        To change initial stt settings use ``.configure`` method:
+        To change the initial STT settings, use the ``.configure`` method:
 
         >>> stt = sdk.speechkit.speech_to_text(audio_format='mp3')
         >>> stt = stt.configure(audio_format='WAV')
 
         :param input:
-            In case of bytes input, input treated as an audio-data.
-            In case of bytes/int sequence, input treated as chunks of audio data with integers for silence chunks.
+            For bytes input, the input is treated as audio data.
+            For a sequence of bytes and integers, the input is treated as chunks of audio data with integers for silence chunks.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: recognition result
         """
@@ -257,17 +257,17 @@ class BaseSpeechToText(
         *,
         timeout: float = 60,
     ) -> OperationTypeT:
-        """Run a speech recognition for given `input` and return operation object
+        """Run speech recognition for the the given `input` and return an operation object
         to track progress of recognition and result retrieval.
 
-        To change initial stt settings use ``.configure`` method:
+        To change the initial STT settings, use the ``.configure`` method:
 
         >>> stt = sdk.speechkit.speech_to_text(audio_format='mp3')
         >>> stt = stt.configure(audio_format='WAV')
 
         :param input:
-            In case of bytes input, input treated as an audio-data.
-            In case of str input, input treated as a S3 url.
+            For bytes input, the input is treated as audio data.
+            For str input, the input is treated as an S3 URL.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: Operation object.
         """
@@ -307,16 +307,16 @@ class BaseSpeechToText(
         *,
         timeout: float = 60,
     ) -> AsyncIterator[SpeechToTextStreamingEvent]:
-        """Run a speech recognition for given `input`; method have an iterator return.
+        """Run speech recognition for the given `input`; the method returns an iterator.
 
-        To change initial stt settings use ``.configure`` method:
+        To change the initial STT settings, use the ``.configure`` method:
 
         >>> stt = sdk.speechkit.speech_to_text(audio_format='mp3')
         >>> stt = stt.configure(audio_format='WAV')
 
         :param input:
-            In case of bytes input, input treated as an audio-data.
-            In case of bytes/int sequence, input treated as chunks of audio data with integers for silence chunks.
+            For bytes input, the input is treated as audio data.
+            For a sequence of bytes and integers, the input is treated as chunks of audio data with integers for silence chunks.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
         :returns: recognition result
         """

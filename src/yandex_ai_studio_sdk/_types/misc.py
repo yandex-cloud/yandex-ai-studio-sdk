@@ -10,7 +10,7 @@ _D = TypeVar('_D')
 
 
 class Undefined:
-    """Class for making possible to differ None and not-passed default value.
+    """Class for distinguishing None from an omitted default value.
 
     Sentinel until PEP 0661.
     """

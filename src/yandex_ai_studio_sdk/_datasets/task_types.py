@@ -13,7 +13,7 @@ class KnownTaskType(str, Enum):
     """
     Enumeration of known task types.
 
-    It is not an exhaustive list of task types, there might be more of them.
+    This list of task types is not exhaustive.
     For details read the `documentation <https://aistudio.yandex.ru/docs/ai-studio/operations/resources/create-dataset#get-schema>`_.
     """
     #: task type for text-to-text generation

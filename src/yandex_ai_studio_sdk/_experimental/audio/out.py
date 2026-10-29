@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-Experimental module for async audio data consumer;
+Experimental module providing an asynchronous audio data consumer.
 
 To use it: ``pip install sounddevice numpy``
-At Ubuntu also: ``sudo apt install libportaudio2``
-At Windows and MacOS PortAudio will be installed automagically.
+On Ubuntu, also run: ``sudo apt install libportaudio2``
+On Windows and macOS, PortAudio is installed automatically.
 
 AsyncAudioOut tracks playback progress: ``played_ms`` is the duration of audio
 actually handed to the output device (padding silence excluded), ``written_ms``
 is the duration written so far. ``clear()`` drops the queued tail and returns
-the played duration. This makes honest barge-in handling possible in realtime
+the played duration. This makes honest barge-in handling possible in real time
 voice agents: on interruption the caller knows exactly how much of the response
 the user heard (e.g. for ``conversation.item.truncate`` in the Realtime API).
 
-NB: AsyncAudioOut is not threadsafe!
+NB: AsyncAudioOut is not thread-safe!
 """
 
 from __future__ import annotations
@@ -71,12 +71,12 @@ class AsyncAudioOut:
 
     @property
     def played_ms(self) -> float:
-        """Duration of audio actually handed to the output device since open/last clear()."""
+        """Duration of audio actually handed to the output device since the stream was opened or clear() was last called."""
         return self._bytes_to_ms(self._played_bytes)
 
     @property
     def written_ms(self) -> float:
-        """Duration of audio written via write() since open/last clear()."""
+        """Duration of audio written via write() since the stream was opened or clear() was last called."""
         return self._bytes_to_ms(self._written_bytes)
 
     def _bytes_to_ms(self, size: int) -> float:

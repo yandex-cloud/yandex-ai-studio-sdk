@@ -9,14 +9,14 @@ from .wordstat import AsyncWordstat, Wordstat, WordstatTypeT
 
 
 class BaseWordstatFunction(BaseModelFunction[WordstatTypeT]):
-    """Wordstat function for creating wordstat object which provides
+    """Wordstat function for creating a Wordstat object which provides
     methods for invoking Wordstat service.
     """
 
     @override
     def __call__(self) -> WordstatTypeT:
         """
-        Creates Wordstat object which provides methods for invoking
+        Creates a Wordstat object which provides methods for invoking
         `Wordstat service <https://aistudio.yandex.ru/docs/search-api/concepts/wordstat>`_.
 
         """

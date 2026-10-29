@@ -12,7 +12,7 @@ from .generative import AsyncGenerativeSearch, GenerativeSearch, GenerativeSearc
 
 
 class BaseGenerativeSearchFunction(BaseModelFunction[GenerativeSearchTypeT]):
-    """Generative search function for creating search object which provides
+    """Generative search function for creating a search object which provides
     methods for invoking generative search.
     """
 
@@ -28,7 +28,7 @@ class BaseGenerativeSearchFunction(BaseModelFunction[GenerativeSearchTypeT]):
         search_filters: UndefinedOr[SmartFilterSequence] = UNDEFINED
     ) -> GenerativeSearchTypeT:
         """
-        Creates generative search object which provides methods for invoking generative search.
+        Creates a generative search object which provides methods for invoking generative search.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -36,14 +36,14 @@ class BaseGenerativeSearchFunction(BaseModelFunction[GenerativeSearchTypeT]):
 
         NB: All of the ``site``, ``host``, ``url`` parameters are mutually exclusive.
 
-        :param site: parameter for limiting search to specific location or list of sites.
-        :param host: parameter for limiting search to specific location or list of hosts.
-        :param url: parameter for limiting search to specific location or list of URLs.
-        :param fix_misspell: tells to backend to fix or not to fix misspels in queries.
-        :param enable_nrfm_docs: tells to backend to include or not to include pages,
-            which are not available via direct clicks from given sites/hosts/urls
-            to search result.
-        :param search_filters: allows to limit search results with additional filters.
+        :param site: parameter for limiting search to a specific site or list of sites.
+        :param host: parameter for limiting search to a specific host or list of hosts.
+        :param url: parameter for limiting search to a specific URL or list of URLs.
+        :param fix_misspell: whether the backend should correct misspellings in queries.
+        :param enable_nrfm_docs: whether the backend should include pages
+            that cannot be reached directly from the specified sites, hosts, or URLs
+            in the search results.
+        :param search_filters: limits search results using additional filters.
 
             >>> date_filter = {'date': '<20250101'}
             >>> format_filter = {'format': 'doc'}

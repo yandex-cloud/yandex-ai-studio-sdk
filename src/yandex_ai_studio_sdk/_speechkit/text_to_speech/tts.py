@@ -32,7 +32,7 @@ class BaseTextToSpeech(
     ModelSyncStreamMixin[TextToSpeechConfig, TextToSpeechResult],
 ):
     """Text to Speech class which provides concrete methods for working with SpeechKit TTS API
-    and encapsulates synthesis setting.
+    and encapsulates synthesis settings.
     """
 
     #: Link to :py:class:`yandex_ai_studio_sdk._speechkit.enums.AudioFormat` for more convenient access.
@@ -63,9 +63,9 @@ class BaseTextToSpeech(
         single_chunk_mode: UndefinedOr[bool] | None = UNDEFINED,
     ) -> Self:
         """
-        Returns the new object with config fields overrode by passed values.
+        Returns a new object with configuration fields overridden by the provided values.
 
-        To return set value back to default, pass `None` value.
+        To reset a value to its default, pass `None`.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -87,7 +87,7 @@ class BaseTextToSpeech(
         :param duration_ms: Limit audio duration to exact value.
         :param duration_min_ms: Limit the minimum audio duration.
         :param duration_max_ms: Limit the maximum audio duration.
-        :param single_chunk_mode: Automatically split long text to several utterances and bill accordingly.
+        :param single_chunk_mode: Automatically split long text into several utterances and bill accordingly.
             Some degradation in service quality is possible
 
         """
@@ -120,16 +120,16 @@ class BaseTextToSpeech(
         *,
         timeout: float = 60,
     ) -> TextToSpeechResult:
-        """Run a speech synthesis for given `input` and return joined result.
+        """Run speech synthesis for the the given `input` and return the combined result.
 
-        To change initial tts settings use ``.configure`` method:
+        To change the initial TTS settings, use the ``.configure`` method:
 
         >>> tts = sdk.speechkit.text_to_speech(audio_format='mp3')
         >>> tts = tts.configure(audio_format='WAV')
 
         :param input: Text to vocalize.
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds.
-        :returns: synthesis result; joined in case of >1 chunks in synthesis response.
+        :returns: Synthesis result; chunks are combined if the synthesis response contains more than one chunk.
         """
 
         chunks = [chunk async for chunk in self._run_impl(input=input, timeout=timeout)]
@@ -147,9 +147,9 @@ class BaseTextToSpeech(
         *,
         timeout: float = 60,
     ) -> AsyncIterator[TextToSpeechResult]:
-        """Run a speech synthesis for given text at `input`; method have an iterator return.
+        """Run speech synthesis for the text provided in `input`; the method returns an iterator.
 
-        To change initial tts settings use ``.configure`` method:
+        To change the initial TTS settings, use the ``.configure`` method:
 
         >>> tts = sdk.speechkit.text_to_speech(audio_format='mp3')
         >>> tts = tts.configure(audio_format='WAV')

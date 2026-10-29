@@ -12,8 +12,8 @@ from .tts import AsyncTextToSpeech, TextToSpeech, TextToSpeechTypeT
 
 
 class BaseTextToSpeechFunction(BaseModelFunction[TextToSpeechTypeT]):
-    """Text to Speech function for creating synthesis object which provides
-    methods for invoking voice synthesizing.
+    """Text to Speech function for creating a synthesis object which provides
+    methods for invoking voice synthesis.
     """
 
     @override
@@ -35,7 +35,7 @@ class BaseTextToSpeechFunction(BaseModelFunction[TextToSpeechTypeT]):
         single_chunk_mode: UndefinedOr[bool] = UNDEFINED,
     ) -> TextToSpeechTypeT:
         """
-        Creates TextToSpeech object with provides methods for voice synthesizing.
+        Creates a TextToSpeech object that provides methods for voice synthesis.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -57,7 +57,7 @@ class BaseTextToSpeechFunction(BaseModelFunction[TextToSpeechTypeT]):
         :param duration_ms: Limit audio duration to exact value.
         :param duration_min_ms: Limit the minimum audio duration.
         :param duration_max_ms: Limit the maximum audio duration
-        :param single_chunk_mode: Automatically split long text to several utterances and bill accordingly.
+        :param single_chunk_mode: Automatically split long text into several utterances and bill accordingly.
             Some degradation in service quality is possible
         """
 

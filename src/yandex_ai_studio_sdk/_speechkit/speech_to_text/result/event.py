@@ -47,24 +47,24 @@ class SpeechToTextStreamingEvent(
     BaseSpeechToTextResult,
     BaseProtoModelResult[StreamingResponse, RequestDetails],
 ):
-    """A class representing streaming event of speech recognition request."""
+    """A class representing a streaming event of a speech recognition request."""
 
     #: str/enum representation of event type
     event_type: SpeechToTextStreamingEventType
-    #: Wall clock on server side. This is time when server wrote results to stream.
+    #: Wall clock on the server side. This is time when the server wrote results to the stream.
     response_wall_time_ms: int
-    #: Progress bar for stream session recognition: how many data we obtained; final and partial times; etc
+    #: Progress bar for stream session recognition: how much data we obtained; final and partial times; etc
     audio_cursors: AudioCursors
-    #: Tag for distinguish audio channels.
+    #: Tag for distinguishing audio channels.
     channel_tag: str
-    #: Partial results, server will send them regularly after enough audio data was received from user.
+    #: Partial results, server will send them regularly after enough audio data has been received from the user.
     #: This is the current text estimation from `final_time_ms` to `partial_time_ms`.
-    #: Could change after new data will arrive.
+    #: May change when new data arrives.
     partial: Alternatives | None = None
     #: Final results, the recognition is now fixed until `final_time_ms`.
     #: For now, final is sent only if the EOU event was triggered. This behavior could be changed in future releases.
     final: Alternatives | None = None
-    #: For each final, if normalization is enabled, sent the normalized text (or some other advanced post-processing).
+    #: For each final, if normalization is enabled, the normalized text is sent (or some other advanced post-processing).
     #: Final normalization will introduce additional latency.
     final_refinement: FinalRefinement | None = None
 
@@ -73,7 +73,7 @@ class SpeechToTextStreamingEvent(
     #: EOU estimated time.
     eou_update_ms: float | None = None
 
-    #: Status messages, send by server with fixed interval (keep-alive).
+    #: Status messages, sent by the server at fixed intervals (keep-alive).
     status_code: StatusCode | None = None
 
     #: Update on result of the triggered classifier.
@@ -99,7 +99,7 @@ class SpeechToTextStreamingEvent(
 
     @property
     def text(self) -> str | None:
-        """Helper for getting refined, final or partial text if event have any"""
+        """Helper for getting refined, final, or partial text if the event has any"""
         return self.final_refinement_text or self.final_text or self.partial_text
 
     # NB: classmethod and override in opposite order breaking Jedi autocompletion

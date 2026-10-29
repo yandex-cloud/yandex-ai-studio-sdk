@@ -29,7 +29,7 @@ from .result import ImageGenerationModelResult
 class BaseImageGenerationModel(
     ModelAsyncMixin[ImageGenerationModelConfig, ImageGenerationModelResult, OperationTypeT],
 ):
-    """A class of the one, concrete model. This model encapsulates the URI and configuration."""
+    """A class for a single, concrete model. This model encapsulates the URI and configuration."""
     _config_type = ImageGenerationModelConfig
     _result_type = ImageGenerationModelResult
     _operation_type: type[OperationTypeT]

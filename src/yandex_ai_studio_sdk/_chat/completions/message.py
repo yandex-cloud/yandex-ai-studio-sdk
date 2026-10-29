@@ -77,9 +77,9 @@ class MultimodalMessageDict(TypedDict):
     content: Sequence[Union[ImageUrlDict, TextContent]]
 
 
-#: Message types allowed at the ``chat.completions`` domain as an input data
+#: Message types allowed at the ``chat.completions`` domain as input data
 ChatCompletionsMessageType = Union[MessageType, ChatFunctionResultMessageDict, MessageInputType, MultimodalMessageDict]
-#: Data type allowed at the ``chat.completions`` domain as an input data
+#: Data type allowed at the ``chat.completions`` domain as input data
 ChatMessageInputType = Union[ChatCompletionsMessageType, Iterable[ChatCompletionsMessageType]]
 
 

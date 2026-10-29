@@ -13,7 +13,7 @@ from .by_image import AsyncByImageSearch, ByImageSearch, ByImageSearchTypeT
 
 
 class BaseByImageSearchFunction(BaseModelFunction[ByImageSearchTypeT]):
-    """ByImage search function for creating search object which provides
+    """ByImage search function for creating a search object which provides
     methods for invoking by_image search.
     """
 
@@ -26,7 +26,7 @@ class BaseByImageSearchFunction(BaseModelFunction[ByImageSearchTypeT]):
         site: UndefinedOr[str] = UNDEFINED,
     ) -> ByImageSearchTypeT:
         """
-        Creates by_image search object which provides methods for search by image.
+        Creates a by_image search object which provides methods for search by image.
 
         To learn more about parameters and their formats and possible values,
         refer to

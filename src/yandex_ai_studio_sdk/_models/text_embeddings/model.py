@@ -54,7 +54,7 @@ class BaseTextEmbeddingsModel(
         This method calls the parent class's configure method and
         returns the configured model instance.
 
-        :param dimensions: the dimensions of output vector
+        :param dimensions: the dimensions of the output vector
         """
         return super().configure(dimensions=dimensions)
 
@@ -110,7 +110,7 @@ class AsyncTextEmbeddingsModel(BaseTextEmbeddingsModel):
         :param text: the input text for which embeddings are to be generated.
         :param timeout: the timeout, or the maximum time to wait for the request to complete in seconds.
             Defaults to 60 seconds.
-        :param dimensions: the dimensions of output vector
+        :param dimensions: the dimensions of the output vector
         """
         return await self._run(
             text=text,

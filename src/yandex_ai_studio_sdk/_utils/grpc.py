@@ -41,12 +41,12 @@ WrappedStreamReturnCallType = AsyncIterator[
 
 class StreamResponseIteratorMixin(Generic[StreamReturnCallTypeT, ResponseType]):
     """
-    Wrapper for a AsyncIterable produced by Unary/StreamStreamRetryInterceptor.
+    Wrapper for an AsyncIterable produced by Unary/StreamStreamRetryInterceptor.
 
-    This class is "inspired" by grpc.aio._interceptors._StreamCallResponseIterator,,
-    but we can't inherit it becaise it is not part of gprc api.
+    This class is inspired by grpc.aio._interceptors._StreamCallResponseIterator,
+    but we cannot inherit from it because it is not part of the public gRPC API.
 
-    So, global problem is, in case if user are using only one grpc.aio.UnaryStreamInterceptor,
+    The problem occurs when a user is using only one grpc.aio.UnaryStreamInterceptor,
     and this interceptor is returning AsyncIterator instead of UnaryStreamCall, everything
     breaks in this place:
     https://github.com/grpc/grpc/blob/b0e5f3b59886c16ad9277c11e7cfcb68713e3c86/src/python/grpcio/grpc/aio/_interceptor.py#L790
@@ -68,9 +68,9 @@ class StreamResponseIteratorMixin(Generic[StreamReturnCallTypeT, ResponseType]):
         """
         Unlike _StreamCallResponseIterator, we are using response_iterator not with
         AsyncIterator[ResponseType], but with AsyncIterator[tuple[Call, ResponseType]]
-        which are allowing to change underlying call in the middle of iteration.
+        which allows the underlying call to change in the middle of iteration.
 
-        It is required for change call object in case of retry.
+        This is required to change the call object when retrying.
         """
         self._call = call
         self._response_iterator = response_iterator

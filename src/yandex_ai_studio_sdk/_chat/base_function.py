@@ -19,7 +19,7 @@ class BaseChatFunction(BaseModelFunction[ModelTypeT]):
         model_version: str = 'latest',
     ) -> ModelTypeT:
         """
-        Create a model instance in selected chat subdomain (completions, embeddings, etc)
+        Create a model instance in the selected chat subdomain (completions, embeddings, etc)
 
         Constructs the model URI based on the provided name and version.
         If the name contains '://', it is treated as a full URI.
@@ -37,7 +37,7 @@ class BaseChatFunction(BaseModelFunction[ModelTypeT]):
         )
     async def _fetch_raw_models(self, timeout: float) -> list[dict[str, Any]]:
         """
-        Returns raw data for all available models in selected subdomain.
+        Returns raw data for all available models in the selected subdomain.
         """
         async with self._sdk._client.httpx_for_service('http_completions', timeout) as client:
             response = await client.get(
@@ -57,7 +57,7 @@ class BaseChatFunction(BaseModelFunction[ModelTypeT]):
         filters: ModelFilter | None
     ) -> tuple[ModelTypeT, ...]:
         """
-        Returns all available models in selected subdomain (completions, embeddings, etc)
+        Returns all available models in the selected subdomain (completions, embeddings, etc)
 
         :param timeout: The timeout, or the maximum time to wait for the request to complete in seconds.
         :param filters: Optional dict with filters, where keys are model attribute names and values are the desired values.

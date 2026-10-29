@@ -7,11 +7,11 @@ This Python library provides a simple and efficient software development kit (SD
 Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions that map directly to the capabilities exposed by Yandex Cloud. The current feature set includes:
 
 - [**SpeechKit**](https://aistudio.yandex.ru/docs/speechkit/overview.html)
-  - [Speech To Text](https://aistudio.yandex.ru/docs/speechkit/stt) (speech recognition)
-  - [Text To Speech](https://aistudio.yandex.ru/docs/speechkit/tts) (speech synthesis)
+  - [Speech-to-text](https://aistudio.yandex.ru/docs/speechkit/stt) (speech recognition)
+  - [Text-to-speech](https://aistudio.yandex.ru/docs/speechkit/tts) (speech synthesis)
 - [**Completions**](https://aistudio.yandex.ru/docs/ai-studio/operations/generation/create-prompt)
   - Text generation (completion) models with streaming support.
-  - Chat usage tracking, tool calls (function calling for example).
+  - Chat usage tracking and tool calls (for example, function calling).
 - [**Chat**](https://aistudio.yandex.ru/docs/ai-studio/concepts/api#openai)
   - OpenAI‑compatible chat API (`sdk.chat`) designed to work seamlessly with the rest of the Yandex AI Studio SDK.
   - Send and receive messages, stream responses, and work with tool calls in a unified way.
@@ -29,7 +29,7 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
 - [**Text classifiers**](https://aistudio.yandex.ru/docs/ai-studio/concepts/classifier/)
   - Run multi‑class, multi‑label and binary classifiers.
 - [**Yandex Search API**](https://aistudio.yandex.ru/docs/search-api/concepts/index)
-  - Generative, web, image and by image search.
+  - Generative search, web search, and image search by text or image.
   - [Wordstat](https://aistudio.yandex.ru/docs/search-api/concepts/wordstat) keyword statistics: query volume trends, top queries, regional and device distribution.
 - [**Search indexes**](https://aistudio.yandex.ru/docs/ai-studio/concepts/search/vectorstore)
   - Create, update, delete and query text, vector and hybrid search indexes.
@@ -38,19 +38,19 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
 > If you were using these features, please refer to the
 > [migration guide to Responses API](https://aistudio.yandex.ru/docs/ai-studio/concepts/agents/assistant-responses-migration.html).
 
-Also there is some cross-domain functionality for features above:
+Cross-domain functionality is also available for the features above:
 - [**Batch processing**](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/batch-processing)
   - Run long‑running batch tasks with automatic polling.
 - **Tools**
   - [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) for extending models with custom callable functions in Completions and Chat.
 - [**Tuning**](https://aistudio.yandex.ru/docs/ai-studio/concepts/tuning/)
-  - Fine‑tune models with configurable optimizers, schedulers and other hyper‑parameters.
+  - Fine‑tune models with configurable optimizers, schedulers and other hyperparameters.
 - [**Datasets**](https://aistudio.yandex.ru/docs/ai-studio/concepts/resources/dataset)
   - Manage dataset lifecycle, upload data, validate schemas, and perform task‑type specific operations.
 
 Additionally, Yandex AI Studio SDK offers:
 - [**Authentication**](https://aistudio.yandex.ru/docs/ai-studio/sdk/#authentication)
-  - Automatic selection of authentication method (API key, IAM token, OAuth token, CLI, metadata service, etc.).
+  - Automatic selection of an authentication method (API key, IAM token, OAuth token, CLI, metadata service, etc.).
 - **Error handling & retries**
   - Rich exception hierarchy, retry policies, and configurable gRPC interceptors.
 - **Async & sync support**
@@ -87,11 +87,11 @@ for alternative in result:
     print(alternative)
 ```
 
-For more usage examples look into `examples` folder.
+For more usage examples, see the `examples` folder.
 
 ## LangChain integration
 
-To use LangChain integration, install `yandex-ai-studio-sdk` package with a `langchain` extra:
+To use LangChain integration, install the `yandex-ai-studio-sdk` package with the `langchain` extra:
 
 ```sh
 pip install yandex-ai-studio-sdk[langchain]
@@ -114,7 +114,7 @@ langchain_result = model.invoke([
 ])
 ```
 
-For more LangChain integration examples look into `examples/langchain` folder.
+For more LangChain integration examples, see the `examples/langchain` folder.
 
 ## CLI
 

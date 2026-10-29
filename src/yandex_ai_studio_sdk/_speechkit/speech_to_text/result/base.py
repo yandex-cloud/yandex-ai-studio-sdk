@@ -14,7 +14,7 @@ class BaseSpeechToTextResult(BaseResult):
     _sdk: SDKType = field(repr=False)
 
     #: Field role is required to be compatible with TextMessage Protocol, to
-    #: other part of SDK could use this object an input.
+    #: other parts of the SDK can use this object as input.
     role: ClassVar[str] = 'user'
 
     #: Internal session identifier.

@@ -55,7 +55,7 @@ class BaseDatasetDraft(Generic[DatasetTypeT, OperationTypeT], ReturnsOperationMi
     metadata: str | None = None
     #: labels for categorizing the dataset
     labels: dict[str, str] | None = None
-    #: a flag indicating if iy\t is allowed to use the dataset to improve the models quality. Default false.
+    #: a flag indicating whether the dataset may be used to improve model quality. Defaults to false.
     allow_data_logging: bool | None = None
 
     @property
@@ -222,8 +222,8 @@ class BaseDatasetDraft(Generic[DatasetTypeT, OperationTypeT], ReturnsOperationMi
             Defaults to 60 seconds.
         :param poll_timeout: the time to wait for polling the operation status.
             Default is defined by DEFAULT_OPERATION_POLL_TIMEOUT.
-        :param poll_interval: the interval at which to poll for operation status
-            Defaults to 60 seconds).
+        :param poll_interval: the interval at which to poll for the operation status
+            Defaults to 60 seconds.
         :param kwargs: additional keyword arguments passed to ``_upload_deferred``.
         """
         operation = await self._upload_deferred(

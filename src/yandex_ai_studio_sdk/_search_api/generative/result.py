@@ -19,7 +19,7 @@ class SearchSource(ProtoBased[GenSearchResponse.Source]):
     Might be used or not used in generative answer itself.
     """
 
-    #: Url of the document
+    #: URL of the document
     url: str
     #: Title of the document
     title: str
@@ -40,7 +40,7 @@ class SearchSource(ProtoBased[GenSearchResponse.Source]):
 class SearchQuery(ProtoBased[GenSearchResponse.SearchQuery]):
     #: Text of the search query
     text: str
-    #: Request id
+    #: Request ID
     req_id: str
 
     @override
@@ -56,17 +56,17 @@ class SearchQuery(ProtoBased[GenSearchResponse.SearchQuery]):
 class GenerativeSearchResult(BaseProtoResult[GenSearchResponse], TextMessage):
     """A class representing the result of a generative search request."""
     #: Generative answer itself.
-    #: Note that footnotes like ``[N]`` in the text refers to ``GenerativeSearchResult.sources[N]``
+    #: Note that footnotes like ``[N]`` in the text refer to ``GenerativeSearchResult.sources[N]``
     #: source.
     text: str
     #: Message sender role; in case of the generative search, model always answers with the
     #: "assistant" role.
     role: str
-    #: Fixed query string in case of query was fixed
+    #: Corrected query string, if the query was corrected
     fixed_misspell_query: str | None
-    #: Anwer was rejected by some reasons, probably because of the ethics constrictions
+    #: The answer was rejected for some reason, possibly due to ethical restrictions
     is_answer_rejected: bool
-    #: Model was unable to give good answer and returned bulleted list with some info.
+    #: Model was unable to give a good answer and returned a bulleted list with some info.
     is_bullet_answer: bool
     #: List of documents found by user query; every element number matches with footnotes in the ``.text`` attribute.
     sources: tuple[SearchSource, ...]

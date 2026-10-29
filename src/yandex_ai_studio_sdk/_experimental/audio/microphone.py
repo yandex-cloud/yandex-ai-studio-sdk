@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Experimental module for async audio data iterator from microphone;
+Experimental module providing an asynchronous iterator over microphone audio.
 
 To use it: ``pip install sounddevice numpy``
-At Ubuntu also: ``sudo apt install libportaudio2``
-At Windows and MacOS PortAudio will be installed automagically.
+On Ubuntu, also run: ``sudo apt install libportaudio2``
+On Windows and macOS, PortAudio is installed automatically.
 
-NB: AsyncMicrophone is not threadsafe!
+NB: AsyncMicrophone is not thread-safe!
 """
 from __future__ import annotations
 
@@ -127,7 +127,7 @@ class AsyncMicrophone:
 
 async def main():
     """
-    Just checking some edge-cases here and giving example of using microphone
+    Check edge cases and provide an example of using the microphone.
     """
     # pylint: disable=import-outside-toplevel
     import wave

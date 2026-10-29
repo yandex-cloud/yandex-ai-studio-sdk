@@ -64,8 +64,8 @@ XMLSearchDocumentTypeT = TypeVar('XMLSearchDocumentTypeT', bound=XMLSearchDocume
 class SearchRequestDetails(RequestDetails[ConfigTypeT]):
     """:meta private:
 
-    Object to incapsulate search settings into search result
-    to make possible .next_page methods"""
+    Object that encapsulates search settings in a search result
+    to enable .next_page methods"""
 
     page: int
     query: str

@@ -30,7 +30,7 @@ class ChatEmbeddingsModelResult(TupleSequence[float], BaseJsonResult):
     Represents the result of a text embeddings model.
 
     It holds the embedding vector, the number of tokens, and the
-    version of the model that is used to generate embeggings.
+    version of the model that is used to generate embeddings.
     """
 
     #: the embedding vector as a tuple of floats

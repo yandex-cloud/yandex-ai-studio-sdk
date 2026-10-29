@@ -5,7 +5,7 @@
 tox
 ```
 
-## Run specific python version
+## Run tests for a specific Python version
 
 ```bash
 tox -e python3.12-extra-deps
@@ -17,7 +17,7 @@ tox -e python3.12-extra-deps
 tox -e ... -- path/to/test/file.py -k <substring_of_test_name>
 ```
 
-or to speedup the process, look into `tox.ini` and run commands without tox environment:
+To speed up the process, see `tox.ini` and run commands without a tox environment:
 
 ```bash
 pip install -r test_requirements.txt -r test_requirements_extra.txt
@@ -29,58 +29,58 @@ pytest path/to/test/file.py -k <substring_of_test_name>
 pytest --flakes src/ examples/
 ```
 
-Bash above is just examples how to run some of the commands without tox, there many more possibilities.
+The Bash commands above are examples of how to run some commands without tox. There are many more possibilities.
 
-## Test cassetes
+## Test cassettes
 
-In some tests we are using [pytest-recording](https://github.com/kiwicom/pytest-recording) library to record
-http requests to a local test cassetes to not to use network in future runs and to increase determinacy
-of test runs (with the assupmtion that backend will not break contract and will not make any breaking changes).
+In some tests, we use the [pytest-recording](https://github.com/kiwicom/pytest-recording) library to record
+HTTP requests to local test cassettes to avoid network access in future runs and improve the determinism
+of test runs (assuming that the backend will not introduce breaking changes to its contract).
 
-But pytest-recording supports only http/https cassetes so we have something like this for grpc requests
+However, pytest-recording supports only HTTP/HTTPS cassettes, so we have a similar mechanism for gRPC requests
 [written by us](src/yandex_ai_studio_sdk/_testing/interceptor.py).
 
-It is not so convenient to use and have it's problems, but basically to use it you need to:
+It has some limitations. To use it:
 
-1) Place `@pytest.mark.allow_grpc` to the test.
+1) Add `@pytest.mark.allow_grpc` to the test.
 
-2) Edit `tests/conftest.py:fixture_folder_id` (TODO: make it using env vars by default)
+2) Edit `tests/conftest.py:fixture_folder_id` (TODO: make it use environment variables by default)
 
-3) Export any auth into environment like `export YC_API_KEY="..."` or any other auth method
+3) Export authentication credentials to the environment, for example, `export YC_API_KEY="..."` or use another authentication method
 
-4) Run your new test for the first time `pytest path/to/test/file.py -k <test_name> --generate-grpc` which will create
-  a new cassete file
+4) Run your new test for the first time with `pytest path/to/test/file.py -k <test_name> --generate-grpc`, which will create
+  a new cassette file
 
-5) In case of the test failed or if you want to regenerate cassete -- `pytest <...> --regenerate-grpc` will help
+5) If the test fails or you want to regenerate the cassette, `pytest <...> --regenerate-grpc` will help
 
-6) When you will thinkn that cassete is okay, run pytest without any `--...-grpc` flags
+6) When you are satisfied with the cassette, run pytest without any `--...-grpc` flags
 
-7) Do not forget to commit new cassete file.
+7) Do not forget to commit the new cassette file.
 
 
 # Pre-commit hooks
 
-We are using https://pre-commit.com/ to improve our PR review experience.
+We use https://pre-commit.com/ to improve our PR review experience.
 
-It is generally a good idea to setup pre-commit locally, otherwise some robot will come to your PR and
-will either make commit with fixes (and you will need to pull it or overwrite with a force push),
-either it will break the tests with the things it can't fix.
+It is generally a good idea to set up pre-commit locally. Otherwise, a bot will process your PR and
+will either commit fixes (which you will need to pull or overwrite with a force push)
+or fail the checks for issues it cannot fix.
 
 
 # Documentation
 
-On PR we are running `sphinx-build -W` which are failing in case of any warnings such as
-unresolved references or wrong rst syntaxt in docstrings.
+For each PR, we run `sphinx-build -W`, which fails on warnings such as
+unresolved references or invalid reStructuredText syntax in docstrings.
 
-To install sphinx and other required for work with documentation, run
+To install Sphinx and the other dependencies required for documentation, run
 
 `pip install -r docs/requirements.txt -e .` in the repo root.
 
-To run sphinx locally to check if there are any errors or warnings,
+To run Sphinx locally to check if there are any errors or warnings,
 run `sphinx-build docs docs/_build -E -W` in the repo root.
-It will generate html in the `docs/_build` folder which you could check out in case
-you want to be sure how is your doc will looks like.
+It generates HTML in the `docs/_build` folder, which you can open if
+you want to check how the documentation looks.
 
-Also you could install `sphinx-autobuild` and run `sphinx-autobuild docs docs/_build --watch src`
-to run a webserver (it will be available at http://localhost:8000 by-default) and automatically
-rebuild a doc when you save a file.
+You can also install `sphinx-autobuild` and run `sphinx-autobuild docs docs/_build --watch src`
+to run a web server (it will be available at http://localhost:8000 by default) and automatically
+rebuild the documentation when you save a file.

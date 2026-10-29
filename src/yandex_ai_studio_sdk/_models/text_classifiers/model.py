@@ -43,7 +43,7 @@ class BaseTextClassifiersModel(
     ],
 ):
     """
-    A class for text classifiers models.
+    A class for text classification models.
     It provides the foundational structure for building text classification models,
     including configuration and execution of classification tasks.
     """

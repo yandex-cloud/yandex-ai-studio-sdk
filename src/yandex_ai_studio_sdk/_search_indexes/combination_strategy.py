@@ -50,7 +50,7 @@ class BaseIndexCombinationStrategy(abc.ABC):
 _orig = ProtoMeanCombinationStrategy.MeanEvaluationTechnique
 
 class MeanIndexEvaluationTechnique(ProtoEnumBase, enum.IntEnum):
-    """A class with enumeration for mean index evaluation techniques."""
+    """A class with an enumeration for mean index evaluation techniques."""
     #: an unspecified mean evaluation technique
     MEAN_EVALUATION_TECHNIQUE_UNSPECIFIED = _orig.MEAN_EVALUATION_TECHNIQUE_UNSPECIFIED
     #: the arithmetic mean, calculated as the sum of values divided by the count of values

@@ -27,7 +27,7 @@ TextClassificationResponseT = TypeVar(
 
 @dataclass(frozen=True)
 class TextClassifiersModelResultBase(TupleSequence[TextClassificationLabel], BaseProtoResult[TextClassificationResponseT], Generic[TextClassificationResponseT]):
-    """A class for text classifiers model results.
+    """A class for text classification model results.
     It represents the common structure for the results returned by text classification models.
     """
     #: a tuple containing the predicted labels

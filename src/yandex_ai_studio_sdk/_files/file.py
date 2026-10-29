@@ -149,7 +149,7 @@ class BaseFile(ExpirableResource[ProtoFile]):
     ) -> bytes:
         """Download the file as bytes.
 
-        This method retrieves the file's URL and streams the file's content as whole
+        This method retrieves the file's URL and streams the file's content as a whole
         (this may overflow the user's memory), returning it as a byte string.
 
         :param chunk_size: The size of each chunk to read from the stream in bytes.
@@ -176,7 +176,7 @@ class RichFile(BaseFile):
     """A detailed representation of the file enriched with additional metadata.
 
     This class extends BaseFile by including additional attributes such as
-    name, description, MIME type, creating and updating details,
+    name, description, MIME type, creation and update details,
     expiration date, and labels.
     """
     # The name of the file

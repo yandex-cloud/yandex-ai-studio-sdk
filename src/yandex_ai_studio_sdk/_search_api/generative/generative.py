@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 
 class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSearchResult]):
     """Generative search class which provides concrete methods for working with Yandex Search API
-    and encapsulates search setting.
+    and encapsulates search settings.
     """
 
     _config_type = GenerativeSearchConfig
@@ -43,7 +43,7 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
         search_filters: UndefinedOr[SmartFilterSequence] | None = UNDEFINED
     ) -> Self:
         """
-        Returns the new object with config fields overrode by passed values.
+        Returns a new object with configuration fields overridden by the provided values.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -51,14 +51,14 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
 
         NB: All of the ``site``, ``host``, ``url`` parameters are mutually exclusive
 
-        :param site: parameter for limiting search to specific location or list of sites.
-        :param host: parameter for limiting search to specific location or list of hosts.
-        :param url: parameter for limiting search to specific location or list of URLs.
-        :param fix_misspell: tells to backend to fix or not to fix misspels in queries.
-        :param enable_nrfm_docs: tells to backend to include or not to include pages,
-            which are not available via direct clicks from given sites/hosts/urls
-            to search result.
-        :param search_filters: allows to limit search results with additional filters.
+        :param site: parameter for limiting search to a specific site or list of sites.
+        :param host: parameter for limiting search to a specific host or list of hosts.
+        :param url: parameter for limiting search to a specific URL or list of URLs.
+        :param fix_misspell: whether the backend should correct misspellings in queries.
+        :param enable_nrfm_docs: whether the backend should include pages
+            that cannot be reached directly from the specified sites, hosts, or URLs
+            in the search results.
+        :param search_filters: limits search results using additional filters.
 
             >>> date_filter = {'date': '<20250101'}
             >>> format_filter = {'format': 'doc'}
@@ -84,10 +84,10 @@ class BaseGenerativeSearch(ModelSyncMixin[GenerativeSearchConfig, GenerativeSear
 
     @override
     async def _run(self, request: MessageInputType, *, timeout: float = 60) -> GenerativeSearchResult:
-        """Run a search query with given ``request`` and search settings of this generative search
+        """Run a search query with the given ``request`` and search settings of this generative search
         object.
 
-        To change initial search settings use ``.configure`` method:
+        To change the initial search settings, use the ``.configure`` method:
 
         >>> search = sdk.search_api.generative(site="site")
         >>> search = search.configure(site="other_site")

@@ -96,7 +96,7 @@ class DatasetInfo:
 
 @dataclasses.dataclass(frozen=True)
 class BaseDataset(DatasetInfo, BaseDeleteableResource[ProtoDatasetInfo]):
-    """This class represents methods for operating with datasets."""
+    """This class represents methods for working with datasets."""
 
     @classmethod
     def _kwargs_from_message(cls, proto: ProtoDatasetInfo, sdk: BaseSDK) -> dict[str, Any]:
@@ -223,7 +223,7 @@ class BaseDataset(DatasetInfo, BaseDeleteableResource[ProtoDatasetInfo]):
         timeout: float,
         batch_size: UndefinedOr[int],
     ) -> AsyncIterator[dict[Any, Any]]:
-        """Read dataset records; reading is implemented by batched process and requires RAM equal to the batch size.
+        """Read dataset records; records are read in batches and requires RAM equal to the batch size.
 
         :param timeout: the maximum time to wait for the download operation.
         :param batch_size: the size of each batch to read in records; if undefined, defaults to ``None``.
@@ -495,9 +495,9 @@ class AsyncDataset(BaseDataset):
         timeout: float = 60,
         batch_size: UndefinedOr[int] = UNDEFINED,
     ) -> AsyncIterator[dict[Any, Any]]:
-        """Reads the dataset from backend and yields it records one by one.
+        """Reads the dataset from backend and yields its records one by one.
 
-        This method lazily loads records by chunks, minimizing memory usage for large datasets.
+        This method lazily loads records in chunks, minimizing memory usage for large datasets.
         The iterator yields dictionaries where keys are field names and values are parsed data.
 
         .. note::
@@ -509,10 +509,10 @@ class AsyncDataset(BaseDataset):
         :param timeout: Maximum time in seconds for both gRPC and HTTP operations.
             Includes connection establishment, data transfer, and processing time.
             Defaults to 60 seconds.
-        :param batch_size: Number of records to load to memory in one chunk.
+        :param batch_size: Number of records to load into memory in one chunk.
             When UNDEFINED (default), uses backend's optimal chunk size (typically
             corresponds to distinct Parquet files storage layout).
-        :yields: Dictionary representing single record with field-value pairs
+        :yields: Dictionary representing a single record with field-value pairs
 
         """
 
@@ -583,9 +583,9 @@ class Dataset(BaseDataset):
         timeout: float = 60,
         batch_size: UndefinedOr[int] = UNDEFINED,
     ) -> Iterator[dict[Any, Any]]:
-        """Reads the dataset from backend and yields it records one by one.
+        """Reads the dataset from backend and yields its records one by one.
 
-        This method lazily loads records by chunks, minimizing memory usage for large datasets.
+        This method lazily loads records in chunks, minimizing memory usage for large datasets.
         The iterator yields dictionaries where keys are field names and values are parsed data.
 
         .. note::
@@ -597,10 +597,10 @@ class Dataset(BaseDataset):
         :param timeout: Maximum time in seconds for both gRPC and HTTP operations.
             Includes connection establishment, data transfer, and processing time.
             Defaults to 60 seconds.
-        :param batch_size: Number of records to load to memory in one chunk.
+        :param batch_size: Number of records to load into memory in one chunk.
             When UNDEFINED (default), uses backend's optimal chunk size (typically
             corresponds to distinct Parquet files storage layout).
-        :yields: Dictionary representing single record with field-value pairs
+        :yields: Dictionary representing a single record with field-value pairs
 
         """
 

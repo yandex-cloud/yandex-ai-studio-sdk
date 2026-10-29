@@ -36,7 +36,7 @@ class BaseFunctionTools(BaseDomain, HaveToolCalls[ToolCallTypeT]):
             - Pydantic dataclass: A dataclass decorated with @pydantic.dataclasses.dataclass. The JSON schema will be automatically generated from the dataclass definition.
 
         :param name: Optional function name. If not provided:
-            - For JSON Schema dict: must be provided explicitly or error will be raised.
+            - For JSON Schema dict: must be provided explicitly or an error will be raised.
             - For Pydantic models: automatically inferred from the class __name__ attribute.
 
         :param description: Optional function description. If not provided:

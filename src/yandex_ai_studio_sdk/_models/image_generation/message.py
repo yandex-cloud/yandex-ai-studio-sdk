@@ -15,9 +15,9 @@ from yandex_ai_studio_sdk._utils.coerce import coerce_tuple
 @dataclass(frozen=True)
 class ImageMessage:
     """
-    This class represents a message for using in image generation models with optional weight field.
+    This class represents a message for use in image generation models with an optional weight field.
     """
-    #: the text content of the message for using in image generation models
+    #: the text content of the message for use in image generation models
     text: str
     #: the weight associated with the message
     weight: float | None = None

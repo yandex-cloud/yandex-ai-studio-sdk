@@ -94,10 +94,10 @@ class BaseByImageSearchResult(
     @override
     async def _next_page(self, *, timeout: float | None = None) -> Self:
         """Run a search by image request with previous search parameters
-        except page number being increment by one.
+        with the page number incremented by one.
 
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds;
-            if not given, initial timeout value from original search request are being used.
+            if not given, the timeout value from the original search request is used.
         """
         # pylint: disable-next=protected-access
         return await self._model._run_from_id(

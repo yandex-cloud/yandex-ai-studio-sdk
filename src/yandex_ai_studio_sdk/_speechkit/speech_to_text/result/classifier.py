@@ -41,7 +41,7 @@ class ClassifierBase:
     #: Classifier predictions
     labels: dict[str, float]
 
-    #: Audio segment used for classification boundaries
+    #: Boundaries of the audio segment used for classification
     timespan: TimeSpan
 
     @property

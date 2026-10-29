@@ -27,8 +27,8 @@ class BaseSTTBidirectionalStream(
         bytes,
     ]
 ):
-    """Bidirectional SpeechKit  API which allows to write requests and read synthesized result
-    in realtime"""
+    """Bidirectional SpeechKit  API that lets you write requests and read synthesized results
+    in real time"""
 
     _stub_class = RecognizerStub
     _result_class = SpeechToTextStreamingEvent
@@ -57,7 +57,7 @@ class BaseSTTBidirectionalStream(
         )
 
     async def _write_silence(self, duration_ms: int) -> None:
-        """Send payload with silence to not to send useless bytes with silence"""
+        """Send payload with silence instead of sending unnecessary bytes containing silence"""
 
         request = StreamingRequest(
             silence_chunk=SilenceChunk(

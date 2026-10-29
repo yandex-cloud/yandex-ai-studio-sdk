@@ -60,7 +60,7 @@ class BaseGPTModel(
 ):
     """
     A class for GPT models providing various functionalities
-    including tuning, and batch processing.
+    including tuning and batch processing.
     """
     _config_type = GPTModelConfig
     _result_type: type[GPTModelResult[ToolCallTypeT]]
@@ -75,11 +75,11 @@ class BaseGPTModel(
 
     def langchain(self, model_type: Literal["chat"] = "chat", timeout: int = 60) -> BaseYandexLanguageModel:
         """
-        Initializes a langchain model based on the specified model type.
+        Initializes a LangChain model based on the specified model type.
 
-        :param model_type: the type of langchain model to initialize.
+        :param model_type: the type of LangChain model to initialize.
             Defaults to ``"chat"``.
-        :param timeout: the timeout which sets the default for the langchain model object.
+        :param timeout: the timeout which sets the default for the LangChain model object.
             Defaults to 60 seconds.
         """
         from .langchain import ChatYandexGPT  # pylint: disable=import-outside-toplevel

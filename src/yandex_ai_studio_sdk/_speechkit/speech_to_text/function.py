@@ -28,7 +28,7 @@ class BaseSpeechToTextFunction(
     BaseModelFunction[SpeechToTextTypeT],
     SynonymsMixin
 ):
-    """Speech to Text function for creating speech recognition object which provides
+    """Speech to Text function for creating a speech recognition object which provides
     methods for invoking recognition.
     """
 
@@ -50,7 +50,7 @@ class BaseSpeechToTextFunction(
         llm_post_process: UndefinedOr[LLMPostProcessing] = UNDEFINED,
     ) -> SpeechToTextTypeT:
         """
-        Creates SpeechToText object with provides methods for speech recognition.
+        Creates a SpeechToText object that provides methods for speech recognition.
 
         To learn more about parameters and their formats and possible values,
         refer to

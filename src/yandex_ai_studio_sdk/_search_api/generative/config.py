@@ -66,20 +66,20 @@ AVAILABLE_FORMATS_INPUTS = (
 
 @dataclass(frozen=True)
 class GenerativeSearchConfig(BaseModelConfig):
-    #: Parameter for limiting search to specific location or list of sites.
+    #: Parameter for limiting search to a specific site or list of sites.
     site: tuple[str, ...] | None = None
-    #: Parameter for limiting search to specific location or list of hosts.
+    #: Parameter for limiting search to a specific host or list of hosts.
     host: tuple[str, ...] | None = None
-    #: Parameter for limiting search to specific location or list of urls.
+    #: Parameter for limiting search to a specific URL or list of URLs.
     url: tuple[str, ...] | None = None
 
-    #: tells to backend to fix or not to fix misspels in queries.
+    #: whether the backend should correct misspellings in queries.
     fix_misspell: bool | None = None
-    #: tells to backend to include or not to include pages,
-    #: which are not available via direct clicks from given sites/hosts/urls
-    #: to search result.
+    #: whether the backend should include pages
+    #: that cannot be reached directly from the specified sites, hosts, or URLs
+    #: in the search results.
     enable_nrfm_docs: bool | None = None
-    #: allows to limit search results with additional filters.
+    #: limits search results using additional filters.
     search_filters: tuple[FilterType, ...] | None = None
 
     @property

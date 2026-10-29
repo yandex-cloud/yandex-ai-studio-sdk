@@ -120,7 +120,7 @@ class BaseIAMTokenAuth(BaseAuth):
 class IAMTokenAuth(BaseIAMTokenAuth):
     """Authentication method using an IAM token.
 
-    Read more about the IAM token in `the AIM documentation <https://yandex.cloud/docs/iam/concepts/authorization/iam-token>`_.
+    Read more about the IAM token in `the IAM documentation <https://yandex.cloud/docs/iam/concepts/authorization/iam-token>`_.
     """
     env_var = 'YC_IAM_TOKEN'
 
@@ -140,7 +140,7 @@ class IAMTokenAuth(BaseIAMTokenAuth):
 
 class EnvIAMTokenAuth(BaseIAMTokenAuth):
     """
-    Auth method, which takes IAM token from environment variable for every request.
+    Auth method that takes an IAM token from an environment variable for every request.
 
     It is assumed that the token will be refreshed in the environment before it expires.
 
@@ -263,7 +263,7 @@ class YandexCloudCLIAuth(RefresheableIAMTokenAuth):
     It handles the initialization and retrieval of IAM tokens
     via the Yandex Cloud CLI that should be installed and configured.
 
-    Yandex Cloud CLI is a downloadable software for managing cloud resources via the command line.
+    Yandex Cloud CLI is downloadable software for managing cloud resources via the command line.
     Read more in `the CLI documentation <https://yandex.cloud/docs/cli/>`_.
     """
     env_var = 'YC_PROFILE'
@@ -407,9 +407,9 @@ async def get_auth_provider(
     """
     Retrieve an appropriate authentication provider based on the provided auth parameter.
 
-    It determines the type of authentication to use based on the input and at environment
+    It determines the type of authentication to use based on the input and the environment
     and returns an instance of a corresponding authentication class.
-    If nothing was clearly transmitted, then you need to look at the environment in the following order:
+    If no authentication value is provided, check the environment as follows:
 
     - If auth is a string, it can be an IAM token, OAuth token, or API key.
     - If an instance of BaseAuth, it will be used directly.

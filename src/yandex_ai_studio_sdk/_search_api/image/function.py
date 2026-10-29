@@ -16,7 +16,7 @@ from .image import AsyncImageSearch, ImageSearch, ImageSearchTypeT
 
 
 class BaseImageSearchFunction(BaseModelFunction[ImageSearchTypeT]):
-    """Image search function for creating search object which provides
+    """Image search function for creating a search object which provides
     methods for invoking image search.
     """
 
@@ -37,7 +37,7 @@ class BaseImageSearchFunction(BaseModelFunction[ImageSearchTypeT]):
         user_agent: UndefinedOr[str] = UNDEFINED,
     ) -> ImageSearchTypeT:
         """
-        Creates image search object which provides methods for image search.
+        Creates an image search object which provides methods for image search.
 
         To learn more about parameters and their formats and possible values,
         refer to

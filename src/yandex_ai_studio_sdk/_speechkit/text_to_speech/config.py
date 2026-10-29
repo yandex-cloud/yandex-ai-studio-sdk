@@ -42,7 +42,7 @@ class TextToSpeechConfig(BaseModelConfig):
     duration_max_ms: int | None = None
 
     #: :meta private:
-    #: Automatically split long text to several utterances and bill accordingly.
+    #: Automatically split long text into several utterances and bill accordingly.
     #: Some degradation in service quality is possible
     single_chunk_mode: bool = False
 

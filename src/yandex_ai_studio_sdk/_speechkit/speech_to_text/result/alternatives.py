@@ -45,7 +45,7 @@ class Alternative(ProtoMirrored[ProtoAlternative]):
     #: Text in time frame.
     text: str
 
-    #: The hypothesis confidence. Currently is not used.
+    #: The hypothesis confidence. Currently not used.
     confidence: float
 
     #: Distribution over possible languages.
@@ -105,9 +105,9 @@ class BaseAlternatives(TupleSequence[Alternative]):
 
 
 class Alternatives(BaseAlternatives, ProtoBased[AlternativeUpdate]):
-    """Class-wrapper for :py:class:`Alternative` list,
-    which is allows to use this object not only as list,
-    but as first Alternative."""
+    """Wrapper class for a list of :py:class:`Alternative` objects,
+    which allows this object to be used both as a list
+    and as the first Alternative."""
 
     @classmethod
     @override
@@ -126,9 +126,9 @@ class Alternatives(BaseAlternatives, ProtoBased[AlternativeUpdate]):
 
 @dataclass(frozen=True)
 class FinalRefinement(BaseAlternatives, ProtoBased[ProtoFinalRefinement]):
-    """Class-wrapper for :py:class:`Alternative` list,
-    which is allows to use this object not only as list,
-    but as first Alternative."""
+    """Wrapper class for a list of :py:class:`Alternative` objects,
+    which allows this object to be used both as a list
+    and as the first Alternative."""
 
     final_index: int
 

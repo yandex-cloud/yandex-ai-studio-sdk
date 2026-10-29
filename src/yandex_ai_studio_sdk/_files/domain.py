@@ -22,7 +22,7 @@ from .file import AsyncFile, File, FileTypeT
 
 
 class BaseFiles(BaseDomain, Generic[FileTypeT]):
-    """Files domain, which contains API for working with files.
+    """Files domain, which contains an API for working with files.
 
     Provides upload, get and list methods that allow you to work with remote file objects you created earlier.
     Files are used by search indexes and other domains as input data.
@@ -47,11 +47,11 @@ class BaseFiles(BaseDomain, Generic[FileTypeT]):
         :param name: The name of the file on the server.
         :param description: A description of the file.
         :param mime_type: The MIME type of the file.
-            By default (i.e. when UNDEFINED) the server will try to auto-detect mime-type and you could override this file.
+            By default (i.e. when UNDEFINED) the server will try to auto-detect the MIME type; you can override it with this parameter.
         :param labels: Labels associated with the file.
         :param ttl_days: Time-to-live in days for the file.
         :param expiration_policy: Expiration policy for the file.
-            Accepts ``static`` or :``since_last_active`` strings.
+            Accepts ``static`` or ``since_last_active`` strings.
             Should be defined if ``ttl_days`` has been defined, otherwise both parameters should be undefined.
         :param timeout: Timeout for the operation in seconds.
             Defaults to 60 seconds.
@@ -99,7 +99,7 @@ class BaseFiles(BaseDomain, Generic[FileTypeT]):
         :param name: The name of the file on the server.
         :param description: A description of the file.
         :param mime_type: The MIME type of the file.
-            By default (i.e. when UNDEFINED) the server will try to auto-detect mime-type and you could override this file.
+            By default (i.e. when UNDEFINED) the server will try to auto-detect the MIME type; you can override it with this parameter.
         :param labels: Labels associated with the file.
         :param ttl_days: Time-to-live in days for the file.
         :param expiration_policy: Expiration policy for the file.

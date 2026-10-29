@@ -52,8 +52,8 @@ class ImageSearchDocument(XMLSearchDocument):
 class BaseImageSearchResult(
     XMLBaseSearchResult[ImageSearchResponse, ImageSearchDocument, ImageSearchConfig],
 ):
-    """A class representing the partially parsed result of a Image search request
-    with XML format.
+    """A class representing the partially parsed result of an image search request
+    in XML format.
     """
 
     _document_type = ImageSearchDocument
@@ -69,11 +69,11 @@ class BaseImageSearchResult(
 
     @override
     async def _next_page(self, *, timeout: float | None = None) -> Self:
-        """Run a image search request with previous search parameters
-        except page number being increment by one.
+        """Run an image search request with previous search parameters
+        with the page number incremented by one.
 
         :param timeout: Timeout, or the maximum time to wait for the request to complete in seconds;
-            if not given, initial timeout value from original search request are being used.
+            if not given, the timeout value from the original search request is used.
         """
         # pylint: disable-next=protected-access
         return await self._model._run(

@@ -27,7 +27,7 @@ class BaseByImageSearch(
     ModelSyncMixin[ByImageSearchConfig, ByImageSearchResultTypeT],
 ):
     """ByImage search class which provides concrete methods for working with ByImage Yandex Search API
-    and encapsulates search setting.
+    and encapsulates search settings.
     """
 
     _config_type = ByImageSearchConfig
@@ -42,7 +42,7 @@ class BaseByImageSearch(
         site: UndefinedOr[str] | None = UNDEFINED,
     ) -> Self:
         """
-        Returns the new object with config fields overrode by passed values.
+        Returns a new object with configuration fields overridden by the provided values.
 
         To learn more about parameters and their formats and possible values,
         refer to
@@ -117,7 +117,7 @@ class BaseByImageSearch(
         """Run a search query with given ``image_data`` bytes and search settings of this by_image search
         object.
 
-        To change initial search settings use ``.configure`` method:
+        To change the initial search settings, use the ``.configure`` method:
 
         >>> search = sdk.search_api.by_image(site="ya.ru")
         >>> search = search.configure(site="yandex.ru")
@@ -141,7 +141,7 @@ class BaseByImageSearch(
         """Run a search query with given image located at ``url`` and search settings of this by_image search
         object.
 
-        To change initial search settings use ``.configure`` method:
+        To change the initial search settings, use the ``.configure`` method:
 
         >>> search = sdk.search_api.by_image(site="ya.ru")
         >>> search = search.configure(site="yandex.ru")
@@ -165,7 +165,7 @@ class BaseByImageSearch(
         """Run a search query with given CBIR ID of the image and search settings of this by_image search
         object.
 
-        To change initial search settings use ``.configure`` method:
+        To change the initial search settings, use the ``.configure`` method:
 
         >>> search = sdk.search_api.by_image(site="ya.ru")
         >>> search = search.configure(site="yandex.ru")

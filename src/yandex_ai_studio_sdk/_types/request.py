@@ -11,8 +11,8 @@ from .proto import Context
 class RequestDetails(Context, Generic[ConfigTypeT]):
     """:meta private:
 
-    Object to incapsulate model request into result
-    to make possible result methods which requires a context"""
+    Object that encapsulates a model request in a result
+    to enable result methods which require context"""
 
     model_config: ConfigTypeT
     timeout: float

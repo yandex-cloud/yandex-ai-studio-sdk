@@ -32,10 +32,10 @@ ChannelGenerator = Generator[None, Optional['SpeechToTextStreamingEvent'], 'Chan
 
 @dataclass(frozen=True)
 class Utterance:
-    """A class representing result of speech recognition request for one utterance in
-    specific audio channel.
+    """A class representing the result of a speech recognition request for one utterance in
+    a specific audio channel.
 
-    Boundaries of this utterance is determined by end of utterance classifier setting,
+    The boundaries of this utterance are determined by the end-of-utterance classifier settings,
     silence duration between utterances or external ``stream.eou()`` calls
 
     """
@@ -43,7 +43,7 @@ class Utterance:
     events: tuple[SpeechToTextStreamingEvent, ...] = field(repr=False)
     #: classifier results for this utterance, only on_utterance classifiers
     classifiers: dict[str, ClassifierResult]
-    #: speker analysis for this utterance
+    #: speaker analysis for this utterance
     speaker_analysis: SpeakerAnalysis | None
 
     #: Utterance time boundaries
@@ -58,7 +58,7 @@ class Utterance:
 
     @property
     def final_text(self) -> str:
-        """Joined text of all final events in this utterance`"""
+        """Joined text of all final events in this utterance"""
         return ' '.join(final.text or '' for final in self.finals)
 
     @property
@@ -133,7 +133,7 @@ class Utterance:
 
 @dataclass(frozen=True)
 class ChannelResult(TupleSequence[Utterance]):
-    """A class representing result of speech recognition request for one audio channel
+    """A class representing the result of a speech recognition request for one audio channel
     """
     tag: str
     #: All utterances from this channel
@@ -236,13 +236,13 @@ class ChannelResult(TupleSequence[Utterance]):
 
 @dataclass(frozen=True)
 class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
-    """A class representing result of speech recognition request.
+    """A class representing the result of a speech recognition request.
 
-    Main thing it contains -- one or more channel results.
-    In case of one channel, you could use a proxy-properties to access channel result.
+    It contains one or more channel results.
+    For a single channel, you can use proxy properties to access the channel result.
 
-    Lets assume we have a some speech to text result.
-    It doesn't matter how I creating it in this example, but I need to do it for doctesting
+    Let's assume we have a speech-to-text result.
+    How it is created does not matter in this example, but it is needed for doctesting
     purposes.
 
     >>> first_result = ChannelResult(utterances=(), speaker_analysis=None, tag="222_first")
@@ -274,7 +274,7 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
         ...
     ValueError: property proxy ... is not available in case of 2+ channels in result
 
-    And here is example for how to access channel results from result:
+    Here is an example of how to access channel results:
 
     We can get it by channel tag:
 
@@ -282,13 +282,13 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
 
     We can access it by channel "index" which we calculate based on alphabetical sorting
     of channel tags
-    (catch is, usually tags is match indices i.e. when tag=='0', corresponding index will be
-    also 0, but in this example I intentionally put reversed tags):
+    (usually, tags match indices, i.e. when tag=='0', the corresponding index will be
+    also 0, but in this example I intentionally use reversed tags):
 
     >>> assert result[0] == result.get_channel(0) is second_result
     >>> assert result[-1] == result.get_channel(-1) is first_result
 
-    Also you can use slices:
+    You can also use slices:
 
     >>> assert result[0:2] == (second_result, first_result)
 
@@ -302,7 +302,7 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
     channels: dict[str, ChannelResult]
 
     def get_channel(self, sequential_number: int) -> ChannelResult:
-        """Get channel by it's sequential number among all channels, sorted by its tags"""
+        """Get a channel by its sequential number among all channels, sorted by their tags"""
         assert self.channels
         channel_tag = sorted(self.channels)[sequential_number]
         return self.channels[channel_tag]
@@ -316,9 +316,9 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
 
     @property
     def final_text(self) -> str:
-        """Return final text of first channel.
+        """Return the final text of the first channel.
 
-        Raises if result have more than one channel.
+        Raises if the result has more than one channel.
         """
 
         self._ensure_single_channel()
@@ -326,18 +326,18 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
 
     @property
     def final_refinement_text(self) -> str | None:
-        """Return final text of first channel.
+        """Return the final text of the first channel.
 
-        Raises if result have more than one channel.
+        Raises if the result has more than one channel.
         """
         self._ensure_single_channel()
         return self.get_channel(0).final_refinement_text
 
     @property
     def text(self) -> str:
-        """Return final text of first channel.
+        """Return the final text of the first channel.
 
-        Raises if result have more than one channel.
+        Raises if the result has more than one channel.
         """
         self._ensure_single_channel()
         return self.get_channel(0).text
@@ -346,7 +346,7 @@ class SpeechToTextResult(BaseSpeechToTextResult, Sequence):
     def speaker_analysis(self) -> SpeakerAnalysis | None:
         """Return speaker_analysis for the first channel.
 
-        Raises if result have more than one channel.
+        Raises if the result has more than one channel.
         """
         self._ensure_single_channel()
         return self.get_channel(0).speaker_analysis

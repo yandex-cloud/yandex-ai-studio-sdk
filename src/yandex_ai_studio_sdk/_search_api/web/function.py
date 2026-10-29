@@ -18,7 +18,7 @@ from .web import AsyncWebSearch, WebSearch, WebSearchTypeT
 
 
 class BaseWebSearchFunction(BaseModelFunction[WebSearchTypeT]):
-    """Web search function for creating search object which provides
+    """Web search function for creating a search object which provides
     methods for invoking web search.
     """
 
@@ -42,7 +42,7 @@ class BaseWebSearchFunction(BaseModelFunction[WebSearchTypeT]):
         metadata: UndefinedOr[Mapping[str, str]] = UNDEFINED,
     ) -> WebSearchTypeT:
         """
-        Creates web search object which provides methods for web search.
+        Creates a web search object which provides methods for web search.
 
         To learn more about parameters and their formats and possible values,
         refer to

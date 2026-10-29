@@ -1,8 +1,8 @@
 Yandex Search API
 =================
 
-Generative serch
-----------------
+Generative search
+-----------------
 
 .. automodule:: yandex_ai_studio_sdk._search_api.generative.config
    :undoc-members:

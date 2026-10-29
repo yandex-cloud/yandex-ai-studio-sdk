@@ -55,5 +55,5 @@ class GPTModelConfig(BaseModelConfig):
     tools: Sequence[CompletionTool] | CompletionTool | None = None
     #: whether to allow parallel calls to tools during completion; defaults to 'true'
     parallel_tool_calls: bool | None = None
-    #: the strategy for choosing tools: depending on this parameter, the model can always call some tool, call the specific tool or don't call any tool.
+    #: the strategy for choosing tools: depending on this parameter, the model can always call some tool, call a specific tool, or call no tools.
     tool_choice: ToolChoiceType | None = None

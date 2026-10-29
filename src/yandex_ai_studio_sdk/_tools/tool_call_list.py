@@ -25,7 +25,7 @@ class BaseToolCallList(
     TupleSequence[ToolCallTypeT],
 ):
     """
-    Сlass for managing collections of tool calls.
+    Class for managing collections of tool calls.
 
     This class provides a sequence-like interface for working with tool calls,
     supporting indexing, slicing, and iteration over the collection of tool calls.

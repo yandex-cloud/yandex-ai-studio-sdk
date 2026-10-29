@@ -18,15 +18,15 @@ class CodeType(ProtoBasedEnum):
 
     #: All good.
     WORKING = ProtoCodeType.WORKING
-    #: For example, if speech is sent not in real-time or context is unknown and we've made fallback.
+    #: For example, if speech is not sent in real time, or the context is unknown and a fallback is used.
     WARNING = ProtoCodeType.WARNING
-    #: After session was closed.
+    #: After the session was closed.
     CLOSED = ProtoCodeType.CLOSED
 
 
 @dataclass(frozen=True, repr=False)
 class StatusCode(ProtoBased[ProtoStatusCode]):
-    #: Human readable message
+    #: Human-readable message
     message: str
     #: Code type
     code_type: EnumWithUnknownAlias[CodeType]

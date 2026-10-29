@@ -97,7 +97,7 @@ class BaseBidirectionalStream(
         pass
 
     async def _write_request(self, request: RequestTypeT) -> None:
-        """Write a input to be synthesized"""
+        """Write input to be synthesized"""
         async with self._done_writing_lock:
             if self._done_writing_flag:
                 raise RuntimeError(
@@ -117,9 +117,9 @@ class BaseBidirectionalStream(
         await self._write_request(request)
 
     async def _read(self) -> ProtoModelResultTypeT | None:
-        """Read chunk of synthesized result.
+        """Read a chunk of the synthesized result.
 
-        Returns ``None`` in case of closed stream.
+        Returns ``None`` if the stream is closed.
         """
 
         call = await self._get_call()
@@ -136,7 +136,7 @@ class BaseBidirectionalStream(
             )
 
     async def _gen(self) -> AsyncGenerator[ProtoModelResultTypeT]:
-        """Returns generator over all synthesized result parts."""
+        """Returns a generator over all parts of the synthesized result."""
 
         try:
             chunk = await self._read()
@@ -148,7 +148,7 @@ class BaseBidirectionalStream(
             raise
 
     async def _done_writing(self) -> None:
-        """Close the stream to tell to a server you done writing.
+        """Close the stream to tell the server that you have finished writing.
 
         Closing the stream will allow any iteration over this stream to exit.
 
