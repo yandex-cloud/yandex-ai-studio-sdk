@@ -10,7 +10,7 @@ from .text_embeddings.function import AsyncTextEmbeddings, BaseTextEmbeddings, T
 
 
 class BaseModels(DomainWithFunctions):
-    """Domain for working with `Yandex Foundation Models <https://yandex.cloud/ru/services/foundation-models>`_."""
+    """Domain for working with `Yandex AI Studio models <https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/>`_."""
 
     completions: BaseCompletions
     text_classifiers: BaseTextClassifiers

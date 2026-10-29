@@ -46,7 +46,7 @@ class BaseByImageSearch(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `search by image documentation <https://yandex.cloud/ru/docs/search-api/concepts/image-search#request-body-by-pic>`_
+        `search by image documentation <https://aistudio.yandex.ru/docs/search-api/concepts/image-search#search-by-image>`_
 
         :param family_mode: Results filtering.
         :param site: Restricts the search to the specific website.

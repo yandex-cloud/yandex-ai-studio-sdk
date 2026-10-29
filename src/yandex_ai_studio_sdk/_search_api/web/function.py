@@ -46,7 +46,7 @@ class BaseWebSearchFunction(BaseModelFunction[WebSearchTypeT]):
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `web search documentation <https://yandex.cloud/ru/docs/search-api/concepts/web-search#parameters>`_
+        `web search documentation <https://aistudio.yandex.ru/docs/search-api/concepts/web-search#parameters>`_
 
         :param search_type: Search type.
         :param family_mode: Results filtering.

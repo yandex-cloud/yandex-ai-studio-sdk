@@ -31,7 +31,7 @@ MetadataAuth when running your code inside Yandex Cloud infrastructure or
 APIKeyAuth for external-hosted automations.
 
 Please, follow our guide if your OAuth-token is leaked
-(https://yandex.cloud/en/docs/iam/operations/compromised-credentials)
+(https://yandex.cloud/docs/iam/operations/compromised-credentials)
 """
 
 

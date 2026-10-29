@@ -23,7 +23,8 @@ class BaseChatFunction(BaseModelFunction[ModelTypeT]):
 
         Constructs the model URI based on the provided name and version.
         If the name contains '://', it is treated as a full URI.
-        Otherwise constructs a URI in the form 'gpt://<folder_id>/<model>/<version>'.
+        Otherwise constructs a URI in the form ``<prefix>://<folder_id>/<model>/<version>``,
+        using ``gpt`` for completions and ``emb`` for embeddings.
 
         :param model_name: The name or URI of the model.
         :param model_version: The version of the model to use.

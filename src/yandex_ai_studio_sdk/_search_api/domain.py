@@ -23,7 +23,7 @@ class BaseSearchAPIDomain(DomainWithFunctions):
     image: BaseImageSearchFunction
     #: API for `search by image <https://aistudio.yandex.ru/docs/search-api/concepts/image-search#search-by-image>`_ service
     by_image: BaseByImageSearchFunction
-    #: API for `Wordstat <https://aistudio.yandex.ru/docs/ru/search-api/concepts/wordstat.html>`_ service
+    #: API for `Wordstat <https://aistudio.yandex.ru/docs/search-api/concepts/wordstat>`_ service
     wordstat: BaseWordstatFunction
 
 

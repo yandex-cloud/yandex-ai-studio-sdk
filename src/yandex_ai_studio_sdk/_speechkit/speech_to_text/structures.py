@@ -380,7 +380,7 @@ class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
 
     """
 
-    #: The `ID of the model <https://aistudio.yandex.ru/docs/foundation-models/concepts/yandexgpt/models>`_
+    #: The `ID of the model <https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/models>`_
     #: Model name to be used for completion generation;
     #: If the name contains '://', it is treated as a full URI.
     #: Otherwise constructs a URI in the form 'gpt://<folder_id>/<model_name>/<model_version>'

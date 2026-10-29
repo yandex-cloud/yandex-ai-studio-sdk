@@ -17,7 +17,7 @@ class BaseWordstatFunction(BaseModelFunction[WordstatTypeT]):
     def __call__(self) -> WordstatTypeT:
         """
         Creates Wordstat object which provides methods for invoking
-        `Wordstat service <https://aistudio.yandex.ru/docs/ru/search-api/concepts/wordstat.html>`_.
+        `Wordstat service <https://aistudio.yandex.ru/docs/search-api/concepts/wordstat>`_.
 
         """
         wordstat = self._model_type(sdk=self._sdk, uri='<wordstat>')

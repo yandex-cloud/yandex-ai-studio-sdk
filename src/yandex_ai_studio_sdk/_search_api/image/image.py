@@ -60,7 +60,7 @@ class BaseImageSearch(
 
         To learn more about parameters and their formats and possible values,
         refer to
-        `image search documentation <https://yandex.cloud/ru/docs/search-api/concepts/image-search#parameters>`_
+        `image search documentation <https://aistudio.yandex.ru/docs/search-api/concepts/image-search#search-by-text-query>`_
 
         :param search_type: Search type.
         :param family_mode: Results filtering.

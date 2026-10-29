@@ -37,8 +37,8 @@ class OCRConfig(BaseModelConfig):
     #: * ``"vehicle-registration-back"``: Vehicle registration certificate, back side.
     #: * ``"license-plates"``: All license plates visible in the image.
     #:
-    #: See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/#models>`_ and
-    #: `document recognition <https://aistudio.yandex.ru/docs/vision/concepts/ocr/template-recognition>`_
+    #: See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/models>`_ and
+    #: `document recognition <https://aistudio.yandex.ru/docs/vision/concepts/ocr/models#document-models>`_
     #: for more details.
     model: str | None = None
 

@@ -70,7 +70,7 @@ cli-wiki = [
 yandex-ai-studio = "yandex_ai_studio_sdk.cli:main"
 
 [project.urls]
-Documentation = "https://yandex.cloud/ru/docs/foundation-models/"
+Documentation = "https://aistudio.yandex.ru/docs/ai-studio/sdk/"
 Source = "https://github.com/yandex-cloud/yandex-ai-studio-sdk"
 Tracker = "https://github.com/yandex-cloud/yandex-ai-studio-sdk/issues"
 

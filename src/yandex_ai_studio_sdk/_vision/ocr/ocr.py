@@ -55,8 +55,8 @@ class BaseOCR(
             Document template models: ``"passport"``, ``"driver-license-front"``,
             ``"driver-license-back"``, ``"vehicle-registration-front"``,
             ``"vehicle-registration-back"``, ``"license-plates"``.
-            See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/#models>`_ and
-            `document recognition <https://aistudio.yandex.ru/docs/vision/concepts/ocr/template-recognition>`_.
+            See `models <https://aistudio.yandex.ru/docs/vision/concepts/ocr/models>`_ and
+            `document recognition <https://aistudio.yandex.ru/docs/vision/concepts/ocr/models#document-models>`_.
         """
         return super().configure(
             language_codes=language_codes,

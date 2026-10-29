@@ -13,6 +13,12 @@ class BaseTextEmbeddings(BaseModelFunction[ModelTypeT]):
 
     It provides the functionality to call a text embeddings model
     either by a well-known name or a full URI.
+
+    See the `available models and URI formats
+    <https://aistudio.yandex.ru/docs/ai-studio/concepts/embeddings#yandexgpt-embeddings>`__
+    and the `embeddings search example
+    <https://aistudio.yandex.ru/docs/ai-studio/concepts/embeddings#example>`__
+    in the AI Studio documentation.
     """
     _well_known_names = {
         'doc': 'text-search-doc',
@@ -30,11 +36,9 @@ class BaseTextEmbeddings(BaseModelFunction[ModelTypeT]):
         Call the specified model for text embeddings.
         It returns an instance of the specified type of the model.
 
-        This method constructs the URI for the model based on the provided
-        name and version. If the name contains ``://``, it is
-        treated as a full URI. Otherwise, it looks up the model name in
-        the well-known names dictionary. But after this, in any case,
-        we construct a URI in the form ``emb://<folder_id>/<model>/<version>``.
+        If the name contains ``://``, it is used as a full URI.
+        Otherwise, this method resolves the well-known names ``doc`` and ``query``
+        and constructs a URI in the form ``emb://<folder_id>/<model>/<version>``.
 
         :param model_name: the name or URI of the model to call.
         :param model_version: the version of the model to use.
