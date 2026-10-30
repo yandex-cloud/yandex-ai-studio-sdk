@@ -41,12 +41,12 @@ class LocalCommand(BaseCommand):
 @all_common_options
 def local_command(**kwargs):
     """
-    Create a search index from local files or directories.
+    Create a search index from local files.
 
-    PATHS can be individual files or directories (scanned recursively).
+    PATHS must be individual files. Directories are not supported.
     Use shell glob expansion to filter by pattern:
 
-        vector-stores local /docs/\n
+        vector-stores local /docs/report.pdf\n
         vector-stores local /docs/*.pdf /notes/*.md\n
         vector-stores local report.pdf summary.txt
     """
