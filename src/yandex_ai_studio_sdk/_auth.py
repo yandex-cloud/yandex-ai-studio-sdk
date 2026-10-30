@@ -346,7 +346,7 @@ class MetadataAuth(RefresheableIAMTokenAuth):
     """
     Authentication class for retrieving IAM tokens from metadata service.
 
-    This class retrieves IAM tokens from the Google Cloud metadata service.
+    This class retrieves IAM tokens from the Yandex Cloud VM metadata service.
     Read more in `the VM metadata documentation <https://yandex.cloud/docs/compute/concepts/vm-metadata>`_.
     """
     env_var = 'YC_METADATA_ADDR'

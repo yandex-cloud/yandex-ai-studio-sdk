@@ -18,8 +18,6 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
   - OpenAI‑compatible text embeddings endpoint (`sdk.chat.text_embeddings`).
 - [**Files**](https://aistudio.yandex.ru/docs/ai-studio/concepts/search/vectorstore#file-uploading)
   - Upload, download, list and delete files stored in Yandex Cloud AI Studio.
-- [**Image generation**](https://aistudio.yandex.ru/docs/ai-studio/operations/generation/yandexart-request)
-  - Generate images via YandexART models.
 - [**Vision OCR**](https://aistudio.yandex.ru/docs/vision/concepts/ocr/)
   - Recognize text in images and PDFs (JPEG, PNG, PDF).
 - [**Text embeddings**](https://aistudio.yandex.ru/docs/ai-studio/concepts/embeddings)
@@ -39,12 +37,8 @@ Yandex AI Studio SDK offers a comprehensive set of high‑level abstractions tha
 > [migration guide to Responses API](https://aistudio.yandex.ru/docs/ai-studio/concepts/agents/assistant-responses-migration.html).
 
 Cross-domain functionality is also available for the features above:
-- [**Batch processing**](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/batch-processing)
-  - Run long‑running batch tasks with automatic polling.
 - **Tools**
   - [Function Tool](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/function-call) for extending models with custom callable functions in Completions and Chat.
-- [**Tuning**](https://aistudio.yandex.ru/docs/ai-studio/concepts/tuning/)
-  - Fine‑tune models with configurable optimizers, schedulers and other hyperparameters.
 - [**Datasets**](https://aistudio.yandex.ru/docs/ai-studio/concepts/resources/dataset)
   - Manage dataset lifecycle, upload data, validate schemas, and perform task‑type specific operations.
 
@@ -57,6 +51,18 @@ Additionally, Yandex AI Studio SDK offers:
   - Every high‑level service is available in both asynchronous and synchronous variants.
 - **LangChain integration**
   - Ready‑to‑use wrappers for LangChain (`.langchain()`) with an optional extra installation.
+
+## Service availability
+
+The following SDK domains refer to unavailable or retired AI Studio features:
+
+- **Batch processing** (`sdk.batch`) is unavailable. See the
+  [service documentation](https://aistudio.yandex.ru/docs/ai-studio/concepts/generation/batch-processing).
+- **Creating new fine-tuning jobs** (`sdk.tuning` and model tuning methods) is unavailable. See the
+  [fine-tuning documentation](https://aistudio.yandex.ru/docs/ai-studio/concepts/tuning/).
+  Previously fine-tuned models may remain available; check the support status of their base models.
+- **Legacy image generation** (`sdk.models.image_generation`) uses the retired Image Generation API.
+  For image generation, use the [Images API](https://aistudio.yandex.ru/docs/ai-studio/api/Images/).
 
 ## Installation
 

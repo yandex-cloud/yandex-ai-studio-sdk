@@ -69,7 +69,7 @@ class BaseImageSearch(
         :param size: Searching for images of a particular size.
         :param orientation: Searching for images with a particular orientation.
         :param color: Searching for images containing a particular color.
-        :param site: Number of results per search result page.
+        :param site: Restricts the search to the specified website.
         :param docs_on_page: Number of results per search result page.
         :param user_agent: String containing the User-Agent header.
             Use this parameter to have your search results optimized for a

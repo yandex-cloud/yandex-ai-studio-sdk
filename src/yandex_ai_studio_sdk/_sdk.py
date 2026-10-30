@@ -91,7 +91,7 @@ class BaseSDK:
         :param auth: string with API Key, IAM token or one of yandex_ai_studio_sdk.auth objects;
             in case of default Undefined value, the token will be taken from one of the
             environment variables: ``YC_OAUTH_TOKEN``, ``YC_TOKEN``, ``YC_IAM_TOKEN``, or ``YC_API_KEY``.
-        :type api_key: BaseAuth | str
+        :type auth: BaseAuth | str
         :param service_map: a way to redefine endpoints for one or more cloud subservices
             with a format of dict ``{"service_name": "service_address"}``.
         :type service_map: Dict[str, str]

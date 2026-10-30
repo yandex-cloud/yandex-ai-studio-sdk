@@ -225,40 +225,40 @@ class ChatModelResult(TupleSequence[ChatChoice], BaseJsonResult, HaveToolCalls[T
 
     @property
     def role(self) -> str:
-        """Shortcut for ``result.choice[0].role``"""
+        """Shortcut for ``result.choices[0].role``"""
         return self[0].role
 
     @property
     def content(self) -> str:
-        """Shortcut for ``result.choice[0].content``"""
+        """Shortcut for ``result.choices[0].content``"""
         return self[0].content
 
     @property
     def text(self) -> str:
-        """Shortcut for ``result.choice[0].text``"""
+        """Shortcut for ``result.choices[0].text``"""
         return self[0].text
 
     @property
     def reasoning_text(self) -> str | None:
-        """Shortcut for ``result.choice[0].reasoning_text``"""
+        """Shortcut for ``result.choices[0].reasoning_text``"""
         return self[0].reasoning_text
 
     @property
     def reasoning_content(self) -> str | None:
-        """Shortcut for ``result.choice[0].reasoning_content``"""
+        """Shortcut for ``result.choices[0].reasoning_content``"""
         return self[0].reasoning_content
 
     @property
     def status(self) -> AlternativeStatus:
-        """Shortcut for ``result.choice[0].status``"""
+        """Shortcut for ``result.choices[0].status``"""
         return self[0].status
 
     @property
     def finish_reason(self) -> FinishReason:
-        """Shortcut for ``result.choice[0].finish_reason``"""
+        """Shortcut for ``result.choices[0].finish_reason``"""
         return self[0].finish_reason
 
     @property
     def tool_calls(self) -> HttpToolCallList[ToolCallTypeT] | None:
-        """Shortcut for ``result.choice[0].tool_calls``"""
+        """Shortcut for ``result.choices[0].tool_calls``"""
         return self[0].tool_calls

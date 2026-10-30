@@ -350,29 +350,29 @@ class LLMPostProcessing(ProtoSerializable[ProtoSummarizationOptions]):
 
     You could pass a full model URI:
 
-        >>> llm_post_processor = LLMPostProcessing('gpt://<folder_id>/yandexgt/latest')
+        >>> llm_post_processor = LLMPostProcessing('gpt://<folder_id>/yandexgpt/latest')
 
     You can use a model name; in this case, the model URI is built using the configured folder_id:
 
-        >>> llm_post_processor = LLMPostProcessing('yandexgt')
+        >>> llm_post_processor = LLMPostProcessing('yandexgpt')
 
     You could also pass a model version, which defaults to 'latest':
 
-        >>> llm_post_processor = LLMPostProcessing('yandexgt', model_version='latest')
+        >>> llm_post_processor = LLMPostProcessing('yandexgpt', model_version='latest')
 
     After creating a postprocessor object, add instructions to it
     by using the ``.with_instruction`` method (which does not mutate the object, but creates a copy):
 
         >>> llm_post_processor = llm_post_processor.with_instruction("Make a short review")
         >>> llm_post_processor = llm_post_processor.with_instruction(
-        ...     "What the conversation topic",
+        ...     "What is the topic of the conversation?",
         ...     response_format="json"
         ... )
 
     The created object looks like this:
 
         >>> llm_post_processor
-        LLMPostProcessing(model_name='yandexgt', model_version='latest', ...)
+        LLMPostProcessing(model_name='yandexgpt', model_version='latest', ...)
         >>> llm_post_processor
         LLMPostProcessing(..., instructions=(LLMPostProcessingInstruction(...), LLMPostProcessingInstruction(...)))
 
