@@ -1,6 +1,6 @@
 """
 title: Yandex AI Studio Agents Integration for Open WebUI
-version: 0.1.2
+version: 0.1.3
 description: Integration with Yandex AI Studio Agents using Responses API with real-time status and streaming
 author: https://github.com/vhaldemar
 license: MIT
@@ -38,7 +38,7 @@ from pydantic import BaseModel, Field
 EventEmitterType = Callable[[dict], Awaitable[None]]
 T = TypeVar("T")
 
-THIS_PIPE_VERSION = "0.1.2"
+THIS_PIPE_VERSION = "0.1.3"
 PIPE_ORIGIN = (
     "https://github.com/yandex-cloud/yandex-ai-studio-sdk/tree/master/open-webui"
 )
@@ -297,7 +297,7 @@ class Pipe:
                 "name": title,
                 'url': url
             }
-            metadata = {
+            citation_metadata = {
                 'source': url,
                 'name': title,
             }
@@ -306,7 +306,7 @@ class Pipe:
                 "type": "citation",
                 "data": {
                     "document": [document],
-                    "metadata": [metadata],
+                    "metadata": [citation_metadata],
                     "source": source,
                 }
             })
