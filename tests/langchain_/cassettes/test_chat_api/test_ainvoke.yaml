@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: '{"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","messages":[{"content":"hello!","role":"user"},{"content":"Hi
+      there human!","role":"assistant"},{"content":"Meow!","role":"user"}],"stream":false}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '201'
+      Content-Type:
+      - application/json
+      Host:
+      - llm.api.cloud.yandex.net
+      User-Agent:
+      - yandex-ai-studio-sdk/0.20.0 python/3.13
+      x-client-request-id:
+      - 1b3c1788-a8b0-499f-92bb-3fe7523a4389
+    method: POST
+    uri: https://llm.api.cloud.yandex.net/v1/chat/completions
+  response:
+    body:
+      string: '{"id":"f2bb6ba4-8f88-4ac9-87c0-6b41db01c635","object":"chat.completion","created":1774968384,"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","choices":[{"index":0,"message":{"role":"assistant","content":"Are
+        you trying to tell me that you''re a cat? Or are you just in the mood for
+        some feline fun? In any case, meow right back at you! Meow!"},"finish_reason":"stop"}],"usage":{"prompt_tokens":29,"total_tokens":69,"completion_tokens":40,"prompt_tokens_details":{"cached_tokens":0}}}
+
+        '
+    headers:
+      content-length:
+      - '489'
+      content-type:
+      - application/json
+      date:
+      - Tue, 31 Mar 2026 14:46:24 GMT
+      server:
+      - ycalb
+      x-client-request-id:
+      - 1b3c1788-a8b0-499f-92bb-3fe7523a4389
+      x-request-id:
+      - 1ff57598-fabc-40bf-89ca-ace621e49c22
+      x-server-trace-id:
+      - 85cfd10b60cdef2f:a32c621e24a87b57:55f05b16925bf389:1
+    status:
+      code: 200
+      message: OK
+version: 1

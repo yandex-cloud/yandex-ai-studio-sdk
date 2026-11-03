@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: '{"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","messages":[{"content":"hello!","role":"user"},{"content":"Hi
+      there human!","role":"assistant"},{"content":"Meow!","role":"user"}],"stream":true}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      Host:
+      - llm.api.cloud.yandex.net
+      User-Agent:
+      - yandex-ai-studio-sdk/0.20.0 python/3.13
+      x-client-request-id:
+      - 97ca42c1-d8ce-4966-88e9-879d60847857
+    method: POST
+    uri: https://llm.api.cloud.yandex.net/v1/chat/completions
+  response:
+    body:
+      string: 'data: {"id":"4ae6d707-cd09-4e3b-9622-9c79f5ae29a1","object":"chat.completion.chunk","created":1774968385,"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","choices":[{"index":0,"delta":{"role":"assistant","content":"Are"}}]}
+
+
+        data: {"id":"4ae6d707-cd09-4e3b-9622-9c79f5ae29a1","object":"chat.completion.chunk","created":1774968385,"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","choices":[{"index":0,"delta":{"content":"
+        you trying to tell me that you''re a cat? Or are you just in a playful mood?
+        Either way, meow back at you! Meow!"},"finish_reason":"stop"}]}
+
+
+        data: {"id":"4ae6d707-cd09-4e3b-9622-9c79f5ae29a1","object":"chat.completion.chunk","created":1774968385,"model":"gpt://b1gr2p0etomug2vas4ie/yandexgpt/latest","choices":[],"usage":{"prompt_tokens":29,"total_tokens":63,"completion_tokens":34,"prompt_tokens_details":{"cached_tokens":0}}}
+
+
+        data: [DONE]
+
+
+        '
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - text/event-stream
+      date:
+      - Tue, 31 Mar 2026 14:46:25 GMT
+      server:
+      - ycalb
+      transfer-encoding:
+      - chunked
+      x-client-request-id:
+      - 97ca42c1-d8ce-4966-88e9-879d60847857
+      x-request-id:
+      - 8f06983f-f3e7-480b-82b4-78dc0d5a2dfb
+      x-server-trace-id:
+      - 68a6526367f1c05b:94e2370f3b41800d:272414d44e47efff:1
+    status:
+      code: 200
+      message: OK
+version: 1
