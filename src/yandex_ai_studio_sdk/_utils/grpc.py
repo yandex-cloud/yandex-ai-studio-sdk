@@ -92,10 +92,11 @@ class StreamResponseIteratorMixin(Generic[StreamReturnCallTypeT, ResponseType]):
 
     def add_done_callback(self, callback) -> None:
         # grpc.aio calls it from InterceptedCall._fire_or_add_pending_done_callbacks
-        # when a done callback was added before the interception finished.
+        # when a done callback was added before the interception finished (see #236).
         # Same as grpc.aio._interceptor._StreamCallResponseIterator, we delegate it
         # to the underlying call. Without one the wrapper is done (see .done()),
         # so the callback is fired right away.
+        # NB: after a retry the callback stays bound to the call of the first attempt.
         if self._call:
             self._call.add_done_callback(callback)
         else:
